@@ -1,0 +1,19 @@
+{
+  "applicationName": "Turbine Internal",
+  "nodes": [
+    {
+      "operationName": "LoadEmpty",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"path\": \"unrefined/test.parquet\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CheckIfEmpty",
+      "predecessorName": "LoadEmpty",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"1=1\",\n  \"processStatus\": \"DQ_ISSUE\",\n  \"conditionValue\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df\"\n    }\n  ]\n}",
+      "operationVersionName": "ConditionalStop",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "Init_Test"
+}
