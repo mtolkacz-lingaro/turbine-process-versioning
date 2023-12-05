@@ -8,4 +8,4 @@ resources:
       ref: refs/heads/feature/712485
 
 jobs:
-  - template: data-pipeline-release-template.yml@turbine-process-versioning
+  - template: .azuredevops/data-pipeline-release-template.yml@turbine-process-versioning
