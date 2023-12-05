@@ -5,7 +5,7 @@ resources:
     - repository: turbine-process-versioning
       type: git
       name: turbine-process-versioning
-      ref: refs/heads/master
+      ref: refs/heads/feature/712485
 
 jobs:
   - template: data-pipeline-release-template.yml@turbine-process-versioning
