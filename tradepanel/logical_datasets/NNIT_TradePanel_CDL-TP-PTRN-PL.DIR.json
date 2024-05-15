@@ -1,5 +1,5 @@
 {
-  "objectDescription": "CDL-TP-PTRN-PL.DIR",
+  "objectDescription": "NNIT_TradePanel_CDL-TP-PTRN-PL.DIR",
   "objectTypeCode": "LEGACY_ADLSV2_FILE_WITH_PATTERN",
   "dataProviderCode": "TP",
   "dataTypeCode": "TP",
@@ -20,5 +20,5 @@
   "secureGroupKey": 0,
   "owningApplicationName": "Turbine Internal - Unrefined",
   "statusCode": "ACTIVE",
-  "objectName": "CDL-TP-PTRN-PL.DIR"
+  "objectName": "NNIT_TradePanel_CDL-TP-PTRN-PL.DIR"
 }
