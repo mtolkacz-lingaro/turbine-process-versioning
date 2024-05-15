@@ -257,7 +257,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "DATABRICKS_CLUSTER_INFRA_NAME",
-      "parameterVal": "dbr-tpv2-p101_Large"
+      "parameterVal": "Large"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
@@ -290,11 +290,14 @@
       "parameterVal": "false"
     }
   ],
+  "nodes": [],
   "objects": [
     {
       "objectName": "NNIT_TradePanel_CDL-TP-PTRN-PL.DIR",
       "objectRoleTypeName": "INPUT"
     }
   ],
+  "metrics": [],
+  "upstreams": [],
   "processName": "NNIT_TradePanel_PL.DIR"
 }
