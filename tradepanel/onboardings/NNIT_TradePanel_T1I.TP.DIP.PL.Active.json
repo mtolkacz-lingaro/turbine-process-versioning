@@ -23,7 +23,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "DATABRICKS_CLUSTER_INFRA_NAME",
-      "parameterVal": "dbr-tpv2-p101_Medium"
+      "parameterVal": "Large"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
@@ -78,7 +78,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "DLVRY_ID",
-      "parameterVal": "0"
+      "parameterVal": "672612072"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
@@ -170,6 +170,10 @@
   ],
   "metrics": [],
   "notifications": [],
-  "upstreams": [],
+  "upstreams": [
+    {
+      "processName": "NNIT_TradePanel_PL.DIR"
+    }
+  ],
   "processName": "NNIT_TradePanel_T1I.TP.DIP.PL.Active"
 }
