@@ -1,0 +1,18 @@
+{
+  "rubik_trgt_path_name": "unrefined_rubik/export",
+  "PATH3": "prod-tp-lightrefined/",
+  "DEF_SEC_GRP_KEY": "540000",
+  "PATH4": "prod-hhp-lightrefined/",
+  "PATH1": "prod-tp-lightrefined/",
+  "SOURCE_PATH_FOR_DELTA": "prod-tp-refined/turbine_delta/prod/lastProcessedDelta/",
+  "PATH2": "prod-tp-lightrefined/",
+  "VENDOR_LANDING_PATH": "cp-turbinev1/INVendorFiles",
+  "refinedInfrastructureId": "https://dnturbineinternal301.blob.core.windows.net/refined",
+  "LANDING_PATH": "cp-turbinev1/IN",
+  "LIGHTREFINED": "prod-tp-lightrefined/",
+  "ARCH_PATH": "cp-turbinev1/ARCH/",
+  "RAW_PATH": "cp-turbinev1/WORK/",
+  "HHP_MAP_SRC": "prod-hhp-mappings/",
+  "REFINED_PATH": "prod-tp-refined/",
+  "external_location": "abfss://catalog@dnturbineinternal301.dfs.core.windows.net/"
+}
