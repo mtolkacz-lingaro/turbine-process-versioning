@@ -1,0 +1,24 @@
+{
+  "objectDescription": "CDL-TP-PTRN-T1I.TP.DIP.PL.Active",
+  "objectTypeCode": "LEGACY_ADLSV2_FILE_WITH_PATTERN",
+  "dataProviderCode": "TP",
+  "dataTypeCode": "TP",
+  "parameters": [
+    {
+      "objectParameterTypeName": "ADLSV2_STORAGE",
+      "objectParameterValue": "anturbineinternal301"
+    },
+    {
+      "objectParameterTypeName": "FILENAME_PATTERN",
+      "objectParameterValue": "TIER1.TP.DIP.PL.Active%"
+    },
+    {
+      "objectParameterTypeName": "FILES_COUNT",
+      "objectParameterValue": "1"
+    }
+  ],
+  "secureGroupKey": 0,
+  "owningApplicationName": "Turbine Internal - Unrefined",
+  "statusCode": "ACTIVE",
+  "objectName": "CDL-TP-PTRN-T1I.TP.DIP.PL.Active"
+}

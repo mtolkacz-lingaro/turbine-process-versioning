@@ -1,0 +1,24 @@
+{
+  "objectDescription": "NNIT_TradePanel_CDL-TP-PTRN-ACN_ITEM_CONNECT",
+  "objectTypeCode": "LEGACY_ADLSV2_FILE_WITH_PATTERN",
+  "dataProviderCode": "TP",
+  "dataTypeCode": "TP",
+  "parameters": [
+    {
+      "objectParameterTypeName": "ADLSV2_STORAGE",
+      "objectParameterValue": "anturbineinternal301"
+    },
+    {
+      "objectParameterTypeName": "FILENAME_PATTERN",
+      "objectParameterValue": "EDWGE.ACN.CONNECT.US.TP.WK.ITM.MARKET01.TIME%.zip"
+    },
+    {
+      "objectParameterTypeName": "FILES_COUNT",
+      "objectParameterValue": "1"
+    }
+  ],
+  "secureGroupKey": 0,
+  "owningApplicationName": "Turbine Internal - Unrefined",
+  "statusCode": "ACTIVE",
+  "objectName": "NNIT_TradePanel_CDL-TP-PTRN-ACN_ITEM_CONNECT"
+}
