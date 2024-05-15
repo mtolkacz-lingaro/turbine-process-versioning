@@ -1,5 +1,5 @@
 {
-  "applicationName": "TRADEPANEL",
+  "applicationName": "TURBINE_INTERNAL",
   "nodes": [
     {
       "operationName": "[FL] MM_DVM_CNTRT_STRCT_PRC2_VW",

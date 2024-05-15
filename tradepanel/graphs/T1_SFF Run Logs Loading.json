@@ -1,5 +1,5 @@
 {
-  "applicationName": "TRADEPANEL",
+  "applicationName": "TURBINE_INTERNAL",
   "nodes": [
     {
       "operationName": "[FL] MM_RUN_MKT_PLC ",

@@ -1,5 +1,5 @@
 {
-  "applicationName": "TRADEPANEL",
+  "applicationName": "TURBINE_INTERNAL",
   "nodes": [
     {
       "operationName": "Load MM_PROD_DIM_VW",

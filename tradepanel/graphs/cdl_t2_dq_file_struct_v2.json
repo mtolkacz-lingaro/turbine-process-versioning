@@ -1,5 +1,5 @@
 {
-  "applicationName": "TRADEPANEL",
+  "applicationName": "TURBINE_INTERNAL",
   "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \"DQ Test\",\r\n    \"description\": \"DQ test\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n        \r\n   },\r\n    \"required\": [],\r\n    \"configurable\": []\r\n}",
   "nodes": [
     {

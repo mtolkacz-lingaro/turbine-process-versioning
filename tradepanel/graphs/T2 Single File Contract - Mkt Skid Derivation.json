@@ -1,5 +1,5 @@
 {
-  "applicationName": "TRADEPANEL",
+  "applicationName": "TURBINE_INTERNAL",
   "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \" Single File Contract Main Chain Overloading\",\r\n    \"description\": \"Overloading parameters in Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n        \"SRCE_SYS_ID\": {\r\n            \"title\": \"SRCE_SYS_ID\",\r\n            \"description\": \"SRCE_SYS_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n         \"ISO_CNTRY_CODE\": {\r\n            \"title\": \"ISO_CNTRY_CODE\",\r\n            \"description\": \"ISO_CNTRY_CODE\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"SRCE_SYS_ID\", \"ISO_CNTRY_CODE\"]\r\n}",
   "nodes": [
     {

@@ -1,5 +1,5 @@
 {
-  "applicationName": "TRADEPANEL",
+  "applicationName": "TURBINE_INTERNAL",
   "nodes": [
     {
       "operationName": "[CET] PREPARE MKT DIM",

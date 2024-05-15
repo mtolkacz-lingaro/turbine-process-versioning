@@ -1,5 +1,5 @@
 {
-  "applicationName": "TRADEPANEL",
+  "applicationName": "TURBINE_INTERNAL",
   "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \" Three Files Contract Main Chain Overloading\",\r\n    \"description\": \"Overloading parameters in Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n\t\t\"RCD_ORIGN_CODE\": {\r\n            \"title\": \"RCD_ORIGN_CODE\",\r\n            \"description\": \"RCD_ORIGN_CODE\",\r\n            \"default\": \"B\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"RCD_ORIGN_CODE\"]\r\n}",
   "nodes": [
     {

@@ -1,5 +1,5 @@
 {
-  "applicationName": "TRADEPANEL",
+  "applicationName": "TURBINE_INTERNAL",
   "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \" Three Files Contract Main Chain Overloading\",\r\n    \"description\": \"Overloading parameters in EXCHG_RATE_FCT_VW\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n \r\n         \"IN_FILE_PATH\": {\r\n            \"title\": \"IN_FILE_PATH\",\r\n            \"description\": \"Input File Path\",\r\n            \"default\": \"unrefined/cloudpanel-test-unref/test/three_files/src/\",\r\n            \"type\": \"string\"\r\n        }         \r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"IN_FILE_PATH\"]\r\n}",
   "nodes": [
     {
