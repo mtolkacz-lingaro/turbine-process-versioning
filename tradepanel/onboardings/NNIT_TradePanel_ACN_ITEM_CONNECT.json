@@ -312,7 +312,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "MAX_CLUSTER_POOL_WORKERS",
-      "parameterVal": "20"
+      "parameterVal": "30"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
@@ -332,7 +332,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "DATABRICKS_CLUSTER_INFRA_NAME",
-      "parameterVal": "dbr-tpv2-p101_Medium"
+      "parameterVal": "Large"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
