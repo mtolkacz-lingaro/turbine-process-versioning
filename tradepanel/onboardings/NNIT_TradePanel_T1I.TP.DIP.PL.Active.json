@@ -1,0 +1,175 @@
+{
+  "graphName": "DPF_Tier1_Integrated TP Main Chain",
+  "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{\n  \"FACT_TYPE_CODE\" : \"TP\",\n  \"CATEGORY_ID\" : \"DIP\",\n  \"SRCE_SYS_ID\" : 3,\n  \"IGRTD_PUBLISH_FILE_PATTERN\" : \"N/A\",\n  \"CNTRT_ID\" : 10000101754157,\n  \"RAW_FILE_PATH\" : \"turbinev1/WORK/\",\n  \"PUBLISH_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"IN_FILE_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"MAPPINGS_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"DLVRY_ID\" : 672612072\n}",
+  "processDescription": "T1I TP DIP PL Active",
+  "schedules": [],
+  "processParameters": [
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RUN_ON_AUTOMATED_CLUSTER",
+      "parameterVal": "1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RUN_ON_INTERACTIVE_CLUSTER",
+      "parameterVal": "0"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RUN_ON_CLUSTER_POOL",
+      "parameterVal": "1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DATABRICKS_CLUSTER_INFRA_NAME",
+      "parameterVal": "dbr-tpv2-p101_Medium"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "APP_INFRA",
+      "parameterVal": "NEW_INFRA"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "MIN_CLUSTER_POOL_WORKERS",
+      "parameterVal": "1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CREATE_BATCH_PROCESS_RUN_KEY",
+      "parameterVal": "1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "MAX_CLUSTER_POOL_WORKERS",
+      "parameterVal": "20"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "PARALLEL_EXECUTION",
+      "parameterVal": "FALSE"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "FACT_TYPE_CODE",
+      "parameterVal": "TP"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CATEGORY_ID",
+      "parameterVal": "DIP"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "SRCE_SYS_ID",
+      "parameterVal": "3"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "IGRTD_PUBLISH_FILE_PATTERN",
+      "parameterVal": "N/A"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CNTRT_ID",
+      "parameterVal": "10000101754157"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "0"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RAW_FILE_PATH",
+      "parameterVal": "turbinev1/WORK/"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "PUBLISH_PATH",
+      "parameterVal": "bf/unrefined/adw-t1-unrefined-bf/"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "IN_FILE_PATH",
+      "parameterVal": "bf/unrefined/adw-t1-unrefined-bf/"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "MAPPINGS_PATH",
+      "parameterVal": "bf/unrefined/adw-t1-unrefined-bf/"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "SEC_GRP_KEY",
+      "parameterVal": "540000"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "634172560"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "634172560"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "637718900"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "638340273"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "643673498"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "651863540"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "655910785"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "660984362"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "669489951"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "672612072"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DLVRY_ID",
+      "parameterVal": "672612072"
+    }
+  ],
+  "nodes": [],
+  "objects": [
+    {
+      "objectName": "CDL-TP-PTRN-T1I.TP.DIP.PL.Active",
+      "objectRoleTypeName": "INPUT"
+    }
+  ],
+  "metrics": [],
+  "notifications": [],
+  "upstreams": [],
+  "processName": "NNIT_TradePanel_T1I.TP.DIP.PL.Active"
+}
