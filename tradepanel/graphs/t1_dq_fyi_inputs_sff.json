@@ -1,0 +1,90 @@
+{
+  "applicationName": "TRADEPANEL",
+  "nodes": [
+    {
+      "operationName": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Fl MM_TIME_PERD_ASSOC_TYPE_VW",
+      "predecessorName": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TIME_PERD_ASSOC_TYPE_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_time_perd_assoc_type\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "rel MM_TIME_PERD_ASSOC_TYPE_VW",
+      "predecessorName": "Fl MM_TIME_PERD_ASSOC_TYPE_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TIME_PERD_ASSOC_TYPE_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "FL MM_TIME_PERD_ASSOC_VW",
+      "predecessorName": "rel MM_TIME_PERD_ASSOC_TYPE_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TIME_PERD_ASSOC_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_time_perd_assoc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "MM_TIME_PERD_ASSOC_VW/",
+      "predecessorName": "FL MM_TIME_PERD_ASSOC_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"<@@PATH1@@>MM_TIME_PERD_ASSOC_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Fl MM_RUN_MKT_PLC",
+      "predecessorName": "MM_TIME_PERD_ASSOC_VW/",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_MKT_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_run_mkt_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "MM_RUN_MKT_PLC",
+      "predecessorName": "Fl MM_RUN_MKT_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_MKT_PLC/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Fl MM_PROD_XREF",
+      "predecessorName": "MM_RUN_MKT_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_XREF/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_xref\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "MM_PROD_XREF",
+      "predecessorName": "Fl MM_PROD_XREF",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_XREF/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "FL MM_RUN_MEASR_PLC",
+      "predecessorName": "MM_PROD_XREF",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_MEASR_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_run_measr_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "MM_RUN_MEASR_PLC",
+      "predecessorName": "FL MM_RUN_MEASR_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_MEASR_PLC/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "FYI Validations - inputs",
+      "operationDescription": "FYI",
+      "predecessorName": "MM_RUN_MEASR_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\npath = '<@@PATH1@@>'\\n\\ntier1_measr_mtrlz_tbl = dict_all_dfs['df_srce_mmeasr'][\\\"df_object\\\"]\\ntier1_time_mtrlz_tbl = dict_all_dfs['df_srce_mtime'][\\\"df_object\\\"]\\ntier1_mkt_dsdim = dict_all_dfs['df_mkt_as'][\\\"df_object\\\"]\\ntier1_prod_dsdim = dict_all_dfs['df_prod_dsdim'][\\\"df_object\\\"]\\ntier1_prod_gav = dict_all_dfs['df_prod_gav'][\\\"df_object\\\"]\\n\\ndf_mm_time_perd_assoc_type = dict_all_dfs['df_mm_time_perd_assoc_type'][\\\"df_object\\\"]\\ndf_mm_time_perd_assoc = dict_all_dfs['df_mm_time_perd_assoc'][\\\"df_object\\\"]\\ndf_mm_run_mkt_plc = dict_all_dfs['df_mm_run_mkt_plc'][\\\"df_object\\\"]\\ndf_mm_prod_xref = dict_all_dfs['df_mm_prod_xref'][\\\"df_object\\\"]\\ndf_mm_run_measr_plc = dict_all_dfs['df_mm_run_measr_plc'][\\\"df_object\\\"]\\n\\n#mm_time_perd_assoc_type = spark.read.format('parquet').load(f'/mnt/{path}/MM_TIME_PERD_ASSOC_TYPE_VW/')\\n#mm_time_perd_assoc = spark.read.format('parquet').load(f'/mnt/{path}/MM_TIME_PERD_ASSOC_VW/')\\n#mm_run_mkt_plc = spark.read.format('parquet').load(f'/mnt/{path}/MM_RUN_MKT_PLC/') #check\\n#mm_prod_xref = spark.read.format('parquet').load(f'/mnt/{path}/MM_PROD_XREF/')\\n#mm_run_measr_plc = spark.read.format('parquet').load(f'/mnt/{path}/MM_RUN_MEASR_PLC/')\\n\\n\\n\\n\\ndict_all_dfs['tier1_measr_mtrlz_tbl'] = {\\\"df_object\\\" :tier1_measr_mtrlz_tbl}\\ndf_output_dict['tier1_measr_mtrlz_tbl'] = tier1_measr_mtrlz_tbl\\n\\ndict_all_dfs['tier1_time_mtrlz_tbl'] = {\\\"df_object\\\" :tier1_time_mtrlz_tbl}\\ndf_output_dict['tier1_time_mtrlz_tbl'] = tier1_time_mtrlz_tbl\\n\\ndict_all_dfs['tier1_mkt_dsdim'] = {\\\"df_object\\\" :tier1_mkt_dsdim}\\ndf_output_dict['tier1_mkt_dsdim'] = tier1_mkt_dsdim\\n\\ndict_all_dfs['tier1_prod_dsdim'] = {\\\"df_object\\\" :tier1_prod_dsdim}\\ndf_output_dict['tier1_prod_dsdim'] = tier1_prod_dsdim\\n\\ndict_all_dfs['mm_time_perd_assoc_type'] = {\\\"df_object\\\" :df_mm_time_perd_assoc_type}\\ndf_output_dict['mm_time_perd_assoc_type'] = df_mm_time_perd_assoc_type\\n\\ndict_all_dfs['mm_time_perd_assoc'] = {\\\"df_object\\\" :df_mm_time_perd_assoc}\\ndf_output_dict['mm_time_perd_assoc'] = df_mm_time_perd_assoc\\n\\ndict_all_dfs['mm_run_mkt_plc'] = {\\\"df_object\\\" :df_mm_run_mkt_plc}\\ndf_output_dict['mm_run_mkt_plc'] = df_mm_run_mkt_plc\\n\\ndict_all_dfs['mm_prod_xref'] = {\\\"df_object\\\" :df_mm_prod_xref}\\ndf_output_dict['mm_prod_xref'] = df_mm_prod_xref\\n\\ndict_all_dfs['mm_run_measr_plc'] = {\\\"df_object\\\" :df_mm_run_measr_plc}\\ndf_output_dict['mm_run_measr_plc'] = df_mm_run_measr_plc\\n\\ndict_all_dfs['tier1_prod_gav'] = {\\\"df_object\\\" :tier1_prod_gav}\\ndf_output_dict['tier1_prod_gav'] = tier1_prod_gav\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_srce_mmeasr\"\n    },\n    {\n      \"name\": \"df_srce_mtime\"\n    },\n    {\n      \"name\": \"df_mkt_as\"\n    },\n    {\n      \"name\": \"df_prod_dsdim\"\n    },\n    {\n      \"name\": \"df_mm_time_perd_assoc_type\"\n    },\n    {\n      \"name\": \"df_mm_time_perd_assoc\"\n    },\n    {\n      \"name\": \"df_mm_run_mkt_plc\"\n    },\n    {\n      \"name\": \"df_mm_prod_xref\"\n    },\n    {\n      \"name\": \"df_mm_run_measr_plc\"\n    },\n    {\n      \"name\": \"df_prod_gav\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"tier1_measr_mtrlz_tbl\",\n      \"cache\": \"none\"\n    },\n    {\n      \"name\": \"tier1_time_mtrlz_tbl\",\n      \"cache\": \"none\"\n    },\n    {\n      \"name\": \"tier1_mkt_dsdim\",\n      \"cache\": \"none\"\n    },\n    {\n      \"name\": \"tier1_prod_dsdim\",\n      \"cache\": \"none\"\n    },\n    {\n      \"name\": \"mm_time_perd_assoc_type\",\n      \"cache\": \"none\"\n    },\n    {\n      \"name\": \"mm_time_perd_assoc\",\n      \"cache\": \"none\"\n    },\n    {\n      \"name\": \"mm_run_mkt_plc\",\n      \"cache\": \"materialize\"\n    },\n    {\n      \"name\": \"mm_prod_xref\",\n      \"cache\": \"materialize\"\n    },\n    {\n      \"name\": \"mm_run_measr_plc\",\n      \"cache\": \"materialize\"\n    },\n    {\n      \"name\": \"tier1_prod_gav\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "t1_dq_fyi_inputs_sff"
+}

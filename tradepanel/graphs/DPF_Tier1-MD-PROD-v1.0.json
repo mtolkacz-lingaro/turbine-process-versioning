@@ -1,0 +1,412 @@
+{
+  "applicationName": "TRADEPANEL",
+  "nodes": [
+    {
+      "operationName": "Preprocessing",
+      "jsonSpecification": "",
+      "operationVersionName": "OperationWrapper",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "LOAD SRC MM_PROD_IDIM_VW",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_IDIM_VW\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release LOAD SRC MM_PROD_IDIM_VW",
+      "predecessorName": "LOAD SRC MM_PROD_IDIM_VW",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_IDIM_VW\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "LOAD MM_PROD_DIM_SUMM",
+      "predecessorName": "Release LOAD SRC MM_PROD_IDIM_VW",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_XREF/part_srce_sys_id=3\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_summ\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release LOAD MM_PROD_DIM_SUMM",
+      "predecessorName": "LOAD MM_PROD_DIM_SUMM",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_XREF/part_srce_sys_id=3\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET df_mm_prod_dim_summ",
+      "predecessorName": "Release LOAD MM_PROD_DIM_SUMM",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_summ\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"prod_skid\",\n      \"columnName\": \"PROD_SKID\"\n    },\n    {\n      \"transformation\": \"prod_match_attr_list\",\n      \"columnName\": \"PROD_MATCH_ATTR_LIST\"\n    },\n    {\n      \"transformation\": \"cntrt_id\",\n      \"columnName\": \"cntrt_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_summ\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "AGR Dim Summ",
+      "predecessorName": "CET df_mm_prod_dim_summ",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_summ\"\n    }\n  ],\n  \"aggregate\": [\n    {\n      \"expression\": \"MAX(PROD_SKID)\",\n      \"alias\": \"PROD_SKID\"\n    }\n  ],\n  \"groupBy\": [\n    \"PROD_MATCH_ATTR_LIST\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_summ\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Aggregator",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "LOAD MM_PROD_SKID_LKP",
+      "predecessorName": "AGR Dim Summ",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_SKID_LKP\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_skid_lkp_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release LOAD MM_PROD_SKID_LKP",
+      "predecessorName": "LOAD MM_PROD_SKID_LKP",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_SKID_LKP\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "common names for df_mm_prod_skid_lkp_vw",
+      "predecessorName": "Release LOAD MM_PROD_SKID_LKP",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_skid_lkp_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"PROD_MATCH_ATTR_LIST\",\n      \"columnName\": \"prod_match_attr_list\"\n    },\n    {\n      \"transformation\": \"PROD_PRTTN_CODE\",\n      \"columnName\": \"prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"PROD_SKID\",\n      \"columnName\": \"prod_skid\"\n    },\n    {\n      \"transformation\": \"SRCE_SYS_ID\",\n      \"columnName\": \"srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_skid_lkp_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "LOAD MM_STRCT_LVL_LKP_VW from postgres",
+      "predecessorName": "common names for df_mm_prod_skid_lkp_vw",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_mm_strct_lvl_lkp_vw = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.MM_STRCT_LVL_LKP_VW\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_mm_strct_lvl_lkp_vw'] = df_mm_strct_lvl_lkp_vw\\ndict_all_dfs['df_mm_strct_lvl_lkp_vw'] = {\\\"df_object\\\" :df_mm_strct_lvl_lkp_vw}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_strct_lvl_lkp_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "LOAD MM_STRCT_LKP_VW from postgres",
+      "predecessorName": "LOAD MM_STRCT_LVL_LKP_VW from postgres",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_mm_strct_lkp_vw = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.MM_STRCT_LKP_VW\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_mm_strct_lkp_vw'] = df_mm_strct_lkp_vw\\ndict_all_dfs['df_mm_strct_lkp_vw'] = {\\\"df_object\\\" :df_mm_strct_lkp_vw}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_strct_lkp_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "LOAD MM_STRCT_LVL_LKP_VW",
+      "predecessorName": "LOAD MM_STRCT_LKP_VW from postgres",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_STRCT_LVL_LKP_VW\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_strct_lvl_lkp_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "LOAD MM_STRCT_LKP_VW",
+      "predecessorName": "LOAD MM_STRCT_LVL_LKP_VW",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_STRCT_LKP_VW\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_strct_lkp_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET Preprocessing",
+      "predecessorName": "LOAD MM_STRCT_LKP_VW",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"row_number() OVER (PARTITION BY srce_sys_id, prod_prttn_code, prod_skid ORDER BY run_id DESC)\",\n      \"columnName\": \"rnk\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "FLT df_strct_lkp",
+      "predecessorName": "CET Preprocessing",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"dmnsn_id=2\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_strct_lkp_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_strct_lkp_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "FLT Preprocessing",
+      "predecessorName": "FLT df_strct_lkp",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"rnk =1 and srce_sys_id=3\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "JOIN SRC",
+      "predecessorName": "FLT Preprocessing",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"addAllColumns\": \"true\",\n      \"alias\": \"p\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_strct_lvl_lkp_vw\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"sl\",\n      \"columns\": [\n        {\n          \"columnName\": \"strct_lvl_id\",\n          \"columnAlias\": \"strct_lvl_id\"\n        },\n        {\n          \"columnName\": \"lvl_num\",\n          \"columnAlias\": \"lvl_num\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_strct_lkp_vw\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"s\",\n      \"columns\": [\n        {\n          \"columnName\": \"strct_id\",\n          \"columnAlias\": \"strct_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_prod_skid_lkp_vw\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"o\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_match_attr_list\",\n          \"columnAlias\": \"prod_match_attr_list\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_prod_dim_summ\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"dss\",\n      \"columns\": [\n        {\n          \"columnName\": \"PROD_MATCH_ATTR_LIST\",\n          \"columnAlias\": \"PROD_MATCH_ATTR_LIST_SUMM\"\n        }\n      ]\n    }\n  ],\n  \"joinOperations\": [\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"o\",\n      \"joinExpression\": \"o.prod_skid=p.prod_skid\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"dss\",\n      \"joinExpression\": \" dss.PROD_MATCH_ATTR_LIST=o.prod_match_attr_list\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"sl\",\n      \"joinExpression\": \"p.prod_lvl_id=cast(sl.strct_lvl_id as integer)\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"s\",\n      \"joinExpression\": \"sl.strct_id=cast(s.strct_id as integer)\"\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "MultipleJoiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET Preprocessing 2",
+      "predecessorName": "JOIN SRC",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"'10000101752834'\",\n      \"columnName\": \"rls_data_provider_key\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"prod_skid\",\n      \"columnName\": \"prod_skid\"\n    },\n    {\n      \"transformation\": \"prod_name\",\n      \"columnName\": \"prod_name\"\n    },\n    {\n      \"transformation\": \"prod_desc\",\n      \"columnName\": \"prod_desc\"\n    },\n    {\n      \"transformation\": \"prod_lvl_name\",\n      \"columnName\": \"prod_lvl_name\"\n    },\n    {\n      \"transformation\": \"pg_mfgr\",\n      \"columnName\": \"pg_mfgr\"\n    },\n    {\n      \"transformation\": \"pg_categ\",\n      \"columnName\": \"pg_categ\"\n    },\n    {\n      \"transformation\": \"pg_seg\",\n      \"columnName\": \"pg_seg\"\n    },\n    {\n      \"transformation\": \"pg_brand\",\n      \"columnName\": \"pg_brand\"\n    },\n    {\n      \"transformation\": \"pg_brand_desc\",\n      \"columnName\": \"pg_brand_desc\"\n    },\n    {\n      \"transformation\": \"pg_sub_brand\",\n      \"columnName\": \"pg_sub_brand\"\n    },\n    {\n      \"transformation\": \"pg_model_num\",\n      \"columnName\": \"pg_model_num\"\n    },\n    {\n      \"transformation\": \"pg_form\",\n      \"columnName\": \"pg_form\"\n    },\n    {\n      \"transformation\": \"pg_scent\",\n      \"columnName\": \"pg_scent\"\n    },\n    {\n      \"transformation\": \"pg_pack_type\",\n      \"columnName\": \"pg_pack_type\"\n    },\n    {\n      \"transformation\": \"pg_base_size\",\n      \"columnName\": \"pg_base_size\"\n    },\n    {\n      \"transformation\": \"pg_size\",\n      \"columnName\": \"pg_size\"\n    },\n    {\n      \"transformation\": \"pg_pkg_size\",\n      \"columnName\": \"pg_pkg_size\"\n    },\n    {\n      \"transformation\": \"pg_color\",\n      \"columnName\": \"pg_color\"\n    },\n    {\n      \"transformation\": \"pg_trgt_user\",\n      \"columnName\": \"pg_trgt_user\"\n    },\n    {\n      \"transformation\": \"pg_pkg_type\",\n      \"columnName\": \"pg_pkg_type\"\n    },\n    {\n      \"transformation\": \"pg_tier\",\n      \"columnName\": \"pg_tier\"\n    },\n    {\n      \"transformation\": \"pg_scnd_benft\",\n      \"columnName\": \"pg_scnd_benft\"\n    },\n    {\n      \"transformation\": \"pg_trgt_aplnc\",\n      \"columnName\": \"pg_trgt_aplnc\"\n    },\n    {\n      \"transformation\": \"pg_benft\",\n      \"columnName\": \"pg_benft\"\n    },\n    {\n      \"transformation\": \"pg_conc\",\n      \"columnName\": \"pg_conc\"\n    },\n    {\n      \"transformation\": \"pg_flavr\",\n      \"columnName\": \"pg_flavr\"\n    },\n    {\n      \"transformation\": \"pg_grp_size\",\n      \"columnName\": \"pg_grp_size\"\n    },\n    {\n      \"transformation\": \"pg_head_type\",\n      \"columnName\": \"pg_head_type\"\n    },\n    {\n      \"transformation\": \"pg_skin_type\",\n      \"columnName\": \"pg_skin_type\"\n    },\n    {\n      \"transformation\": \"pg_absbc\",\n      \"columnName\": \"pg_absbc\"\n    },\n    {\n      \"transformation\": \"pg_durtn\",\n      \"columnName\": \"pg_durtn\"\n    },\n    {\n      \"transformation\": \"pg_head_size\",\n      \"columnName\": \"pg_head_size\"\n    },\n    {\n      \"transformation\": \"pg_ingr\",\n      \"columnName\": \"pg_ingr\"\n    },\n    {\n      \"transformation\": \"pg_sugar_cntnt\",\n      \"columnName\": \"pg_sugar_cntnt\"\n    },\n    {\n      \"transformation\": \"pg_tech\",\n      \"columnName\": \"pg_tech\"\n    },\n    {\n      \"transformation\": \"pg_thkns\",\n      \"columnName\": \"pg_thkns\"\n    },\n    {\n      \"transformation\": \"pg_blade_size\",\n      \"columnName\": \"pg_blade_size\"\n    },\n    {\n      \"transformation\": \"pg_hold_lvl\",\n      \"columnName\": \"pg_hold_lvl\"\n    },\n    {\n      \"transformation\": \"pg_temp\",\n      \"columnName\": \"pg_temp\"\n    },\n    {\n      \"transformation\": \"pg_duty\",\n      \"columnName\": \"pg_duty\"\n    },\n    {\n      \"transformation\": \"pg_end_benft\",\n      \"columnName\": \"pg_end_benft\"\n    },\n    {\n      \"transformation\": \"pg_facil_epltr_attch\",\n      \"columnName\": \"pg_facil_epltr_attch\"\n    },\n    {\n      \"transformation\": \"pg_free_vol\",\n      \"columnName\": \"pg_free_vol\"\n    },\n    {\n      \"transformation\": \"pg_freq_of_use\",\n      \"columnName\": \"pg_freq_of_use\"\n    },\n    {\n      \"transformation\": \"pg_hair_type\",\n      \"columnName\": \"pg_hair_type\"\n    },\n    {\n      \"transformation\": \"pg_head_foil_type\",\n      \"columnName\": \"pg_head_foil_type\"\n    },\n    {\n      \"transformation\": \"pg_heat_airfl_sttng\",\n      \"columnName\": \"pg_heat_airfl_sttng\"\n    },\n    {\n      \"transformation\": \"pg_heat_sttng\",\n      \"columnName\": \"pg_heat_sttng\"\n    },\n    {\n      \"transformation\": \"pg_herbl\",\n      \"columnName\": \"pg_herbl\"\n    },\n    {\n      \"transformation\": \"pg_ion_tech\",\n      \"columnName\": \"pg_ion_tech\"\n    },\n    {\n      \"transformation\": \"pg_job_cnt\",\n      \"columnName\": \"pg_job_cnt\"\n    },\n    {\n      \"transformation\": \"pg_lnch_date\",\n      \"columnName\": \"pg_lnch_date\"\n    },\n    {\n      \"transformation\": \"pg_matl_type\",\n      \"columnName\": \"pg_matl_type\"\n    },\n    {\n      \"transformation\": \"pg_max_wattg\",\n      \"columnName\": \"pg_max_wattg\"\n    },\n    {\n      \"transformation\": \"pg_motr\",\n      \"columnName\": \"pg_motr\"\n    },\n    {\n      \"transformation\": \"pg_multi_func\",\n      \"columnName\": \"pg_multi_func\"\n    },\n    {\n      \"transformation\": \"pg_multi_use\",\n      \"columnName\": \"pg_multi_use\"\n    },\n    {\n      \"transformation\": \"pg_odor_remov\",\n      \"columnName\": \"pg_odor_remov\"\n    },\n    {\n      \"transformation\": \"pg_pkg_tot\",\n      \"columnName\": \"pg_pkg_tot\"\n    },\n    {\n      \"transformation\": \"pg_phos\",\n      \"columnName\": \"pg_phos\"\n    },\n    {\n      \"transformation\": \"pg_pwr_srce\",\n      \"columnName\": \"pg_pwr_srce\"\n    },\n    {\n      \"transformation\": \"pg_pwr_srce_clean_chrg\",\n      \"columnName\": \"pg_pwr_srce_clean_chrg\"\n    },\n    {\n      \"transformation\": \"pg_price_disc\",\n      \"columnName\": \"pg_price_disc\"\n    },\n    {\n      \"transformation\": \"pg_price_tier\",\n      \"columnName\": \"pg_price_tier\"\n    },\n    {\n      \"transformation\": \"pg_shade\",\n      \"columnName\": \"pg_shade\"\n    },\n    {\n      \"transformation\": \"pg_shavr_head\",\n      \"columnName\": \"pg_shavr_head\"\n    },\n    {\n      \"transformation\": \"pg_shelf_loc\",\n      \"columnName\": \"pg_shelf_loc\"\n    },\n    {\n      \"transformation\": \"pg_skin_coolr\",\n      \"columnName\": \"pg_skin_coolr\"\n    },\n    {\n      \"transformation\": \"pg_speed\",\n      \"columnName\": \"pg_speed\"\n    },\n    {\n      \"transformation\": \"pg_steam\",\n      \"columnName\": \"pg_steam\"\n    },\n    {\n      \"transformation\": \"pg_strght_attch\",\n      \"columnName\": \"pg_strght_attch\"\n    },\n    {\n      \"transformation\": \"pg_sub_seg\",\n      \"columnName\": \"pg_sub_seg\"\n    },\n    {\n      \"transformation\": \"pg_sub_type\",\n      \"columnName\": \"pg_sub_type\"\n    },\n    {\n      \"transformation\": \"pg_suds\",\n      \"columnName\": \"pg_suds\"\n    },\n    {\n      \"transformation\": \"pg_top_sheet\",\n      \"columnName\": \"pg_top_sheet\"\n    },\n    {\n      \"transformation\": \"pg_vlmzr_attch\",\n      \"columnName\": \"pg_vlmzr_attch\"\n    },\n    {\n      \"transformation\": \"pg_wattg\",\n      \"columnName\": \"pg_wattg\"\n    },\n    {\n      \"transformation\": \"pg_wet_dry\",\n      \"columnName\": \"pg_wet_dry\"\n    },\n    {\n      \"transformation\": \"pg_wing\",\n      \"columnName\": \"pg_wing\"\n    },\n    {\n      \"transformation\": \"pg_wing_color_grp\",\n      \"columnName\": \"pg_wing_color_grp\"\n    },\n    {\n      \"transformation\": \"gbu_name\",\n      \"columnName\": \"gbu_name\"\n    },\n    {\n      \"transformation\": \"sub_gbu_name\",\n      \"columnName\": \"sub_gbu_name\"\n    },\n    {\n      \"transformation\": \"categ_name\",\n      \"columnName\": \"categ_name\"\n    },\n    {\n      \"transformation\": \"pg_airfl_sttng\",\n      \"columnName\": \"pg_airfl_sttng\"\n    },\n    {\n      \"transformation\": \"pg_antbc\",\n      \"columnName\": \"pg_antbc\"\n    },\n    {\n      \"transformation\": \"pg_type\",\n      \"columnName\": \"pg_type\"\n    },\n    {\n      \"transformation\": \"pg_varnt\",\n      \"columnName\": \"pg_varnt\"\n    },\n    {\n      \"transformation\": \"categ_id\",\n      \"columnName\": \"categ_id\"\n    },\n    {\n      \"transformation\": \"pg_appl\",\n      \"columnName\": \"pg_appl\"\n    },\n    {\n      \"transformation\": \"pg_attch\",\n      \"columnName\": \"pg_attch\"\n    },\n    {\n      \"transformation\": \"pg_cnt\",\n      \"columnName\": \"pg_cnt\"\n    },\n    {\n      \"transformation\": \"pg_prmtn_type\",\n      \"columnName\": \"pg_prmtn_type\"\n    },\n    {\n      \"transformation\": \"pg_pkg_size_2\",\n      \"columnName\": \"pg_pkg_size_2\"\n    },\n    {\n      \"transformation\": \"pg_bundl\",\n      \"columnName\": \"pg_bundl\"\n    },\n    {\n      \"transformation\": \"pg_pkg_cnt\",\n      \"columnName\": \"pg_pkg_cnt\"\n    },\n    {\n      \"transformation\": \"pg_formt\",\n      \"columnName\": \"pg_formt\"\n    },\n    {\n      \"transformation\": \"pg_blgcl\",\n      \"columnName\": \"pg_blgcl\"\n    },\n    {\n      \"transformation\": \"pg_blade_type\",\n      \"columnName\": \"pg_blade_type\"\n    },\n    {\n      \"transformation\": \"pg_blndr_shaft\",\n      \"columnName\": \"pg_blndr_shaft\"\n    },\n    {\n      \"transformation\": \"pg_brstl_type\",\n      \"columnName\": \"pg_brstl_type\"\n    },\n    {\n      \"transformation\": \"pg_care_adtv\",\n      \"columnName\": \"pg_care_adtv\"\n    },\n    {\n      \"transformation\": \"pg_frag\",\n      \"columnName\": \"pg_frag\"\n    },\n    {\n      \"transformation\": \"pg_boutq\",\n      \"columnName\": \"pg_boutq\"\n    },\n    {\n      \"transformation\": \"pg_crmic_plate\",\n      \"columnName\": \"pg_crmic_plate\"\n    },\n    {\n      \"transformation\": \"pg_chmst\",\n      \"columnName\": \"pg_chmst\"\n    },\n    {\n      \"transformation\": \"pg_color_grp\",\n      \"columnName\": \"pg_color_grp\"\n    },\n    {\n      \"transformation\": \"pg_color_prfum\",\n      \"columnName\": \"pg_color_prfum\"\n    },\n    {\n      \"transformation\": \"pg_co_type\",\n      \"columnName\": \"pg_co_type\"\n    },\n    {\n      \"transformation\": \"pg_cool_shot\",\n      \"columnName\": \"pg_cool_shot\"\n    },\n    {\n      \"transformation\": \"pg_cord\",\n      \"columnName\": \"pg_cord\"\n    },\n    {\n      \"transformation\": \"pg_cough_type\",\n      \"columnName\": \"pg_cough_type\"\n    },\n    {\n      \"transformation\": \"pg_difsr_attch\",\n      \"columnName\": \"pg_difsr_attch\"\n    },\n    {\n      \"transformation\": \"prod_match_attr_list\",\n      \"columnName\": \"prod_match_attr_list\"\n    },\n    {\n      \"transformation\": \"cast(strct_lvl_id as integer)\",\n      \"columnName\": \"strct_lvl_id\"\n    },\n    {\n      \"transformation\": \"cast(strct_id as integer)\",\n      \"columnName\": \"strct_id\"\n    },\n    {\n      \"transformation\": \"cast(srce_sys_id as integer)\",\n      \"columnName\": \"srce_sys_id\"\n    },\n    {\n      \"transformation\": \"lvl_num\",\n      \"columnName\": \"lvl_num\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "SRC for Next Delta",
+      "predecessorName": "CET Preprocessing 2",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"1=1\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source_for_next_delta\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "LOAD prev SRC for delta",
+      "predecessorName": "SRC for Next Delta",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@SOURCE_PATH_FOR_DELTA@@>MM_PROD_IDIM_VW\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source_delta\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "Release LOAD prev SRC for delta",
+      "predecessorName": "LOAD prev SRC for delta",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@SOURCE_PATH_FOR_DELTA@@>MM_PROD_IDIM_VW\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CMP prev SRC for delta - sync columns",
+      "predecessorName": "Release LOAD prev SRC for delta",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_source\",\n  \"deleteColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source_delta\"\n    },\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source_delta\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "DLT SRC & Prev SRC",
+      "predecessorName": "CMP prev SRC for delta - sync columns",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputOption\": \"input_mode\",\n  \"referenceDataframe\": \"df_source_delta\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    },\n    {\n      \"name\": \"df_source_delta\"\n    }\n  ],\n  \"logicalKeyColumns\": [\n    \"srce_sys_id\",\n    \"prod_prttn_code\",\n    \"prod_match_attr_list\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ],\n  \"excludedColums\": [],\n  \"deltaTypes\": [\n    \"NEW\",\n    \"CHANGED\"\n  ]\n}",
+      "operationVersionName": "Delta",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "STOP conditional end",
+      "predecessorName": "DLT SRC & Prev SRC",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"expression\": \"1=1\",\n  \"processStatus\": \"SKIPPED\",\n  \"conditionValue\": \"false\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ]\n}",
+      "operationVersionName": "ConditionalStop",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "PULL meta.key_domain_trade_panel",
+      "predecessorName": "STOP conditional end",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_key_domain_trade_panel\",\n      \"objectName\": \"key_domain_trade_panel\",\n      \"mdmRefinedRefreshMode\": \"full\",\n      \"shouldApplyCld\": \"false\",\n      \"cache\": \"none\",\n      \"columns\": [\n        {\n          \"name\": \"object_type_key\"\n        },\n        {\n          \"name\": \"key_domain\"\n        },\n        {\n          \"name\": \"dim_type_key\"\n        }\n      ],\n      \"filters\": [\n        {\n          \"entities\": [\n            {}\n          ]\n        }\n      ]\n    }\n  ]\n}",
+      "operationVersionName": "MdmPull",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET KEY DOMAINS",
+      "predecessorName": "PULL meta.key_domain_trade_panel",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_key_domain_trade_panel\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"cast(object_type_key as integer)\",\n      \"columnName\": \"object_type_key\"\n    },\n    {\n      \"transformation\": \"key_domain\",\n      \"columnName\": \"key_domain\"\n    },\n    {\n      \"transformation\": \"dim_type_key\",\n      \"columnName\": \"dim_type_key\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_key_domain_trade_panel\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Key Domain Keep Products only",
+      "predecessorName": "CET KEY DOMAINS",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"expression\": \"dim_type_key = 8\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_key_domain_trade_panel\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_key_domain_trade_panel\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "DETERMINE KEY DOMAINS",
+      "predecessorName": "Key Domain Keep Products only",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"addAllColumns\": \"true\",\n      \"alias\": \"src\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_key_domain_trade_panel\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"kd\",\n      \"columns\": [\n        {\n          \"columnName\": \"object_type_key\",\n          \"columnAlias\": \"object_type_key\"\n        }\n      ]\n    }\n  ],\n  \"joinOperations\": [\n    {\n      \"joinType\": \"LEFT\",\n      \"joinDataframeAlias\": \"kd\",\n      \"joinExpression\": \"concat(src.srce_sys_id, '|', src.prod_prttn_code) = kd.key_domain\"\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "MultipleJoiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "STOP conditional end when object not matched ",
+      "predecessorName": "DETERMINE KEY DOMAINS",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"expression\": \"object_type_key IS NULL\",\n  \"processStatus\": \"FAILED\",\n  \"conditionValue\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ]\n}",
+      "operationVersionName": "ConditionalStop",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "SKID KEY ",
+      "predecessorName": "STOP conditional end when object not matched ",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"uniqueness\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputColumnName\": \"prod_key\",\n  \"orphanIndicatorColumnName\": \"\",\n  \"dataProviderKey\": 7,\n  \"dimensionTypeKey\": 8,\n  \"maxBatchSize\": 50000,\n  \"maxWorkers\": 4,\n  \"azureRetryLimit\": 9,\n  \"objectTypeKeyDynamic\": \"true\",\n  \"objectTypeKey\": \"object_type_key\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"none\"\n    }\n  ],\n  \"inputColumnsNames\": [\n    \"prod_match_attr_list\"\n  ]\n}",
+      "operationVersionName": "SurrogateKeyLookup",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "get prod_key",
+      "predecessorName": "SKID KEY ",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"prod_skid\",\n      \"columnName\": \"prod_skid\"\n    },\n    {\n      \"transformation\": \"cast(prod_skid as long)\",\n      \"columnName\": \"prod_key\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "SKID DataProvider",
+      "predecessorName": "get prod_key",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"skidVersion\": \"V1\",\n  \"uniqueness\": \"false\",\n  \"overrideSkidCache\": \"disabled\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputColumnName\": \"data_provider_key\",\n  \"orphanIndicatorColumnName\": \"\",\n  \"dataProviderKey\": 7,\n  \"dimensionTypeKey\": 13,\n  \"maxBatchSize\": 50000,\n  \"maxWorkers\": 4,\n  \"azureRetryLimit\": 9,\n  \"objectTypeKeyDynamic\": \"false\",\n  \"objectTypeKey\": 3004,\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"none\"\n    }\n  ],\n  \"inputColumnsNames\": [\n    \"srce_sys_id\",\n    \"prod_prttn_code\"\n  ]\n}",
+      "operationVersionName": "SurrogateKeyLookup",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "SKID Struct",
+      "predecessorName": "SKID DataProvider",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputColumnName\": \"dim_struct_key\",\n  \"orphanIndicatorColumnName\": \"\",\n  \"dataProviderKey\": 7,\n  \"dimensionTypeKey\": 10,\n  \"maxBatchSize\": 50000,\n  \"maxWorkers\": 4,\n  \"azureRetryLimit\": 9,\n  \"objectTypeKeyDynamic\": \"false\",\n  \"objectTypeKey\": 617,\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ],\n  \"inputColumnsNames\": [\n    \"strct_id\"\n  ]\n}",
+      "operationVersionName": "SurrogateKeyLookup",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "RLS",
+      "predecessorName": "SKID Struct",
+      "parentName": "Preprocessing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputColumnName\": \"secure_group_key\",\n  \"dataProviderKey\": 7,\n  \"objectTypeKey\": 3001,\n  \"maxBatchSize\": 50000,\n  \"maxWorkers\": 4,\n  \"azureRetryLimit\": 9,\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ],\n  \"inputColumnsNames\": [\n    \"rls_data_provider_key\"\n  ]\n}",
+      "operationVersionName": "RowLevelSecurity",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "STTM",
+      "predecessorName": "Preprocessing",
+      "jsonSpecification": "",
+      "operationVersionName": "OperationWrapper",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "PULL reference data",
+      "parentName": "STTM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_record_origin\",\n      \"objectName\": \"record_origin\",\n      \"mdmRefinedRefreshMode\": \"full\",\n      \"shouldApplyCld\": \"false\",\n      \"cache\": \"materialize\",\n      \"columns\": [\n        {}\n      ],\n      \"filters\": [\n        {\n          \"entities\": [\n            {}\n          ]\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dim_val_type\",\n      \"objectName\": \"dim_val_type\",\n      \"mdmRefinedRefreshMode\": \"full\",\n      \"shouldApplyCld\": \"false\",\n      \"cache\": \"materialize\",\n      \"columns\": [\n        {}\n      ],\n      \"filters\": [\n        {\n          \"entities\": [\n            {}\n          ]\n        }\n      ]\n    },\n    {\n      \"name\": \"df_data_provider\",\n      \"objectName\": \"data_provider\",\n      \"mdmRefinedRefreshMode\": \"full\",\n      \"shouldApplyCld\": \"false\",\n      \"cache\": \"materialize\",\n      \"columns\": [\n        {}\n      ],\n      \"filters\": [\n        {\n          \"entities\": [\n            {}\n          ]\n        }\n      ]\n    }\n  ]\n}",
+      "operationVersionName": "MdmPull",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Base Record Origin",
+      "predecessorName": "PULL reference data",
+      "parentName": "STTM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"record_origin_name = 'Base'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_record_origin\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_record_origin\",\n      \"cache\": \"persist\",\n      \"level\": \"MEMORY_ONLY\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Other product Val Type",
+      "predecessorName": "Base Record Origin",
+      "parentName": "STTM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"dim_val_type_code = 'OTHPROD'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dim_val_type\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dim_val_type\",\n      \"cache\": \"persist\",\n      \"level\": \"MEMORY_ONLY\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Active data providers",
+      "predecessorName": "Other product Val Type",
+      "parentName": "STTM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"active_status_ind = 'Y'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_data_provider\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_data_provider\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "TP Data providers",
+      "predecessorName": "Active data providers",
+      "parentName": "STTM",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"expression\": \"data_provider_code like 'MMB2B_EU%'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_data_provider\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_data_provider\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "STTM JOIN",
+      "predecessorName": "TP Data providers",
+      "parentName": "STTM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"addAllColumns\": \"true\",\n      \"alias\": \"src\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_key\",\n          \"columnAlias\": \"prod_key\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_record_origin\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"ro\",\n      \"columns\": [\n        {\n          \"columnName\": \"record_origin_key\",\n          \"columnAlias\": \"record_origin_key\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dim_val_type\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"dvt\",\n      \"columns\": [\n        {\n          \"columnName\": \"dim_val_type_key\",\n          \"columnAlias\": \"dim_val_type_key\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_data_provider\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"dp\",\n      \"columns\": [\n        {\n          \"columnName\": \"data_provider_code\",\n          \"columnAlias\": \"data_provider_code\"\n        },\n        {\n          \"columnName\": \"data_provider_key\",\n          \"columnAlias\": \"data_provider_key\"\n        },\n        {\n          \"columnName\": \"data_provider_id\",\n          \"columnAlias\": \"data_provider_id\"\n        }\n      ]\n    }\n  ],\n  \"joinOperations\": [\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"ro\",\n      \"joinExpression\": \"1=1\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"dvt\",\n      \"joinExpression\": \"1=1\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"dp\",\n      \"joinExpression\": \"dp.data_provider_id = 'TP' || '|' || src.srce_sys_id || '|' || src.prod_prttn_code\"\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "MultipleJoiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "STTM CET",
+      "predecessorName": "STTM JOIN",
+      "parentName": "STTM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"prod_key\",\n      \"columnName\": \"prod_key\"\n    },\n    {\n      \"transformation\": \"data_provider_key\",\n      \"columnName\": \"data_provider_key\"\n    },\n    {\n      \"transformation\": \"data_provider_code\",\n      \"columnName\": \"data_provider_code\"\n    },\n    {\n      \"transformation\": \"dim_val_type_key\",\n      \"columnName\": \"prod_type_key\"\n    },\n    {\n      \"transformation\": \"cast(prod_skid as long)\",\n      \"columnName\": \"srce_sys_prod_key\"\n    },\n    {\n      \"transformation\": \"prod_match_attr_list\",\n      \"columnName\": \"prod_id\"\n    },\n    {\n      \"transformation\": \"prod_name\",\n      \"columnName\": \"prod_name\"\n    },\n    {\n      \"transformation\": \"prod_desc\",\n      \"columnName\": \"prod_desc\"\n    },\n    {\n      \"transformation\": \"cast(coalesce(upper(prod_lvl_name),'unknown') as varchar(500))\",\n      \"columnName\": \"level_name\"\n    },\n    {\n      \"transformation\": \"pg_matl_type\",\n      \"columnName\": \"material_type_code\"\n    },\n    {\n      \"transformation\": \"case when prod_desc RLIKE '.*[0-9]{13}.*' then lpad(regexp_extract(prod_desc,'([0-9]{13})'),14,'0') end\",\n      \"columnName\": \"item_gtin\"\n    },\n    {\n      \"transformation\": \"pg_mfgr\",\n      \"columnName\": \"company_name\"\n    },\n    {\n      \"transformation\": \"gbu_name\",\n      \"columnName\": \"sector_name\"\n    },\n    {\n      \"transformation\": \"sub_gbu_name\",\n      \"columnName\": \"sub_sector_name\"\n    },\n    {\n      \"transformation\": \"pg_categ\",\n      \"columnName\": \"category_name\"\n    },\n    {\n      \"transformation\": \"cast(case when upper(categ_id) in ('FMO', 'FFC', 'GCF', 'CLE') then pg_boutq else pg_seg end as string)\",\n      \"columnName\": \"segment_name\"\n    },\n    {\n      \"transformation\": \"pg_brand\",\n      \"columnName\": \"brand_name\"\n    },\n    {\n      \"transformation\": \"pg_brand_desc\",\n      \"columnName\": \"brand_group_name\"\n    },\n    {\n      \"transformation\": \"pg_sub_brand\",\n      \"columnName\": \"sub_brand_name\"\n    },\n    {\n      \"transformation\": \"pg_model_num\",\n      \"columnName\": \"ver_name\"\n    },\n    {\n      \"transformation\": \"pg_form\",\n      \"columnName\": \"form_name\"\n    },\n    {\n      \"transformation\": \"pg_frag\",\n      \"columnName\": \"flavor_scent_group_name\"\n    },\n    {\n      \"transformation\": \"pg_scent\",\n      \"columnName\": \"flavor_scent_detail_name\"\n    },\n    {\n      \"transformation\": \"pg_pack_type\",\n      \"columnName\": \"refill_norefill_name\"\n    },\n    {\n      \"transformation\": \"pg_freq_of_use\",\n      \"columnName\": \"freq_of_use_val\"\n    },\n    {\n      \"transformation\": \"pg_cnt\",\n      \"columnName\": \"prod_cnt\"\n    },\n    {\n      \"transformation\": \"pg_size\",\n      \"columnName\": \"prod_size_val\"\n    },\n    {\n      \"transformation\": \"pg_pkg_size\",\n      \"columnName\": \"cnsmr_pack_size_val\"\n    },\n    {\n      \"transformation\": \"pg_color\",\n      \"columnName\": \"usage_name\"\n    },\n    {\n      \"transformation\": \"pg_trgt_user\",\n      \"columnName\": \"gender_name\"\n    },\n    {\n      \"transformation\": \"pg_pkg_type\",\n      \"columnName\": \"primary_pack_type_name\"\n    },\n    {\n      \"transformation\": \"pg_tier\",\n      \"columnName\": \"tier_name\"\n    },\n    {\n      \"transformation\": \"pg_scnd_benft\",\n      \"columnName\": \"cnsmr_benefit_2_name\"\n    },\n    {\n      \"transformation\": \"pg_trgt_aplnc\",\n      \"columnName\": \"general_purpose_1_name\"\n    },\n    {\n      \"transformation\": \"cast(case when upper(categ_id) in ('POC','MTB','INT','TBR','DCG') then pg_trgt_user else null end as string)\",\n      \"columnName\": \"life_stage_name\"\n    },\n    {\n      \"transformation\": \"pg_benft\",\n      \"columnName\": \"attr_001_text\"\n    },\n    {\n      \"transformation\": \"pg_conc\",\n      \"columnName\": \"attr_002_text\"\n    },\n    {\n      \"transformation\": \"pg_flavr\",\n      \"columnName\": \"attr_003_text\"\n    },\n    {\n      \"transformation\": \"pg_grp_size\",\n      \"columnName\": \"attr_004_text\"\n    },\n    {\n      \"transformation\": \"pg_head_type\",\n      \"columnName\": \"attr_005_text\"\n    },\n    {\n      \"transformation\": \"pg_skin_type\",\n      \"columnName\": \"attr_006_text\"\n    },\n    {\n      \"transformation\": \"pg_absbc\",\n      \"columnName\": \"attr_007_text\"\n    },\n    {\n      \"transformation\": \"pg_durtn\",\n      \"columnName\": \"attr_008_text\"\n    },\n    {\n      \"transformation\": \"pg_head_size\",\n      \"columnName\": \"attr_009_text\"\n    },\n    {\n      \"transformation\": \"pg_ingr\",\n      \"columnName\": \"attr_010_text\"\n    },\n    {\n      \"transformation\": \"pg_sugar_cntnt\",\n      \"columnName\": \"attr_011_text\"\n    },\n    {\n      \"transformation\": \"pg_tech\",\n      \"columnName\": \"attr_012_text\"\n    },\n    {\n      \"transformation\": \"pg_thkns\",\n      \"columnName\": \"attr_013_text\"\n    },\n    {\n      \"transformation\": \"pg_blade_size\",\n      \"columnName\": \"attr_014_text\"\n    },\n    {\n      \"transformation\": \"pg_hold_lvl\",\n      \"columnName\": \"attr_015_text\"\n    },\n    {\n      \"transformation\": \"pg_temp\",\n      \"columnName\": \"attr_016_text\"\n    },\n    {\n      \"transformation\": \"pg_duty\",\n      \"columnName\": \"attr_017_text\"\n    },\n    {\n      \"transformation\": \"pg_end_benft\",\n      \"columnName\": \"attr_018_text\"\n    },\n    {\n      \"transformation\": \"pg_facil_epltr_attch\",\n      \"columnName\": \"attr_019_text\"\n    },\n    {\n      \"transformation\": \"pg_free_vol\",\n      \"columnName\": \"attr_020_text\"\n    },\n    {\n      \"transformation\": \"pg_bundl\",\n      \"columnName\": \"attr_021_text\"\n    },\n    {\n      \"transformation\": \"pg_hair_type\",\n      \"columnName\": \"attr_022_text\"\n    },\n    {\n      \"transformation\": \"pg_head_foil_type\",\n      \"columnName\": \"attr_023_text\"\n    },\n    {\n      \"transformation\": \"pg_heat_airfl_sttng\",\n      \"columnName\": \"attr_024_text\"\n    },\n    {\n      \"transformation\": \"pg_heat_sttng\",\n      \"columnName\": \"attr_025_text\"\n    },\n    {\n      \"transformation\": \"pg_herbl\",\n      \"columnName\": \"attr_026_text\"\n    },\n    {\n      \"transformation\": \"pg_ion_tech\",\n      \"columnName\": \"attr_027_text\"\n    },\n    {\n      \"transformation\": \"pg_job_cnt\",\n      \"columnName\": \"attr_028_text\"\n    },\n    {\n      \"transformation\": \"pg_lnch_date\",\n      \"columnName\": \"attr_029_text\"\n    },\n    {\n      \"transformation\": \"pg_varnt\",\n      \"columnName\": \"attr_030_text\"\n    },\n    {\n      \"transformation\": \"pg_max_wattg\",\n      \"columnName\": \"attr_031_text\"\n    },\n    {\n      \"transformation\": \"pg_motr\",\n      \"columnName\": \"attr_032_text\"\n    },\n    {\n      \"transformation\": \"pg_multi_func\",\n      \"columnName\": \"attr_033_text\"\n    },\n    {\n      \"transformation\": \"pg_multi_use\",\n      \"columnName\": \"attr_034_text\"\n    },\n    {\n      \"transformation\": \"pg_odor_remov\",\n      \"columnName\": \"attr_035_text\"\n    },\n    {\n      \"transformation\": \"pg_pkg_tot\",\n      \"columnName\": \"attr_036_text\"\n    },\n    {\n      \"transformation\": \"pg_phos\",\n      \"columnName\": \"attr_037_text\"\n    },\n    {\n      \"transformation\": \"pg_pwr_srce\",\n      \"columnName\": \"attr_038_text\"\n    },\n    {\n      \"transformation\": \"pg_pwr_srce_clean_chrg\",\n      \"columnName\": \"attr_039_text\"\n    },\n    {\n      \"transformation\": \"pg_price_disc\",\n      \"columnName\": \"attr_040_text\"\n    },\n    {\n      \"transformation\": \"pg_price_tier\",\n      \"columnName\": \"attr_041_text\"\n    },\n    {\n      \"transformation\": \"pg_shade\",\n      \"columnName\": \"attr_042_text\"\n    },\n    {\n      \"transformation\": \"pg_shavr_head\",\n      \"columnName\": \"attr_043_text\"\n    },\n    {\n      \"transformation\": \"pg_shelf_loc\",\n      \"columnName\": \"attr_044_text\"\n    },\n    {\n      \"transformation\": \"pg_skin_coolr\",\n      \"columnName\": \"attr_045_text\"\n    },\n    {\n      \"transformation\": \"pg_speed\",\n      \"columnName\": \"attr_046_text\"\n    },\n    {\n      \"transformation\": \"pg_steam\",\n      \"columnName\": \"attr_047_text\"\n    },\n    {\n      \"transformation\": \"pg_strght_attch\",\n      \"columnName\": \"attr_048_text\"\n    },\n    {\n      \"transformation\": \"pg_sub_seg\",\n      \"columnName\": \"attr_049_text\"\n    },\n    {\n      \"transformation\": \"pg_sub_type\",\n      \"columnName\": \"attr_050_text\"\n    },\n    {\n      \"transformation\": \"pg_suds\",\n      \"columnName\": \"attr_051_text\"\n    },\n    {\n      \"transformation\": \"pg_top_sheet\",\n      \"columnName\": \"attr_052_text\"\n    },\n    {\n      \"transformation\": \"pg_vlmzr_attch\",\n      \"columnName\": \"attr_053_text\"\n    },\n    {\n      \"transformation\": \"pg_wattg\",\n      \"columnName\": \"attr_054_text\"\n    },\n    {\n      \"transformation\": \"pg_wet_dry\",\n      \"columnName\": \"attr_055_text\"\n    },\n    {\n      \"transformation\": \"pg_wing\",\n      \"columnName\": \"attr_056_text\"\n    },\n    {\n      \"transformation\": \"pg_wing_color_grp\",\n      \"columnName\": \"attr_057_text\"\n    },\n    {\n      \"transformation\": \"pg_pkg_size_2\",\n      \"columnName\": \"attr_058_text\"\n    },\n    {\n      \"transformation\": \"pg_pkg_cnt\",\n      \"columnName\": \"attr_059_text\"\n    },\n    {\n      \"transformation\": \"categ_name\",\n      \"columnName\": \"attr_060_text\"\n    },\n    {\n      \"transformation\": \"pg_airfl_sttng\",\n      \"columnName\": \"attr_061_text\"\n    },\n    {\n      \"transformation\": \"pg_antbc\",\n      \"columnName\": \"attr_062_text\"\n    },\n    {\n      \"transformation\": \"pg_appl\",\n      \"columnName\": \"attr_063_text\"\n    },\n    {\n      \"transformation\": \"pg_attch\",\n      \"columnName\": \"attr_064_text\"\n    },\n    {\n      \"transformation\": \"pg_blgcl\",\n      \"columnName\": \"attr_065_text\"\n    },\n    {\n      \"transformation\": \"pg_blade_type\",\n      \"columnName\": \"attr_066_text\"\n    },\n    {\n      \"transformation\": \"pg_blndr_shaft\",\n      \"columnName\": \"attr_067_text\"\n    },\n    {\n      \"transformation\": \"pg_brstl_type\",\n      \"columnName\": \"attr_068_text\"\n    },\n    {\n      \"transformation\": \"pg_care_adtv\",\n      \"columnName\": \"attr_069_text\"\n    },\n    {\n      \"transformation\": \"pg_crmic_plate\",\n      \"columnName\": \"attr_070_text\"\n    },\n    {\n      \"transformation\": \"pg_chmst\",\n      \"columnName\": \"attr_071_text\"\n    },\n    {\n      \"transformation\": \"pg_color_grp\",\n      \"columnName\": \"attr_072_text\"\n    },\n    {\n      \"transformation\": \"pg_color_prfum\",\n      \"columnName\": \"attr_073_text\"\n    },\n    {\n      \"transformation\": \"pg_co_type\",\n      \"columnName\": \"attr_074_text\"\n    },\n    {\n      \"transformation\": \"pg_cool_shot\",\n      \"columnName\": \"attr_075_text\"\n    },\n    {\n      \"transformation\": \"pg_cord\",\n      \"columnName\": \"attr_076_text\"\n    },\n    {\n      \"transformation\": \"pg_cough_type\",\n      \"columnName\": \"attr_077_text\"\n    },\n    {\n      \"transformation\": \"pg_difsr_attch\",\n      \"columnName\": \"attr_078_text\"\n    },\n    {\n      \"transformation\": \"pg_type\",\n      \"columnName\": \"attr_079_text\"\n    },\n    {\n      \"transformation\": \"pg_base_size\",\n      \"columnName\": \"attr_080_text\"\n    },\n    {\n      \"transformation\": \"pg_formt\",\n      \"columnName\": \"attr_081_text\"\n    },\n    {\n      \"transformation\": \"pg_prmtn_type\",\n      \"columnName\": \"attr_082_text\"\n    },\n    {\n      \"transformation\": \"record_origin_key\",\n      \"columnName\": \"record_origin_key\"\n    },\n    {\n      \"transformation\": \"dim_struct_key\",\n      \"columnName\": \"prod_struct_key\"\n    },\n    {\n      \"transformation\": \"cast(lvl_num as integer)\",\n      \"columnName\": \"level_num\"\n    },\n    {\n      \"transformation\": \"'Y'\",\n      \"columnName\": \"active_ind\"\n    },\n    {\n      \"transformation\": \"'Y'\",\n      \"columnName\": \"curr_ind\"\n    },\n    {\n      \"transformation\": \"cast(NULL as long)\",\n      \"columnName\": \"created_by_party_key\"\n    },\n    {\n      \"transformation\": \"cast(NULL as long)\",\n      \"columnName\": \"updated_by_party_key\"\n    },\n    {\n      \"transformation\": \"cast(NULL as long)\",\n      \"columnName\": \"data_owner_key\"\n    },\n    {\n      \"transformation\": \"CAST(NULL as timestamp)\",\n      \"columnName\": \"create_date\"\n    },\n    {\n      \"transformation\": \"current_timestamp()\",\n      \"columnName\": \"update_date\"\n    },\n    {\n      \"transformation\": \"current_timestamp()\",\n      \"columnName\": \"last_receive_date\"\n    },\n    {\n      \"transformation\": \"'N'\",\n      \"columnName\": \"orphan_ind\"\n    },\n    {\n      \"transformation\": \"cast(secure_group_key as integer)\",\n      \"columnName\": \"secure_group_key\"\n    },\n    {\n      \"transformation\": \"cast(<<PROCESS_RUN_KEY>> as long)\",\n      \"columnName\": \"process_run_key\"\n    },\n    {\n      \"transformation\": \"current_timestamp()\",\n      \"columnName\": \"update_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "temp publish df_source",
+      "predecessorName": "STTM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"exclusive\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@REFINED_PATH@@>migration_test/refined_prod_dim_test_v4\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "Release temp publish df_source",
+      "predecessorName": "temp publish df_source",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@REFINED_PATH@@>migration_test/refined_prod_dim_test_v4\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Publish",
+      "predecessorName": "Release temp publish df_source",
+      "jsonSpecification": "",
+      "operationVersionName": "OperationWrapper",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Push Product to refined",
+      "parentName": "Publish",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"objectName\": \"prod_dim\",\n  \"mdmRefinedRefreshMode\": \"incremental\",\n  \"sendToMdmp\": \"true\",\n  \"materializeBeforeMerge\": \"false\",\n  \"deduplicateAfterMerge\": \"false\",\n  \"handlePartitionChange\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"filters\": [\n    {\n      \"entities\": [\n        {}\n      ]\n    }\n  ]\n}",
+      "operationVersionName": "MdmPush",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "cache prod next delta before publish",
+      "predecessorName": "Push Product to refined",
+      "parentName": "Publish",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"1=1\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source_for_next_delta\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_source_for_next_delta\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "PUB for Next Delta",
+      "predecessorName": "cache prod next delta before publish",
+      "parentName": "Publish",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"exclusive\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@SOURCE_PATH_FOR_DELTA@@>MM_PROD_IDIM_VW\",\n  \"mode\": \"overwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source_for_next_delta\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "Release PUB for Next Delta",
+      "predecessorName": "PUB for Next Delta",
+      "parentName": "Publish",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@SOURCE_PATH_FOR_DELTA@@>MM_PROD_IDIM_VW\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "STTM prod_golden_dim",
+      "parentName": "Publish",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_source\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"bigint(prod_key)\",\n      \"columnName\": \"prod_key\"\n    },\n    {\n      \"transformation\": \"string(item_gtin)\",\n      \"columnName\": \"golden_item_gtin\"\n    },\n    {\n      \"transformation\": \"secure_group_key\",\n      \"columnName\": \"secure_group_key\"\n    },\n    {\n      \"transformation\": \"process_run_key\",\n      \"columnName\": \"process_run_key\"\n    },\n    {\n      \"transformation\": \"curr_ind\",\n      \"columnName\": \"curr_ind\"\n    },\n    {\n      \"transformation\": \"created_by_party_key\",\n      \"columnName\": \"created_by_party_key\"\n    },\n    {\n      \"transformation\": \"updated_by_party_key\",\n      \"columnName\": \"updated_by_party_key\"\n    },\n    {\n      \"transformation\": \"data_owner_key\",\n      \"columnName\": \"data_owner_key\"\n    },\n    {\n      \"transformation\": \"create_date\",\n      \"columnName\": \"create_date\"\n    },\n    {\n      \"transformation\": \"update_date\",\n      \"columnName\": \"update_date\"\n    },\n    {\n      \"transformation\": \"last_receive_date\",\n      \"columnName\": \"last_receive_date\"\n    },\n    {\n      \"transformation\": \"data_provider_code\",\n      \"columnName\": \"source_data_provider_code\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_golden_to_push\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "PUSH prod_golden_dim",
+      "predecessorName": "STTM prod_golden_dim",
+      "parentName": "Publish",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"objectName\": \"prod_golden_dim\",\n  \"mdmRefinedRefreshMode\": \"incremental\",\n  \"sendToMdmp\": \"true\",\n  \"materializeBeforeMerge\": \"false\",\n  \"deduplicateAfterMerge\": \"false\",\n  \"handlePartitionChange\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_golden_to_push\"\n    }\n  ],\n  \"filters\": [\n    {\n      \"entities\": [\n        {}\n      ]\n    }\n  ]\n}",
+      "operationVersionName": "MdmPush",
+      "overridableIndicator": true
+    }
+  ],
+  "graphName": "DPF_Tier1-MD-PROD-v1.0"
+}

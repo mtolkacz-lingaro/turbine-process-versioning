@@ -1,0 +1,34 @@
+{
+  "applicationName": "TRADEPANEL",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \"DQ Test\",\r\n    \"description\": \"DQ test\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n        \"SRCE_SYS_ID\": {\r\n            \"title\": \"SRCE_SYS_ID\",\r\n            \"description\": \"SRCE_SYS_ID\",\r\n            \"default\": 4,\r\n            \"type\": \"integer\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [ \"SRCE_SYS_ID\"]\r\n}",
+  "nodes": [
+    {
+      "operationName": "tier2_tmp_extrnl_tbl ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_fact_extrn_raw = dict_all_dfs['df_fact_extrn_raw'][\\\"df_object\\\"]\\n\\ndict_all_dfs['tier2_tmp_extrnl_tbl'] = {\\\"df_object\\\" :df_fact_extrn_raw}\\ndf_output_dict['tier2_tmp_extrnl_tbl'] = df_fact_extrn_raw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_extrn_raw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"tier2_tmp_extrnl_tbl\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "mmc_mkt_source - input",
+      "predecessorName": "tier2_tmp_extrnl_tbl ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_extrn = dict_all_dfs['df_mkt_extrn'][\\\"df_object\\\"]\\n\\ndict_all_dfs['mmc_mkt_source'] = {\\\"df_object\\\" :df_mkt_extrn}\\ndf_output_dict['mmc_mkt_source'] = df_mkt_extrn\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_extrn\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"mmc_mkt_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "mmc_prod_source",
+      "predecessorName": "mmc_mkt_source - input",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_prod_extrn = dict_all_dfs['df_prod_extrn'][\\\"df_object\\\"]\\n\\ndict_all_dfs['mmc_prod_source'] = {\\\"df_object\\\" :df_prod_extrn}\\ndf_output_dict['mmc_prod_source'] = df_prod_extrn\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_extrn\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"mmc_prod_source\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "tier2_fact_mtrlz_tbl",
+      "predecessorName": "mmc_prod_source",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_fact_extrn = dict_all_dfs['df_fact_extrn'][\\\"df_object\\\"]\\n\\ndict_all_dfs['tier2_fact_mtrlz_tbl'] = {\\\"df_object\\\" :df_fact_extrn}\\ndf_output_dict['tier2_fact_mtrlz_tbl'] = df_fact_extrn\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_extrn\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"tier2_fact_mtrlz_tbl\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "three_file_cdl_t2_dq_inputs"
+}

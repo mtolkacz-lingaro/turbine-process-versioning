@@ -1,0 +1,504 @@
+{
+  "applicationName": "TRADEPANEL",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \" Three Files Contract Main Chain Overloading\",\r\n    \"description\": \"Overloading parameters in Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n\t\t\"RCD_ORIGN_CODE\": {\r\n            \"title\": \"RCD_ORIGN_CODE\",\r\n            \"description\": \"RCD_ORIGN_CODE\",\r\n            \"default\": \"B\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"RCD_ORIGN_CODE\"]\r\n}",
+  "nodes": [
+    {
+      "operationName": "[SLP] Missing Mkt Skids Mapping",
+      "operationDescription": "slp",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"skidVersion\": \"V1\",\n  \"uniqueness\": \"false\",\n  \"overrideSkidCache\": \"disabled\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputColumnName\": \"mkt_skid\",\n  \"orphanIndicatorColumnName\": \"\",\n  \"dataProviderKey\": 7,\n  \"dimensionTypeKey\": 5,\n  \"maxBatchSize\": 50000,\n  \"maxWorkers\": 4,\n  \"azureRetryLimit\": 9,\n  \"objectTypeKeyDynamic\": \"true\",\n  \"objectTypeKey\": \"object_type_key\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ],\n  \"inputColumnsNames\": [\n    \"extrn_mkt_id\"\n  ]\n}",
+      "operationVersionName": "SurrogateKeyLookup",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC] raw with mkt_skid_lkp",
+      "predecessorName": "[SLP] Missing Mkt Skids Mapping",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_mkt_skid_lkp_chng\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Fil] to get new mkt_skids",
+      "predecessorName": "[CC] raw with mkt_skid_lkp",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"1=1\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Mer] df_mkt_skid_lkp_cc",
+      "predecessorName": "[Fil] to get new mkt_skids",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mkt_skid_lkp_chng\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    },\n    {\n      \"name\": \"df_mkt_skid_lkp_chng\"\n    }\n  ],\n  \"logicalKey\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC]",
+      "predecessorName": "[Mer] df_mkt_skid_lkp_cc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_mm_mkt_sdim\",\n  \"deleteColumns\": \"false\",\n  \"referenceColumnOrder\": \"false\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[join] to exclude data",
+      "predecessorName": "[CC]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_mm_mkt_sdim\",\n  \"joinExpression\": \"in.mkt_skid=ref.mkt_skid and in.srce_sys_id=ref.srce_sys_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp_sdim\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        },\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_mkt_sdim\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        },\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_missing_stgng_mm_mkt_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC] df_missing_stgng_mm_mkt_sdim",
+      "predecessorName": "[join] to exclude data",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_mm_mkt_sdim\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_missing_stgng_mm_mkt_sdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_missing_stgng_mm_mkt_sdim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merge] Missing Mkts from stgng table",
+      "predecessorName": "[CC] df_missing_stgng_mm_mkt_sdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_sdim\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_missing_stgng_mm_mkt_sdim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_sdim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] checking mkt_name col",
+      "predecessorName": "[Merge] Missing Mkts from stgng table",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\n\\nfrom pyspark.sql.types import StringType\\nfrom pyspark.sql.functions import *\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_skid_lkp = dict_all_dfs['df_mkt_skid_lkp'][\\\"df_object\\\"]\\n\\nl2 = df_mkt_skid_lkp.columns\\n\\nl3 = ['mkt_name']\\nfor item in l3:\\n    if item not in l2:\\n        df_mkt_skid_lkp = df_mkt_skid_lkp.withColumn(item, lit(None).cast(StringType()))\\n\\ndf_mkt_ddupato = df_mkt_skid_lkp \\n\\n\\ndf_output_dict['df_mkt_ddupato'] = df_mkt_ddupato\\n\\ndict_all_dfs['df_mkt_ddupato'] = {\\\"df_object\\\" :df_mkt_ddupato}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_ddupato\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Get list of external Mkt IDs",
+      "predecessorName": "[Gen] checking mkt_name col",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_ddupato\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"srce_sys_id\",\n      \"columnName\": \"srce_sys_id\"\n    },\n    {\n      \"transformation\": \"cntrt_id\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"transformation\": \"extrn_mkt_id\",\n      \"columnName\": \"extrn_mkt_id\"\n    },\n    {\n      \"transformation\": \"mkt_name\",\n      \"columnName\": \"extrn_mkt_name\"\n    },\n    {\n      \"transformation\": \"mkt_skid\",\n      \"columnName\": \"mkt_skid\"\n    },\n    {\n      \"transformation\": \"extrn_mkt_id\",\n      \"columnName\": \"extrn_mkt_attr_val_list\"\n    },\n    {\n      \"transformation\": \"extrn_mkt_id\",\n      \"columnName\": \"mkt_match_attr_list\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_ddupato\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[DIST]  Get list of external Mkt IDs",
+      "predecessorName": "[CET] Get list of external Mkt IDs",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_ddupato\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"srce_sys_id\"\n    },\n    {\n      \"name\": \"cntrt_id\"\n    },\n    {\n      \"name\": \"extrn_mkt_id\"\n    },\n    {\n      \"name\": \"extrn_mkt_name\"\n    },\n    {\n      \"name\": \"mkt_skid\"\n    },\n    {\n      \"name\": \"extrn_mkt_attr_val_list\"\n    },\n    {\n      \"name\": \"mkt_match_attr_list\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_ddupato\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load]  MM_MKT_XREF",
+      "predecessorName": "[DIST]  Get list of external Mkt IDs",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_MKT_XREF/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "mkt xref - lower case",
+      "predecessorName": "[File Load]  MM_MKT_XREF",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf = dict_all_dfs['df_mm_mkt_xref'][\\\"df_object\\\"]\\n\\ncols = df.columns\\nfor i in cols:\\n  df = df.withColumnRenamed(i,i.lower())\\n\\n\\ndf_output_dict['df_mm_mkt_xref'] = df\\ndict_all_dfs['df_mm_mkt_xref'] = {\\\"df_object\\\" :df}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC] mm xref unchanged ",
+      "predecessorName": "mkt xref - lower case",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_ddupato = dict_all_dfs['df_mkt_ddupato'][\\\"df_object\\\"]\\ndf_mm_mkt_xref = dict_all_dfs['df_mm_mkt_xref'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlst_cols = df_mkt_ddupato.columns\\nmkt_cols = df_mm_mkt_xref.columns\\nadd_cols = list(set(lst_cols) - set(mkt_cols))\\n[lst_cols.remove(i) for i in add_cols]\\n\\nfor cols in lst_cols:\\n  df_mkt_ddupato = df_mkt_ddupato.withColumn(cols, col(cols).cast(dict(df_mm_mkt_xref.dtypes)[cols]))\\n\\ndict_all_dfs['df_mkt_ddupato'] = {\\\"df_object\\\" :df_mkt_ddupato}\\ndf_output_dict['df_mkt_ddupato'] = df_mkt_ddupato\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\"\n    },\n    {\n      \"name\": \"df_mkt_ddupato\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_ddupato\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[MERGE] mkt xref merge new and unchanged records",
+      "predecessorName": "[CC] mm xref unchanged ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_xref\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\"\n    },\n    {\n      \"name\": \"df_mkt_ddupato\"\n    }\n  ],\n  \"logicalKey\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "add prttn cols MM_MKT_XREF",
+      "predecessorName": "[MERGE] mkt xref merge new and unchanged records",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] MM_MKT_XREF parquet",
+      "predecessorName": "add prttn cols MM_MKT_XREF",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_MKT_XREF/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release sem for MM_MKT_XREF",
+      "predecessorName": "[FP] MM_MKT_XREF parquet",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_MKT_XREF/\"\r\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[GEN] Refresh MM_MKT_XREF dataframe",
+      "predecessorName": "release sem for MM_MKT_XREF",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\ndf = df_input_dict['df_mm_mkt_xref']\\n\\ndf.createOrReplaceTempView('MM_MKT_XREF')\\nrefresh = \\\"REFRESH table MM_MKT_XREF\\\"\\nspark.sql(refresh)\\nquery = \\\"select * from MM_MKT_XREF\\\"\\ndf = spark.sql(query)\\n\\ndf_output_dict['df_mm_mkt_xref'] = df\\ndict_all_dfs['df_mm_mkt_xref'] = {\\\"df_object\\\" :df}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] mm_mkt_xref srce_sys_id is 8",
+      "predecessorName": "[GEN] Refresh MM_MKT_XREF dataframe",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[JOIN] XREF & mkt_ddupato",
+      "predecessorName": "[FIL] mm_mkt_xref srce_sys_id is 8",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT OUTER\",\n  \"referenceDataframe\": \"df_mkt_ddupato\",\n  \"joinExpression\": \"ref.srce_sys_id = in.srce_sys_id AND ref.cntrt_id = in.cntrt_id AND ref.extrn_mkt_id = in.extrn_mkt_id AND ref.extrn_mkt_name = in.extrn_mkt_name AND ref.extrn_mkt_attr_val_list = in.extrn_mkt_attr_val_list AND ref.mkt_match_attr_list = in.mkt_match_attr_list\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mkt_ddupato\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid2\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref_a\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC] schema & mkt_xref_a",
+      "predecessorName": "[JOIN] XREF & mkt_ddupato",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_mm_mkt_xref\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref_a\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref_a\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] MKT_SKID IS NOT NULL",
+      "predecessorName": "[CC] schema & mkt_xref_a",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"mkt_skid IS NOT NULL\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref_a\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref_b\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merge] updating mkt_skid",
+      "predecessorName": "[FIL] MKT_SKID IS NOT NULL",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_xref\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref_b\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"extrn_mkt_id\",\n    \"extrn_mkt_name\",\n    \"extrn_mkt_attr_val_list\",\n    \"mkt_match_attr_list\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_upd_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] Inserting mkt_xref",
+      "predecessorName": "[Merge] updating mkt_skid",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_upd_mkt_xref\",\n  \"joinExpression\": \"ref.mkt_skid=in.mkt_skid\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_ddupato\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_upd_mkt_xref\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_ins_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "complement mkt_xref_b",
+      "predecessorName": "[JOIN] Inserting mkt_xref",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_mm_mkt_xref\",\n  \"deleteColumns\": \"false\",\n  \"referenceColumnOrder\": \"false\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_ins_mkt_xref\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_ins_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "complement xref update",
+      "predecessorName": "complement mkt_xref_b",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_mm_mkt_xref\",\n  \"deleteColumns\": \"false\",\n  \"referenceColumnOrder\": \"false\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_upd_mkt_xref\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_upd_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merger] Load new external mkt ids to XREF",
+      "predecessorName": "complement xref update",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_upd_mkt_xref\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_ins_mkt_xref\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"extrn_mkt_id\",\n    \"extrn_mkt_name\",\n    \"extrn_mkt_attr_val_list\",\n    \"mkt_match_attr_list\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_xref\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "sdim - columns and type cast",
+      "predecessorName": "[Merger] Load new external mkt ids to XREF",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_skid_lkp = dict_all_dfs['df_mkt_promo_sdim_vw'][\\\"df_object\\\"]\\ndf_mm_mkt_sdim = dict_all_dfs['df_mm_mkt_sdim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mkt_skid_lkp.columns\\nsdim_cols = df_mm_mkt_sdim.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_mkt_skid_lkp = df_mkt_skid_lkp.withColumn(i, lit(None).cast('string'))\\n\\ndf_mkt_skid_lkp = df_mkt_skid_lkp.select(*sdim_cols)\\ncols = df_mkt_skid_lkp.columns\\n\\nfor j in cols:\\n  df_mkt_skid_lkp = df_mkt_skid_lkp.withColumn(j, col(j).cast(dict(df_mm_mkt_sdim.dtypes)[j]))\\n\\ndict_all_dfs['df_mkt_promo_sdim_vw_upt'] = {\\\"df_object\\\" :df_mkt_skid_lkp}\\ndf_output_dict['df_mkt_promo_sdim_vw_upt'] = df_mkt_skid_lkp\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_sdim_vw\"\n    },\n    {\n      \"name\": \"df_mm_mkt_sdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_sdim_vw_upt\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "adding partition columns - mkt sdim",
+      "predecessorName": "sdim - columns and type cast",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_sdim_vw_upt\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_sdim_vw_upt\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "load mkt_sdim merge",
+      "predecessorName": "adding partition columns - mkt sdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_MKT_SDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sdim_load\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] col comp sdim final",
+      "predecessorName": "load mkt_sdim merge",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"separateSparkSession\": \"false\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_sdim_load= dict_all_dfs['df_mm_mkt_sdim_load'][\\\"df_object\\\"]\\ndf_mkt_sdim_schema = dict_all_dfs['df_mkt_sdim_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_sdim_load.columns\\nsdim_cols = df_mkt_sdim_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_mkt_sdim_load = df_mm_mkt_sdim_load.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_sdim_load = df_mm_mkt_sdim_load.select(*sdim_cols)\\ncols = df_mm_mkt_sdim_load.columns\\n\\nfor j in cols:\\n  df_mm_mkt_sdim_load = df_mm_mkt_sdim_load.withColumn(j, col(j).cast(dict(df_mkt_sdim_schema.dtypes)[j]))\\n\\ndf_mm_mkt_sdim_load  = df_mm_mkt_sdim_load \\n\\ndict_all_dfs['df_mm_mkt_sdim_load'] = {\\\"df_object\\\" :df_mm_mkt_sdim_load}\\ndf_output_dict['df_mm_mkt_sdim_load'] = df_mm_mkt_sdim_load\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mkt_sdim_schema\"\r\n    },\r\n    {\r\n      \"name\": \"df_mm_mkt_sdim_load\"\r\n    }\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_mkt_sdim_load\",\r\n      \"cache\": \"materialize\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "merge mkt_promo_sdim with latest mkt_sdim",
+      "predecessorName": "[Gen] col comp sdim final",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_sdim_load\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sdim_load\"\n    },\n    {\n      \"name\": \"df_mkt_promo_sdim_vw_upt\"\n    }\n  ],\n  \"logicalKey\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_sdim_vw_upt\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Agg] to eliminate duplicate prod_skids for prod_sdim",
+      "predecessorName": "merge mkt_promo_sdim with latest mkt_sdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_sdim_vw_upt\"\n    }\n  ],\n  \"aggregate\": [\n    {\n      \"expression\": \"count(*)\",\n      \"alias\": \"cnt\"\n    }\n  ],\n  \"groupBy\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Aggregator",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[cond stop] if we have more than 1 prod_skid it will failed",
+      "predecessorName": "[Agg] to eliminate duplicate prod_skids for prod_sdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"cnt > 1\",\n  \"processStatus\": \"FAILED\",\n  \"conditionValue\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df\"\n    }\n  ]\n}",
+      "operationVersionName": "ConditionalStop",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] Promote Market Staging Dimension",
+      "predecessorName": "[cond stop] if we have more than 1 prod_skid it will failed",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_MKT_SDIM_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_sdim_vw_upt\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "release sem mkt_sdim load",
+      "predecessorName": "[File Pub] Promote Market Staging Dimension",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_MKT_SDIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] mm_mkt_sdim srce_sys_id",
+      "predecessorName": "release sem mkt_sdim load",
+      "jsonSpecification": "    {\n      \"active\": \"true\",\n      \"expression\": \"srce_sys_id = <<SRCE_SYS_ID>>\",\n      \"milestone\": \"false\",\n      \"saveOutputDfsToTempTable\": \"true\",\n      \"inputDataframes\": [\n        {\n          \"name\": \"df_mkt_skid_lkp\"\n        }\n      ],\n      \"outputDataframes\": [\n        {\n          \"name\": \"df_mkt_filtr_vw\",\n          \"cache\": \"materialize\"\n        }\n      ]\n    }",
+      "operationVersionName": "Filter",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "adding missing columns",
+      "predecessorName": "[FIL] mm_mkt_sdim srce_sys_id",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nfrom pyspark.sql.functions import col, lit\\n\\ndf_mkt_filtr_vw = dict_all_dfs['df_mkt_filtr_vw'][\\\"df_object\\\"]\\n\\nad_cols = ['mkt_desc', 'mkt_name']\\nfor i in ad_cols:\\n  if i not in df_mkt_filtr_vw.columns:\\n    df_mkt_filtr_vw = df_mkt_filtr_vw.withColumn(i, lit(None).cast('string'))\\n\\n\\ndict_all_dfs['df_mkt_filtr_vw'] = {\\\"df_object\\\" :df_mkt_filtr_vw}\\ndf_output_dict['df_mkt_filtr_vw'] = df_mkt_filtr_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_filtr_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_filtr_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Filling Missing key Attributes",
+      "predecessorName": "adding missing columns",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_filtr_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"(nvl(mkt_name, extrn_mkt_id))\",\n      \"columnName\": \"mkt_name\"\n    },\n    {\n      \"transformation\": \"(NVL(mkt_desc, extrn_mkt_id))\",\n      \"columnName\": \"mkt_desc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_sdim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[DPF][EDWM] Market Attributes Mapping[CET]",
+      "predecessorName": "[CET] Filling Missing key Attributes",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_sdim_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"mkt_skid\",\n      \"columnName\": \"mkt_skid\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_mapng\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[DIST] Get Mkt Store Dim",
+      "predecessorName": "[DPF][EDWM] Market Attributes Mapping[CET]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"extrn_mkt_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_store\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL]Get  mkt store dim skid lkp",
+      "predecessorName": "[DIST] Get Mkt Store Dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"addr_name IS NOT NULL OR postl_code IS NOT NULL OR city_name IS NOT NULL OR lngtd_val IS NOT NULL OR lttd_val IS NOT NULL OR vendr_mkt_name IS NOT NULL OR vendr_regn_name IS NOT NULL OR afrcn_amrcn_denst_name IS NOT NULL OR hspnc_denst_name IS NOT NULL\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_store\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_store\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] read mkt_store schema",
+      "predecessorName": "[FIL]Get  mkt store dim skid lkp",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_mkt_storedim_schema = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.mm_mkt_store_dim_vw_schema\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_mkt_storedim_schema'] = df_mkt_storedim_schema\\ndict_all_dfs['df_mkt_storedim_schema'] = {\\\"df_object\\\" :df_mkt_storedim_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_store\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_storedim_schema\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] MM_MKT_STORE_DIM",
+      "predecessorName": "[Gen] read mkt_store schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_MKT_STORE_DIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_store_dim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[Gen] col comp for store dim",
+      "predecessorName": "[File Load] MM_MKT_STORE_DIM",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"separateSparkSession\": \"false\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_store_dim= dict_all_dfs['df_mm_mkt_store_dim'][\\\"df_object\\\"]\\ndf_mkt_storedim_schema = dict_all_dfs['df_mkt_storedim_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_store_dim.columns\\nsdim_cols = df_mkt_storedim_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_mkt_store_dim = df_mm_mkt_store_dim.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_store_dim = df_mm_mkt_store_dim.select(*sdim_cols)\\ncols = df_mm_mkt_store_dim.columns\\n\\nfor j in cols:\\n  df_mm_mkt_store_dim = df_mm_mkt_store_dim.withColumn(j, col(j).cast(dict(df_mkt_storedim_schema.dtypes)[j]))\\n\\ndf_mm_mkt_store_dim  = df_mm_mkt_store_dim \\n\\ndict_all_dfs['df_mm_mkt_store_dim'] = {\\\"df_object\\\" :df_mm_mkt_store_dim}\\ndf_output_dict['df_mm_mkt_store_dim'] = df_mm_mkt_store_dim\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mkt_storedim_schema\"\r\n    },\r\n    {\r\n      \"name\": \"df_mm_mkt_store_dim\"\r\n    }\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_mkt_store_dim\",\r\n      \"cache\": \"materialize\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] To exclude store dim data",
+      "predecessorName": "[Gen] col comp for store dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_mm_mkt_store_dim\",\n  \"joinExpression\": \"in.mkt_skid=ref.mkt_skid\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_store\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_mkt_store_dim\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_join_mkt_store_dim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "store dim - type cast and complement",
+      "predecessorName": "[JOIN] To exclude store dim data",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"separateSparkSession\": \"false\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_store= dict_all_dfs['df_mkt_store'][\\\"df_object\\\"]\\ndf_mkt_storedim_schema = dict_all_dfs['df_mkt_storedim_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mkt_store.columns\\nsdim_cols = df_mkt_storedim_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mkt_store = df_mkt_store.withColumn(i,lit(None).cast('string'))\\n\\ndf_mkt_store = df_mkt_store.select(*sdim_cols)\\ncols = df_mkt_store.columns\\n\\nfor j in cols:\\n  df_mkt_store = df_mkt_store.withColumn(j, col(j).cast(dict(df_mkt_storedim_schema.dtypes)[j]))\\n\\ndf_mkt_store  = df_mkt_store \\n\\ndict_all_dfs['df_mkt_store'] = {\\\"df_object\\\" :df_mkt_store}\\ndf_output_dict['df_mkt_store'] = df_mkt_store\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mkt_storedim_schema\"\r\n    },\r\n    {\r\n      \"name\": \"df_mkt_store\"\r\n    }\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df_mkt_store\",\r\n      \"cache\": \"materialize\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merge] Missing Mkt store from stgng table",
+      "predecessorName": "store dim - type cast and complement",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_store_dim\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_store\"\n    },\n    {\n      \"name\": \"df_mm_mkt_store_dim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_store_promo_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] adding partitions to store dim",
+      "predecessorName": "[Merge] Missing Mkt store from stgng table",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_store_promo_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_store_promo_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] Promote Market Store Dimension",
+      "predecessorName": "[CET] adding partitions to store dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_MKT_STORE_DIM_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_store_promo_vw\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "release mkt_store dim",
+      "predecessorName": "[File Pub] Promote Market Store Dimension",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_MKT_STORE_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "mm_run_mkt_plc_schema",
+      "predecessorName": "release mkt_store dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"decimal(38,18)\",\n      \"columnName\": \"run_id\"\n    },\n    {\n      \"columnType\": \"decimal(38,18)\",\n      \"columnName\": \"mkt_skid\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"extrn_mkt_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"extrn_mkt_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"extrn_mkt_attr_val_list\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_sch_mm_mkt_run_plc\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET - Adding Market desc",
+      "predecessorName": "mm_run_mkt_plc_schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"NULL\",\n      \"columnName\": \"mkt_desc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_run_log_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] adding mkt_name",
+      "predecessorName": "CET - Adding Market desc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\n\\nfrom pyspark.sql.types import StringType\\nfrom pyspark.sql.functions import *\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_run_log_vw = dict_all_dfs['df_mkt_run_log_vw'][\\\"df_object\\\"]\\n\\nl2 = df_mkt_run_log_vw.columns\\n\\nl3 = ['mkt_name']\\nfor item in l3:\\n    if item not in l2:\\n        df_mkt_run_log_vw = df_mkt_run_log_vw.withColumn(item, lit(None).cast(StringType()))\\n\\n\\n\\ndf_output_dict['df_mkt_run_log_vw'] = df_mkt_run_log_vw\\n\\ndict_all_dfs['df_mkt_run_log_vw'] = {\\\"df_object\\\" :df_mkt_run_log_vw}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_run_log_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_run_log_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET]  mkt_run_log_vw",
+      "predecessorName": "[Gen] adding mkt_name",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_run_log_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"run_id\",\n      \"columnName\": \"run_id\"\n    },\n    {\n      \"transformation\": \"extrn_mkt_id\",\n      \"columnName\": \"extrn_mkt_id\"\n    },\n    {\n      \"transformation\": \"nvl(mkt_name, NULL)\",\n      \"columnName\": \"extrn_mkt_name\"\n    },\n    {\n      \"transformation\": \"mkt_skid\",\n      \"columnName\": \"mkt_skid\"\n    },\n    {\n      \"transformation\": \"nvl((substr(mkt_desc, 1, 200)), NULL)\",\n      \"columnName\": \"extrn_mkt_attr_val_list\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_run_log_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CC MM_RUN_MKT_PLC",
+      "predecessorName": "[CET]  mkt_run_log_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_run_log_vw = dict_all_dfs['df_mkt_run_log_vw'][\\\"df_object\\\"]\\ndf_sch_mm_mkt_run_plc = dict_all_dfs['df_sch_mm_mkt_run_plc'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mkt_run_log_vw.columns\\nsdim_cols = df_sch_mm_mkt_run_plc.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mkt_run_log_vw = df_mkt_run_log_vw.withColumn(i,lit(None).cast('string'))\\n\\ndf_mkt_run_log_vw = df_mkt_run_log_vw.select(*sdim_cols)\\ncols = df_mkt_run_log_vw.columns\\n\\nfor j in cols:\\n  df_mkt_run_log_vw = df_mkt_run_log_vw.withColumn(j, col(j).cast(dict(df_sch_mm_mkt_run_plc.dtypes)[j]))\\n\\ndict_all_dfs['df_mkt_run_log_vw'] = {\\\"df_object\\\" :df_mkt_run_log_vw}\\ndf_output_dict['df_mkt_run_log_vw'] = df_mkt_run_log_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_run_log_vw\"\n    },\n    {\n      \"name\": \"df_sch_mm_mkt_run_plc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_run_log_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub]",
+      "predecessorName": "CC MM_RUN_MKT_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"none\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_RUN_MKT_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_run_log_vw\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] read mkt_dim schema",
+      "predecessorName": "[File Pub]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_mkt_dim_schema = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.mm_mkt_dim_vw_schema\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_mkt_dim_schema'] = df_mkt_dim_schema\\ndict_all_dfs['df_mkt_dim_schema'] = {\\\"df_object\\\" :df_mkt_dim_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_schema\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] MM_MKT_DIM",
+      "predecessorName": "[Gen] read mkt_dim schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_MKT_DIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[Gen] col comp mkt_dim",
+      "predecessorName": "[File Load] MM_MKT_DIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_dim= dict_all_dfs['df_mm_mkt_dim'][\\\"df_object\\\"]\\ndf_mkt_dim_schema = dict_all_dfs['df_mkt_dim_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_dim.columns\\nsdim_cols = df_mkt_dim_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_mkt_dim = df_mm_mkt_dim.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_dim = df_mm_mkt_dim.select(*sdim_cols)\\ncols = df_mm_mkt_dim.columns\\n\\nfor j in cols:\\n  df_mm_mkt_dim = df_mm_mkt_dim.withColumn(j, col(j).cast(dict(df_mkt_dim_schema.dtypes)[j]))\\n\\ndf_mm_mkt_dim  = df_mm_mkt_dim \\n\\ndict_all_dfs['df_mm_mkt_dim'] = {\\\"df_object\\\" :df_mm_mkt_dim}\\ndf_output_dict['df_mm_mkt_dim'] = df_mm_mkt_dim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_schema\"\n    },\n    {\n      \"name\": \"df_mm_mkt_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release sem for mkt_dim vw",
+      "predecessorName": "[Gen] col comp mkt_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_MKT_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL]- for testing",
+      "predecessorName": "release sem for mkt_dim vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"1=1\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "add missing columns",
+      "predecessorName": "[FIL]- for testing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nfrom pyspark.sql.functions import col, lit\\n\\ndf_mkt_mapng = dict_all_dfs['df_mkt_mapng'][\\\"df_object\\\"]\\n\\nad_cols = ['regn_name', 'cntry_hub_name', 'cntry_name']\\nfor i in ad_cols:\\n  if i not in df_mkt_mapng.columns:\\n    df_mkt_mapng = df_mkt_mapng.withColumn(i, lit(None).cast('string'))\\n\\n\\ndict_all_dfs['df_mkt_mapng'] = {\\\"df_object\\\" :df_mkt_mapng}\\ndf_output_dict['df_mkt_mapng'] = df_mkt_mapng\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_mapng\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_mapng\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] Existing Mkt attributes",
+      "predecessorName": "add missing columns",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT OUTER\",\n  \"referenceDataframe\": \"df_mm_mkt_dim\",\n  \"joinExpression\": \"in.mkt_skid=ref.mkt_skid\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_mapng\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"regn_name\",\n          \"columnAlias\": \"regn_name\"\n        },\n        {\n          \"columnName\": \"cntry_hub_name\",\n          \"columnAlias\": \"cntry_hub_name\"\n        },\n        {\n          \"columnName\": \"cntry_name\",\n          \"columnAlias\": \"cntry_name\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_mkt_dim\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"regn_name\",\n          \"columnAlias\": \"regn_name2\"\n        },\n        {\n          \"columnName\": \"cntry_hub_name\",\n          \"columnAlias\": \"cntry_hub_name2\"\n        },\n        {\n          \"columnName\": \"cntry_name\",\n          \"columnAlias\": \"cntry_name2\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Existing Mkt Attributes",
+      "predecessorName": "[JOIN] Existing Mkt attributes",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"nvl(regn_name,regn_name2)\",\n      \"columnName\": \"regn_name\"\n    },\n    {\n      \"transformation\": \"nvl(cntry_hub_name,cntry_hub_name2)\",\n      \"columnName\": \"cntry_hub_name\"\n    },\n    {\n      \"transformation\": \"nvl(cntry_name,cntry_name2)\",\n      \"columnName\": \"cntry_name\"\n    },\n    {\n      \"transformation\": \"cast('0' as INTEGER)\",\n      \"columnName\": \"mkt_lvl_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "casting - mkt dim",
+      "predecessorName": "[CET] Existing Mkt Attributes",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"from IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_dim_lkp_vw = dict_all_dfs['df_mkt_dim_lkp_vw'][\\\"df_object\\\"]\\ndf_mm_mkt_dim = dict_all_dfs['df_mm_mkt_dim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\nlst_cols = df_mkt_dim_lkp_vw.columns\\nmkt_cols = df_mm_mkt_dim.columns\\nadd_cols = list(set(lst_cols) - set(mkt_cols))\\n[lst_cols.remove(i) for i in add_cols]\\n\\nfor cols in lst_cols:\\n  df_mkt_dim_lkp_vw = df_mkt_dim_lkp_vw.withColumn(cols, col(cols).cast(dict(df_mm_mkt_dim.dtypes)[cols]))\\n\\ndict_all_dfs['df_mkt_dim_lkp_vw'] = {\\\"df_object\\\" :df_mkt_dim_lkp_vw}\\ndf_output_dict['df_mkt_dim_lkp_vw'] = df_mkt_dim_lkp_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\"\n    },\n    {\n      \"name\": \"df_mm_mkt_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Join] missing mkt dim",
+      "predecessorName": "casting - mkt dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_mm_mkt_dim\",\n  \"joinExpression\": \"in.mkt_skid=ref.mkt_skid\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_mkt_dim\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_join_mkt_dim_w_extrn_id\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] -  Mkt dataframe complementer",
+      "predecessorName": "[Join] missing mkt dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_mm_mkt_dim\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_join_mkt_dim_w_extrn_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_join_mkt_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "mkt dim - type cast and complement",
+      "predecessorName": "[JOIN] -  Mkt dataframe complementer",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_dim_lkp_vw = dict_all_dfs['df_mkt_dim_lkp_vw'][\\\"df_object\\\"]\\ndf_mm_mkt_dim = dict_all_dfs['df_mm_mkt_dim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mkt_dim_lkp_vw.columns\\nsdim_cols = df_mm_mkt_dim.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_mkt_dim_lkp_vw = df_mkt_dim_lkp_vw.withColumn(i,lit(None).cast('string'))\\n\\ndf_mkt_dim_lkp_vw = df_mkt_dim_lkp_vw.select(*sdim_cols)\\ncols = df_mkt_dim_lkp_vw.columns\\n\\nfor j in cols:\\n  df_mkt_dim_lkp_vw = df_mkt_dim_lkp_vw.withColumn(j, col(j).cast(dict(df_mm_mkt_dim.dtypes)[j]))\\n\\ndict_all_dfs['df_mkt_dim_lkp_vw'] = {\\\"df_object\\\" :df_mkt_dim_lkp_vw}\\ndf_output_dict['df_mkt_dim_lkp_vw'] = df_mkt_dim_lkp_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\"\n    },\n    {\n      \"name\": \"df_mm_mkt_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merge]  Missing Mkts from dim table",
+      "predecessorName": "mkt dim - type cast and complement",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_dim\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\"\n    },\n    {\n      \"name\": \"df_mm_mkt_dim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T2 Three Files Contract - Market Dimension Derivation - 02 - V1"
+}

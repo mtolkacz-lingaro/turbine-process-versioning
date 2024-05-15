@@ -1,0 +1,397 @@
+{
+  "applicationName": "TRADEPANEL",
+  "nodes": [
+    {
+      "operationName": "[File Load] mm_prod_sidim_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_SIDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sidim_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] MM_PROD_IDIM",
+      "predecessorName": "[File Load] mm_prod_sidim_vw",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"expression\": \"1=2\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] compementing prod_addskid",
+      "predecessorName": "[FIL] MM_PROD_IDIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_prod_addskid = dict_all_dfs['df_prod_addskid'][\\\"df_object\\\"]\\ndf_mm_prod_sidim_vw = dict_all_dfs['df_mm_prod_sidim_vw'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_prod_addskid.columns\\nsdim_cols = df_mm_prod_sidim_vw.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_prod_addskid = df_prod_addskid.withColumn(i,lit(None).cast('string'))\\n\\ndf_prod_addskid = df_prod_addskid.select(*sdim_cols)\\ncols = df_prod_addskid.columns\\n\\nfor j in cols:\\n  df_prod_addskid = df_prod_addskid.withColumn(j, col(j).cast(dict(df_mm_prod_sidim_vw.dtypes)[j]))\\n\\ndf_output_dict['df_prod_addskid'] = df_prod_addskid\\ndict_all_dfs['df_prod_addskid'] = {\\\"df_object\\\" :df_prod_addskid}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_addskid\"\n    },\n    {\n      \"name\": \"df_mm_prod_sidim_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_addskid\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merger] Publish Products into Product Staging Table",
+      "predecessorName": "[Gen] compementing prod_addskid",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_prod_sidim_vw\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_addskid\"\n    },\n    {\n      \"name\": \"df_mm_prod_sidim_vw\"\n    }\n  ],\n  \"logicalKey\": [\n    \"prod_skid\",\n    \"srce_sys_id\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sidim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] PRTTN",
+      "predecessorName": "[Merger] Publish Products into Product Staging Table",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sidim_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"CAST(srce_sys_id AS INTEGER)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sidim_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FILE PUB] MM_PROD_SIDIM_VW",
+      "predecessorName": "[CET] PRTTN",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_SIDIM_VW/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sidim_vw\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release MM_PROD_IDIM",
+      "predecessorName": "[FILE PUB] MM_PROD_SIDIM_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_SIDIM_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] mm_prod_assoc",
+      "predecessorName": "[sem] release MM_PROD_IDIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_ASSOC_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] compementing prod_assoc_tran",
+      "predecessorName": "[File Load] mm_prod_assoc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_prod_assoc_tran = dict_all_dfs['df_mm_prod_assoc_tran'][\\\"df_object\\\"]\\ndf_mm_prod_assoc = dict_all_dfs['df_mm_prod_assoc'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_prod_assoc_tran.columns\\nsdim_cols = df_mm_prod_assoc.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_mm_prod_assoc_tran = df_mm_prod_assoc_tran.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_prod_assoc_tran = df_mm_prod_assoc_tran.select(*sdim_cols)\\ncols = df_mm_prod_assoc_tran.columns\\n\\nfor j in cols:\\n  df_mm_prod_assoc_tran = df_mm_prod_assoc_tran.withColumn(j, col(j).cast(dict(df_mm_prod_assoc.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_prod_assoc_tran'] = {\\\"df_object\\\" :df_mm_prod_assoc_tran}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc_tran\"\n    },\n    {\n      \"name\": \"df_mm_prod_assoc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc_tran\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merger] Publish Data into MM_PROD_ASSOC",
+      "predecessorName": "[Gen] compementing prod_assoc_tran",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_prod_assoc\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc_tran\"\n    }\n  ],\n  \"logicalKey\": [\n    \"child_prod_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "MM_PROD_ASSOC",
+      "predecessorName": "[Merger] Publish Data into MM_PROD_ASSOC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"cast( 0 as integer)\",\n      \"columnName\": \"part_key\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FILE PUB] mm_prod_assoc",
+      "predecessorName": "MM_PROD_ASSOC",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_ASSOC/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FILE PUB] mm_prod_assoc DDAPI",
+      "predecessorName": "[FILE PUB] mm_prod_assoc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_PROD_ASSOC_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [\n    \"part_key\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_key\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_assoc\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_prod_assoc",
+      "predecessorName": "[FILE PUB] mm_prod_assoc DDAPI",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_ASSOC_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] mm_mkt_assoc",
+      "predecessorName": "[sem] release mm_prod_assoc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_ASSOC_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_assoc\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] compementing mkt_assoc_tran",
+      "predecessorName": "[File Load] mm_mkt_assoc",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"separateSparkSession\": \"false\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_assoc_tran = dict_all_dfs['df_mm_mkt_assoc_tran'][\\\"df_object\\\"]\\ndf_mm_mkt_assoc = dict_all_dfs['df_mm_mkt_assoc'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_assoc_tran.columns\\nsdim_cols = df_mm_mkt_assoc.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_mm_mkt_assoc_tran = df_mm_mkt_assoc_tran.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_assoc_tran = df_mm_mkt_assoc_tran.select(*sdim_cols)\\ncols = df_mm_mkt_assoc_tran.columns\\n\\nfor j in cols:\\n  df_mm_mkt_assoc_tran = df_mm_mkt_assoc_tran.withColumn(j, col(j).cast(dict(df_mm_mkt_assoc.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_mkt_assoc_tran'] = {\\\"df_object\\\" :df_mm_mkt_assoc_tran}\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_mkt_assoc_tran\"\r\n    },\r\n    {\r\n      \"name\": \"df_mm_mkt_assoc\"\r\n    }\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_mkt_assoc_tran\",\r\n      \"cache\": \"none\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merger] Publish Data into MM_MKT_ASSOC",
+      "predecessorName": "[Gen] compementing mkt_assoc_tran",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_assoc\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_assoc_tran\"\n    }\n  ],\n  \"logicalKey\": [\n    \"child_mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_assoc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "MM_MKT_ASSOC",
+      "predecessorName": "[Merger] Publish Data into MM_MKT_ASSOC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_assoc\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"cast( 0 as integer)\",\n      \"columnName\": \"part_key\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_assoc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FILE PUB] mm_mkt_assoc",
+      "predecessorName": "MM_MKT_ASSOC",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_ASSOC/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_assoc\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FILE PUB] mm_mkt_assoc - DDAPI",
+      "predecessorName": "[FILE PUB] mm_mkt_assoc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_MKT_ASSOC_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [\n    \"part_key\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_key\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_assoc\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_mkt_assoc",
+      "predecessorName": "[FILE PUB] mm_mkt_assoc - DDAPI",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_ASSOC_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] mm_prod_cntrt_idim",
+      "predecessorName": "[sem] release mm_mkt_assoc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_CNTRT_IDIM/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_idim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] compementing prod_cntrt_idim",
+      "predecessorName": "[File Load] mm_prod_cntrt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_prod_cntrt_sidim = dict_all_dfs['df_mm_prod_cntrt_sidim'][\\\"df_object\\\"]\\ndf_mm_prod_cntrt_idim = dict_all_dfs['df_mm_prod_cntrt_idim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_prod_cntrt_sidim.columns\\nsdim_cols = df_mm_prod_cntrt_idim.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_mm_prod_cntrt_sidim = df_mm_prod_cntrt_sidim.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_prod_cntrt_sidim = df_mm_prod_cntrt_sidim.select(*sdim_cols)\\ncols = df_mm_prod_cntrt_sidim.columns\\n\\nfor j in cols:\\n  df_mm_prod_cntrt_sidim = df_mm_prod_cntrt_sidim.withColumn(j, col(j).cast(dict(df_mm_prod_cntrt_idim.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_prod_cntrt_sidim'] = {\\\"df_object\\\" :df_mm_prod_cntrt_sidim}\\ndf_output_dict['df_mm_prod_cntrt_sidim'] = df_mm_prod_cntrt_sidim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_sidim\"\n    },\n    {\n      \"name\": \"df_mm_prod_cntrt_idim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_sidim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merger] Publish Data into the Respective MM_PROD_CNTRT_IDIM",
+      "predecessorName": "[Gen] compementing prod_cntrt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_prod_cntrt_idim\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_sidim\"\n    },\n    {\n      \"name\": \"df_mm_prod_cntrt_idim\"\n    }\n  ],\n  \"logicalKey\": [],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_idim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Prttn prod_cntrt_idim",
+      "predecessorName": "[Merger] Publish Data into the Respective MM_PROD_CNTRT_IDIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_idim\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"CAST(srce_sys_id AS INTEGER)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_idim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] MM_PROD_CNTRT_IDIM",
+      "predecessorName": "[CET] Prttn prod_cntrt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_CNTRT_IDIM/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_idim\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release MM_PROD_CNTRT_IDIM",
+      "predecessorName": "[File Pub] MM_PROD_CNTRT_IDIM",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_CNTRT_IDIM/\"\r\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] mm_mkt_cntrt_idim",
+      "predecessorName": "[sem] release MM_PROD_CNTRT_IDIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_CNTRT_IDIM/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_cntrt_idim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] compementing mkt_cntrt_idim",
+      "predecessorName": "[File Load] mm_mkt_cntrt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_cntrt_sidim = dict_all_dfs['df_mm_mkt_cntrt_sidim'][\\\"df_object\\\"]\\ndf_mm_mkt_cntrt_idim = dict_all_dfs['df_mm_mkt_cntrt_idim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_cntrt_sidim.columns\\nsdim_cols = df_mm_mkt_cntrt_idim.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_mm_mkt_cntrt_sidim = df_mm_mkt_cntrt_sidim.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_cntrt_sidim = df_mm_mkt_cntrt_sidim.select(*sdim_cols)\\ncols = df_mm_mkt_cntrt_sidim.columns\\n\\nfor j in cols:\\n  df_mm_mkt_cntrt_sidim = df_mm_mkt_cntrt_sidim.withColumn(j, col(j).cast(dict(df_mm_mkt_cntrt_idim.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_mkt_cntrt_sidim'] = {\\\"df_object\\\" :df_mm_mkt_cntrt_sidim}\\ndf_output_dict['df_mm_mkt_cntrt_sidim'] = df_mm_mkt_cntrt_sidim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_cntrt_sidim\"\n    },\n    {\n      \"name\": \"df_mm_mkt_cntrt_idim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_cntrt_sidim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merger] Publish Data into the Respective MM_MKT_CNTRT_IDIM",
+      "predecessorName": "[Gen] compementing mkt_cntrt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_cntrt_idim\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_cntrt_sidim\"\n    },\n    {\n      \"name\": \"df_mm_mkt_cntrt_idim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_cntrt_idim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Prttn mkt_cntrt_idim",
+      "predecessorName": "[Merger] Publish Data into the Respective MM_MKT_CNTRT_IDIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_cntrt_idim\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"CAST(srce_sys_id AS INTEGER)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_cntrt_idim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] MM_MKT_CNTRT_IDIM",
+      "predecessorName": "[CET] Prttn mkt_cntrt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_CNTRT_IDIM/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_cntrt_idim\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release MM_MKT_CNTRT_IDIM",
+      "predecessorName": "[File Pub] MM_MKT_CNTRT_IDIM",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_CNTRT_IDIM/\"\r\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] mm_mkt_sidim_vw",
+      "predecessorName": "[sem] release MM_MKT_CNTRT_IDIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_SIDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sidim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_mkt_sidim_vw",
+      "predecessorName": "[File Load] mm_mkt_sidim_vw",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_SIDIM_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] mm_mkt_idim",
+      "predecessorName": "[sem] release mm_mkt_sidim_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_IDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_idim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] read mkt_idim schema",
+      "predecessorName": "[File Load] mm_mkt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_mkt_idim_schema = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.mm_mkt_idim_vw_schema\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_mkt_idim_schema'] = df_mkt_idim_schema\\ndict_all_dfs['df_mkt_idim_schema'] = {\\\"df_object\\\" :df_mkt_idim_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_idim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_idim_schema\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] col complementing light ref mkt_idim ",
+      "predecessorName": "[Gen] read mkt_idim schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_idim= dict_all_dfs['df_mm_mkt_idim'][\\\"df_object\\\"]\\ndf_mkt_idim_schema = dict_all_dfs['df_mkt_idim_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_idim.columns\\nsdim_cols = df_mkt_idim_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_mkt_idim = df_mm_mkt_idim.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_idim = df_mm_mkt_idim.select(*sdim_cols)\\ncols = df_mm_mkt_idim.columns\\n\\nfor j in cols:\\n  df_mm_mkt_idim = df_mm_mkt_idim.withColumn(j, col(j).cast(dict(df_mkt_idim_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_mkt_idim'] = {\\\"df_object\\\" :df_mm_mkt_idim}\\ndf_output_dict['df_mm_mkt_idim'] = df_mm_mkt_idim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_idim\"\n    },\n    {\n      \"name\": \"df_mkt_idim_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_idim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] compementing mkt_idim",
+      "predecessorName": "[Gen] col complementing light ref mkt_idim ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_sidim_vw = dict_all_dfs['df_mm_mkt_sidim_vw'][\\\"df_object\\\"]\\ndf_mm_mkt_idim = dict_all_dfs['df_mm_mkt_idim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_sidim_vw.columns\\nsdim_cols = df_mm_mkt_idim.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_mm_mkt_sidim_vw = df_mm_mkt_sidim_vw.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_sidim_vw = df_mm_mkt_sidim_vw.select(*sdim_cols)\\ncols = df_mm_mkt_sidim_vw.columns\\n\\nfor j in cols:\\n  df_mm_mkt_sidim_vw = df_mm_mkt_sidim_vw.withColumn(j, col(j).cast(dict(df_mm_mkt_idim.dtypes)[j]))\\n  \\n\\ndict_all_dfs['df_mm_mkt_sidim_vw'] = {\\\"df_object\\\" :df_mm_mkt_sidim_vw}\\ndf_output_dict['df_mm_mkt_sidim_vw'] = df_mm_mkt_sidim_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sidim_vw\"\n    },\n    {\n      \"name\": \"df_mm_mkt_idim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sidim_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merger] Publish Data into the Respective MM_MKT_IDIM",
+      "predecessorName": "[Gen] compementing mkt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_idim\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sidim_vw\"\n    },\n    {\n      \"name\": \"df_mm_mkt_idim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_idim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Prttn mkt_idim",
+      "predecessorName": "[Merger] Publish Data into the Respective MM_MKT_IDIM",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"AddAllSourceColumns\": \"true\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_mkt_idim\"\r\n    }\r\n  ],\r\n  \"transformations\": [\r\n    {\r\n      \"transformation\": \"CAST(srce_sys_id AS INTEGER)\",\r\n      \"columnName\": \"part_srce_sys_id\"\r\n    }\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_mkt_idim\",\r\n      \"cache\": \"none\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] MM_MKT_IDIM",
+      "predecessorName": "[CET] Prttn mkt_idim",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_IDIM/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_idim\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] MM_MKT_IDIM DDAPI",
+      "predecessorName": "[File Pub] MM_MKT_IDIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_MKT_IDIM_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_idim\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_mkt_idim",
+      "predecessorName": "[File Pub] MM_MKT_IDIM DDAPI",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_IDIM_VW/\"\r\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_mkt_sidim_vw -1",
+      "predecessorName": "[sem] release mm_mkt_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_SIDIM_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] mm_prod_sidim_vw refresh",
+      "predecessorName": "[sem] release mm_mkt_sidim_vw -1",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_SIDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sidim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_prod_sidim_vw",
+      "predecessorName": "[File Load] mm_prod_sidim_vw refresh",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_SIDIM_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] mm_prod_idim",
+      "predecessorName": "[sem] release mm_prod_sidim_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_IDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] read prod_idim schema",
+      "predecessorName": "[File Load] mm_prod_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_mm_prod_idim_vw_schema = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.mm_prod_idim_vw_schema\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_mm_prod_idim_vw_schema'] = df_mm_prod_idim_vw_schema\\ndict_all_dfs['df_mm_prod_idim_vw_schema'] = {\\\"df_object\\\" :df_mm_prod_idim_vw_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim_vw_schema\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] col complementing light ref prod_idim ",
+      "predecessorName": "[Gen] read prod_idim schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_prod_idim= dict_all_dfs['df_mm_prod_idim'][\\\"df_object\\\"]\\ndf_mm_prod_idim_vw_schema = dict_all_dfs['df_mm_prod_idim_vw_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_prod_idim.columns\\nsdim_cols = df_mm_prod_idim_vw_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_prod_idim = df_mm_prod_idim.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_prod_idim = df_mm_prod_idim.select(*sdim_cols)\\ncols = df_mm_prod_idim.columns\\n\\nfor j in cols:\\n  df_mm_prod_idim = df_mm_prod_idim.withColumn(j, col(j).cast(dict(df_mm_prod_idim_vw_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_prod_idim'] = {\\\"df_object\\\" :df_mm_prod_idim}\\ndf_output_dict['df_mm_prod_idim'] = df_mm_prod_idim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim\"\n    },\n    {\n      \"name\": \"df_mm_prod_idim_vw_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] compementing prod_idim",
+      "predecessorName": "[Gen] col complementing light ref prod_idim ",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"separateSparkSession\": \"false\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_prod_sidim_vw = dict_all_dfs['df_mm_prod_sidim_vw'][\\\"df_object\\\"]\\ndf_mm_prod_idim = dict_all_dfs['df_mm_prod_idim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_prod_sidim_vw.columns\\nsdim_cols = df_mm_prod_idim.columns\\n\\nfrom pyspark.sql.functions import lit\\nsdim_add_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in sdim_add_cols:\\n  df_mm_prod_sidim_vw = df_mm_prod_sidim_vw.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_prod_sidim_vw = df_mm_prod_sidim_vw.select(*sdim_cols)\\ncols = df_mm_prod_sidim_vw.columns\\n\\nfor j in cols:\\n  df_mm_prod_sidim_vw = df_mm_prod_sidim_vw.withColumn(j, col(j).cast(dict(df_mm_prod_idim.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_prod_sidim_vw'] = {\\\"df_object\\\" :df_mm_prod_sidim_vw}\\ndf_output_dict['df_mm_prod_sidim_vw'] = df_mm_prod_sidim_vw\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_prod_sidim_vw\"\r\n    },\r\n    {\r\n      \"name\": \"df_mm_prod_idim\"\r\n    }\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_prod_sidim_vw\",\r\n      \"cache\": \"materialize\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Merger] Publish Data into the Respective MM_PROD_IDIM",
+      "predecessorName": "[Gen] compementing prod_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_prod_idim\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sidim_vw\"\n    },\n    {\n      \"name\": \"df_mm_prod_idim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"prod_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Prttn prod_idim",
+      "predecessorName": "[Merger] Publish Data into the Respective MM_PROD_IDIM",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"AddAllSourceColumns\": \"true\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_prod_idim\"\r\n    }\r\n  ],\r\n  \"transformations\": [\r\n    {\r\n      \"transformation\": \"CAST(srce_sys_id AS INTEGER)\",\r\n      \"columnName\": \"part_srce_sys_id\"\r\n    }\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_prod_idim\",\r\n      \"cache\": \"none\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] MM_PROD_IDIM DDAPI",
+      "predecessorName": "[CET] Prttn prod_idim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_PROD_IDIM_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_idim\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_prod_idim_vw",
+      "predecessorName": "[File Pub] MM_PROD_IDIM DDAPI",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_IDIM_VW/\"\r\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_prod_sidim_vw - 1",
+      "predecessorName": "[sem] release mm_prod_idim_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_SIDIM_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1 Integrated Dimension Publication_v1"
+}

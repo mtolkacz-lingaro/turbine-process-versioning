@@ -1,0 +1,62 @@
+{
+  "applicationName": "TRADEPANEL",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \"T1 Integrated TP Main Chain\",\r\n    \"description\": \"T1 Integrated TP Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n\t\t\"FACT_TYPE_CODE\": {\r\n            \"title\": \"FACT_TYPE_CODE\",\r\n            \"description\": \"FACT_TYPE_CODE\",\r\n\t\t\t\"enum\": [\r\n                \"HHP\",\r\n                \"SF\",\r\n\t\t\t\t\"TP\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CATEGORY_ID\": {\r\n            \"title\": \"CATEGORY_ID\",\r\n            \"description\": \"CATEGORY_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"SRCE_SYS_ID\": {\r\n            \"title\": \"SRCE_SYS_ID\",\r\n            \"description\": \"SRCE_SYS_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n        \"IGRTD_PUBLISH_FILE_PATTERN\": {\r\n            \"title\": \"IGRTD_PUBLISH_FILE_PATTERN\",\r\n            \"description\": \"File pattern to create a file from atomic contract that will trigger integrated layer publishing\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"CNTRT_ID\": {\r\n            \"title\": \"CNTRT_ID\",\r\n            \"description\": \"CNTRT_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n        \"RAW_FILE_PATH\": {\r\n            \"title\": \"RAW_FILE_PATH\",\r\n            \"description\": \"Raw File Path\",\r\n            \"default\": \"turbinev1/WORK/\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PUBLISH_PATH\": {\r\n            \"title\": \"PUBLISH_PATH\",\r\n            \"description\": \"Publishing Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"IN_FILE_PATH\": {\r\n            \"title\": \"IN_FILE_PATH\",\r\n            \"description\": \"Input File Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"MAPPINGS_PATH\": {\r\n            \"title\": \"MAPPINGS_PATH\",\r\n            \"description\": \"Mappings Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"FACT_TYPE_CODE\",\"CATEGORY_ID\", \"SRCE_SYS_ID\", \"IGRTD_PUBLISH_FILE_PATTERN\", \"CNTRT_ID\"]\r\n}",
+  "nodes": [
+    {
+      "operationName": "[File Load] MM_MKT_DIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_DIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release MM_MKT_DIM",
+      "predecessorName": "[File Load] MM_MKT_DIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_DIM_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Fil] df_mm_mkt_dim",
+      "predecessorName": "[sem] release MM_MKT_DIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"srce_sys_id = <<SRCE_SYS_ID>> AND cntrt_id= 0\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] Loading MM_CNTRY_REGN_VW",
+      "predecessorName": "[Fil] df_mm_mkt_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nimport pyspark\\nfrom pyspark.sql import SparkSession\\nfrom pyspark.sql.types import *\\nfrom pyspark.sql.functions import *\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\n\\ndf_mm_cntry_regn_vw = spark.read.format(\\\"jdbc\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.mm_cntry_regn_vw\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").load()\\n\\n\\ndf_output_dict['df_mm_cntry_regn_vw'] = df_mm_cntry_regn_vw\\n\\ndict_all_dfs['df_mm_cntry_regn_vw'] = {\\\"df_object\\\" :df_mm_cntry_regn_vw}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_cntry_regn_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] MM_CNTRY_REGN_VW",
+      "predecessorName": "[Gen] Loading MM_CNTRY_REGN_VW",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_CNTRY_REGN_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_cntry_regn_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] RUN_ID, CNTRT_ID",
+      "predecessorName": "[File Load] MM_CNTRY_REGN_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_cntry_regn_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"<<PROCESS_RUN_KEY>>\",\n      \"columnName\": \"run_id\"\n    },\n    {\n      \"transformation\": \"CAST(0 AS decimal(38,10))\",\n      \"columnName\": \"cntrt_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_cntry_regn_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Join] Get Atomic TP Markets",
+      "predecessorName": "[CET] RUN_ID, CNTRT_ID",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT OUTER\",\n  \"referenceDataframe\": \"df_mm_cntry_regn_vw\",\n  \"joinExpression\": \"in.iso_cntry_code = ref.cntry_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"regn_id\",\n          \"columnAlias\": \"regn_id1\"\n        },\n        {\n          \"columnName\": \"regn_name\",\n          \"columnAlias\": \"regn_name1\"\n        },\n        {\n          \"columnName\": \"sub_regn_id\",\n          \"columnAlias\": \"sub_regn_id1\"\n        },\n        {\n          \"columnName\": \"sub_regn_name\",\n          \"columnAlias\": \"sub_regn_name1\"\n        },\n        {\n          \"columnName\": \"cntry_hub_id\",\n          \"columnAlias\": \"cntry_hub_id1\"\n        },\n        {\n          \"columnName\": \"cntry_hub_name\",\n          \"columnAlias\": \"cntry_hub_name1\"\n        },\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id1\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id1\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_cntry_regn_vw\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"regn_id\",\n          \"columnAlias\": \"regn_id\"\n        },\n        {\n          \"columnName\": \"regn_name\",\n          \"columnAlias\": \"regn_name\"\n        },\n        {\n          \"columnName\": \"sub_regn_id\",\n          \"columnAlias\": \"sub_regn_id\"\n        },\n        {\n          \"columnName\": \"sub_regn_name\",\n          \"columnAlias\": \"sub_regn_name\"\n        },\n        {\n          \"columnName\": \"cntry_hub_id\",\n          \"columnAlias\": \"cntry_hub_id\"\n        },\n        {\n          \"columnName\": \"cntry_hub_name\",\n          \"columnAlias\": \"cntry_hub_name\"\n        },\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_addskid\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Map Atomic TP Mkts to Integrated Mkts",
+      "predecessorName": "[Join] Get Atomic TP Markets",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_addskid\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"mkt_skid\",\n      \"columnName\": \"atomic_mkt_skid\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_map_a2i\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1 Integrated Market Transformation_v1"
+}

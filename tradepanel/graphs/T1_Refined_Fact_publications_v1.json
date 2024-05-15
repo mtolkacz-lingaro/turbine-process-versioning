@@ -1,0 +1,103 @@
+{
+  "applicationName": "TRADEPANEL",
+  "nodes": [
+    {
+      "operationName": "Load MM_PROD_DIM_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"prod-tp-lightrefined/MM_PROD_DIM_VW/part_srce_sys_id=3/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release MM_PROD_DIM_VW",
+      "predecessorName": "Load MM_PROD_DIM_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/prod-tp-lightrefined/MM_PROD_DIM_VW/part_srce_sys_id=3/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Load MM_PROD_XREF",
+      "predecessorName": "Release MM_PROD_DIM_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"prod-tp-lightrefined/MM_PROD_XREF/part_srce_sys_id=3/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_xref\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release MM_PROD_XREF",
+      "predecessorName": "Load MM_PROD_XREF",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/prod-tp-lightrefined/MM_PROD_XREF/part_srce_sys_id=3/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Load MM_PROD_SKID_LKP",
+      "predecessorName": "Release MM_PROD_XREF",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"prod-tp-lightrefined/MM_PROD_SKID_LKP/part_srce_sys_id=3/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release MM_PROD_SKID_LKP",
+      "predecessorName": "Load MM_PROD_SKID_LKP",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/prod-tp-lightrefined/MM_PROD_SKID_LKP/part_srce_sys_id=3/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Atomic to Integrated SKID mapping",
+      "predecessorName": "Release MM_PROD_SKID_LKP",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_prod_dim= dict_all_dfs['df_prod_dim'][\\\"df_object\\\"]\\ndf_prod_dim.createOrReplaceTempView('prod_dim')\\n\\ndf_prod_xref = dict_all_dfs['df_prod_xref'][\\\"df_object\\\"]\\ndf_prod_xref.createOrReplaceTempView('prod_xref')\\n\\ndf_prod_skid_lkp= dict_all_dfs['df_prod_skid_lkp'][\\\"df_object\\\"]\\ndf_prod_skid_lkp.createOrReplaceTempView('prod_skid_lkp')\\n\\nfrom pyspark.sql.functions import *\\n\\nquery1 = \\\"\\\"\\\"\\nselect pd.prod_skid, \\npx.prod_match_attr_list as xref_prod_match_attr_list, \\npsk.prod_match_attr_list as psk_prod_match_attr_list, \\npsk.prod_skid as igrtd_skid from prod_dim pd\\n\\njoin prod_xref px on pd.prod_skid = px.prod_skid\\njoin prod_skid_lkp psk on px.prod_match_attr_list = psk.prod_match_attr_list\\\"\\\"\\\"\\n\\ndf_prod_atomic_intg_skid_map = spark.sql(query1)\\n\\n\\ndict_all_dfs['df_prod_atomic_intg_skid_map'] = {\\\"df_object\\\" :df_prod_atomic_intg_skid_map}\\ndf_output_dict['df_prod_atomic_intg_skid_map'] = df_prod_atomic_intg_skid_map\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\"\n    },\n    {\n      \"name\": \"df_prod_xref\"\n    },\n    {\n      \"name\": \"df_prod_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_atomic_intg_skid_map\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "acquire sem for staging",
+      "predecessorName": "Atomic to Integrated SKID mapping",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"acquire\",\n  \"semaphoreOption\": \"exclusive\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@REFINED_PATH@@>trade_panel_fct_stgng/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "load refined facts from refined staging for the data_provider_key",
+      "predecessorName": "acquire sem for staging",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom pyspark.sql.types import IntegerType\\nfrom pyspark.sql.functions import *\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nimport pyspark\\nfrom pyspark.sql.types import *\\nfrom pyspark.sql import Window, functions as fn\\nfrom pyspark.sql.functions import *\\nfrom pyspark.sql import SparkSession\\n\\n# File Name\\nimport os\\nimport pathlib\\nimport fnmatch\\n\\nraw_file_path = '/<@@RAW_PATH@@>/'\\n\\nPK = str(<<PROCESS_RUN_KEY>>)\\nfiles = dbutils.fs.ls(f'/mnt/{raw_file_path}/')\\n\\nextract_refresh = ''\\n\\nfor fi in files:\\n  filename = fi.name\\n  if (PK in filename): # If input file is a ZIP file\\n    extract_refresh = 'Y'\\n\\t\\ndlvry_id = 0\\n\\nif extract_refresh == 'Y':\\n  df = spark.read.format('csv').option('header', True).option('delimiter', ',').load(f'/mnt/<@@RAW_PATH@@>/*{PK}*')\\n  dlvry = df.select(\\\"dlvry_id\\\").rdd.flatMap(lambda x: x).collect()\\n  s = ''\\n  for i in dlvry:\\n\\t  s = s + str(i)\\n  s1 = int(s)\\n  dlvry_id = s1\\nelse:\\n  dlvry_id = <<DLVRY_ID>>\\n  \\ndf_stgng_fct = spark.read.format('parquet').option(\\\"ignoreCorruptFiles\\\", True).option(\\\"ignoreMissingFiles\\\", True).load(\\\"/mnt/<@@REFINED_PATH@@>trade_panel_fct_stgng/\\\").filter(f'process_run_key = {dlvry_id} ')\\n\\n\\ndict_all_dfs['df_stgng_fct'] = {\\\"df_object\\\" :df_stgng_fct}\\ndf_output_dict['df_stgng_fct'] = df_stgng_fct\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_igrtd_layer_cntrt_assoc_prc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release sem for staging",
+      "predecessorName": "load refined facts from refined staging for the data_provider_key",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@REFINED_PATH@@>trade_panel_fct_stgng/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Map Integrated prod_skid",
+      "predecessorName": "release sem for staging",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"INNER\",\n  \"referenceDataframe\": \"df_prod_atomic_intg_skid_map\",\n  \"joinExpression\": \"in.prod_key=ref.prod_skid\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_key\",\n          \"columnAlias\": \"prod_key_atomic\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_prod_atomic_intg_skid_map\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"igrtd_skid\",\n          \"columnAlias\": \"prod_key\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "cast prod_key to long",
+      "predecessorName": "Map Integrated prod_skid",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"CAST(prod_key as LONG)\",\n      \"columnName\": \"prod_key\"\n    },\n    {\n      \"transformation\": \"data_provider_key_part\",\n      \"columnName\": \"part_cntrt_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "publish staging to refined facts",
+      "predecessorName": "cast prod_key to long",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"none\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-refined/refined/trade_panel_fct/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"snappy\",\n  \"repartitionByColumn\": [\n    \"part_cntrt_id\",\n    \"secure_group_key_part\",\n    \"period_group_end_date_part\"\n  ],\n  \"columnToDrop\": [\n    \"prod_key_atomic\"\n  ],\n  \"partitionByColumn\": [\n    \"part_cntrt_id\",\n    \"secure_group_key_part\",\n    \"period_group_end_date_part\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "DSS coverage type key = 5",
+      "predecessorName": "publish staging to refined facts",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"coverageTypeKey\": 5,\n  \"objectKey\": 1262,\n  \"objectPartKey\": 1262,\n  \"maxBatchSize\": 10000,\n  \"maxWorkers\": 4,\n  \"azureRetryLimit\": 9,\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\"\n    }\n  ],\n  \"inputColumnsNames\": [\n    \"data_provider_key\",\n    \"prod_key\"\n  ]\n}",
+      "operationVersionName": "DimensionService",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1_Refined_Fact_publications_v1"
+}

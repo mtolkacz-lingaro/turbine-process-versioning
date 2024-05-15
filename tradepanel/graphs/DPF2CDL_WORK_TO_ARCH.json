@@ -1,0 +1,21 @@
+{
+  "applicationName": "TRADEPANEL",
+  "nodes": [
+    {
+      "operationName": "dummySchema",
+      "operationDescription": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"IDS\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_1\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[GEN] move file work to archieve",
+      "operationDescription": "1) Move .zip..gz,.csv,.txt file from work to archieve\n2) Remove folder",
+      "predecessorName": "dummySchema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nfrom IPython import get_ipython\\nimport os\\nimport pathlib\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nfiles = dbutils.fs.ls('/mnt/<@@RAW_PATH@@>')\\nPK = str(<<PROCESS_RUN_KEY>>)\\nfor fi in files:\\n  filename = fi.name\\n  filepath = fi.path\\n  endwithzip = filename.endswith('.zip')\\n  endwithgz = filename.endswith('.gz')\\n  endwithcsv = filename.endswith('.csv')\\n  endwithtxt = filename.endswith('.txt')\\n\\n  if ((endwithzip) and (PK in filename)): # If input file is a ZIP file\\n    dbutils.fs.mv(f\\\"dbfs:/mnt/<@@RAW_PATH@@>{filename}\\\", \\\"dbfs:/mnt/<@@ARCH_PATH@@>\\\")\\n\\n  elif ((endwithgz) and (PK in filename)):\\n    dbutils.fs.mv(f\\\"dbfs:/mnt/<@@RAW_PATH@@>{filename}\\\", \\\"dbfs:/mnt/<@@ARCH_PATH@@>\\\")\\n\\n  elif ((endwithcsv) and (PK in filename)):\\n    dbutils.fs.mv(f\\\"dbfs:/mnt/<@@RAW_PATH@@>{filename}\\\", \\\"dbfs:/mnt/<@@ARCH_PATH@@>\\\")\\n\\n  elif ((endwithtxt) and (PK in filename)):\\n    dbutils.fs.mv(f\\\"dbfs:/mnt/<@@RAW_PATH@@>{filename}\\\", \\\"dbfs:/mnt/<@@ARCH_PATH@@>\\\")\\n\\n  elif (PK in filename):\\n    dbutils.fs.rm(f\\\"/mnt/<@@RAW_PATH@@>{filename}\\\",True)\\n  else:\\n    print(\\\"NO FILES/FOLDER TO DELETE/MOVE\\\")\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_1\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_2\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "DPF2CDL_WORK_TO_ARCH"
+}
