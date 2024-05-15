@@ -1,0 +1,26 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "[Dist] List Dist Prod Skids From Transformed Fact Data",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_atom_trans\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"prod_skid\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_cntrt_ifct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Join] List Dist Prods with Available Fact Data",
+      "predecessorName": "[Dist] List Dist Prod Skids From Transformed Fact Data",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"INNER\",\n  \"referenceDataframe\": \"df_prod_cntrt_ifct\",\n  \"joinExpression\": \"in.prod_skid = ref.prod_skid\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_addskid\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_prod_cntrt_ifct\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid2\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_cntrt_sidim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] List Dist Prods with available Fact Data",
+      "predecessorName": "[Join] List Dist Prods with Available Fact Data",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_cntrt_sidim\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"CAST(<<CNTRT_ID>> AS FLOAT)\",\n      \"columnName\": \"cntrt_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cntrt_sidim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1 Integrated Product IDIM Contract Loading_v1"
+}

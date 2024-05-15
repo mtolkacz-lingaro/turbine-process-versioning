@@ -1,0 +1,97 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "[gen-reading fact schema]",
+      "operationDescription": "reading fact schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_fct_schema = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.mm_tp_fct_schema\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_fct_schema'] = df_fct_schema\\ndict_all_dfs['df_fct_schema'] = {\\\"df_object\\\" :df_fct_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_wkmeasr\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_schema\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Type cast Weekly fact data",
+      "predecessorName": "[gen-reading fact schema]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_wk_stgng_fct= dict_all_dfs['df_wk_stgng_fct'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_wk_stgng_fct.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_wk_stgng_fct = df_wk_stgng_fct.withColumn(i,lit(None).cast('string'))\\n\\ndf_wk_stgng_fct = df_wk_stgng_fct.select(*sdim_cols)\\ncols = df_wk_stgng_fct.columns\\n\\nfor j in cols:\\n  df_wk_stgng_fct = df_wk_stgng_fct.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_wk_stgng_fct'] = {\\\"df_object\\\" :df_wk_stgng_fct}\\ndf_output_dict['df_wk_stgng_fct'] = df_wk_stgng_fct\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_wk_stgng_fct\"\n    },\n    {\n      \"name\": \"df_fct_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_wk_stgng_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Type cast Monthly fact data",
+      "predecessorName": "Type cast Weekly fact data",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mth_stgng_fct= dict_all_dfs['df_mth_stgng_fct'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mth_stgng_fct.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mth_stgng_fct = df_mth_stgng_fct.withColumn(i,lit(None).cast('string'))\\n\\ndf_mth_stgng_fct = df_mth_stgng_fct.select(*sdim_cols)\\ncols = df_mth_stgng_fct.columns\\n\\nfor j in cols:\\n  df_mth_stgng_fct = df_mth_stgng_fct.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_mth_stgng_fct'] = {\\\"df_object\\\" :df_mth_stgng_fct}\\ndf_output_dict['df_mth_stgng_fct'] = df_mth_stgng_fct\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mth_stgng_fct\"\n    },\n    {\n      \"name\": \"df_fct_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mth_stgng_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Type cast Bi-Monthly fact data",
+      "predecessorName": "Type cast Monthly fact data",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_bimth_stgng_fct= dict_all_dfs['df_bimth_stgng_fct'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_bimth_stgng_fct.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_bimth_stgng_fct = df_bimth_stgng_fct.withColumn(i,lit(None).cast('string'))\\n\\ndf_bimth_stgng_fct = df_bimth_stgng_fct.select(*sdim_cols)\\ncols = df_bimth_stgng_fct.columns\\n\\nfor j in cols:\\n  df_bimth_stgng_fct = df_bimth_stgng_fct.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_bimth_stgng_fct'] = {\\\"df_object\\\" :df_bimth_stgng_fct}\\ndf_output_dict['df_bimth_stgng_fct'] = df_bimth_stgng_fct\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_bimth_stgng_fct\"\n    },\n    {\n      \"name\": \"df_fct_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_bimth_stgng_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET - Add partition columns - Weekly",
+      "predecessorName": "Type cast Bi-Monthly fact data",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_wk_stgng_fct\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id,0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_wk_stgng_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET - Add partition columns - Monthly",
+      "predecessorName": "CET - Add partition columns - Weekly",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mth_stgng_fct\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id,0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mth_stgng_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET - Add partition columns - Bi-Monthly",
+      "predecessorName": "CET - Add partition columns - Monthly",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_bimth_stgng_fct\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id,0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_bimth_stgng_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] on mm_tp_wk_fct - DDAPI",
+      "predecessorName": "CET - Add partition columns - Bi-Monthly",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"exclusive\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"<@@PATH1@@>MM_TP_WK_FCT/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"<<SEC_GRP_KEY>>\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_wk_stgng_fct\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release semaphore for mm_tp_wk_fct",
+      "predecessorName": "[FP] on mm_tp_wk_fct - DDAPI",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TP_WK_FCT/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] on mm_tp_mth_fct - DDAPI",
+      "predecessorName": "release semaphore for mm_tp_wk_fct",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"exclusive\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"<@@PATH1@@>MM_TP_MTH_FCT/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"<<SEC_GRP_KEY>>\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mth_stgng_fct\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release semaphore for mm_tp_mth_fct",
+      "predecessorName": "[FP] on mm_tp_mth_fct - DDAPI",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TP_MTH_FCT/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] on mm_tp_bimth_fct - DDAPI",
+      "predecessorName": "release semaphore for mm_tp_mth_fct",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"exclusive\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"<@@PATH1@@>MM_TP_BIMTH_FCT/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Trade Panel Light Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"<<SEC_GRP_KEY>>\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_bimth_stgng_fct\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release semaphore for mm_tp_bimth_fct",
+      "predecessorName": "[FP] on mm_tp_bimth_fct - DDAPI",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TP_BIMTH_FCT/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1_Atomic_Fact_publications_v1"
+}
