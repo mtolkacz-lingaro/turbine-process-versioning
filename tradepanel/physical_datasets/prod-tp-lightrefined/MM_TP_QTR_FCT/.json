@@ -1,0 +1,16 @@
+{
+  "objectDescription": "TP_QTR_FCT",
+  "objectTypeCode": "PHYSICAL_TABLE",
+  "parentLogicalObject": {
+    "logicalObjectName": "TP_QTR_FCT",
+    "parentLogicalObjectAssocTypeCode": "LT_2_PT"
+  },
+  "statusCode": "ACTIVE",
+  "dataProviderCode": "TP",
+  "dataTypeCode": "TP",
+  "infrastructureId": "https://dnturbineinternal301.blob.core.windows.net/refined",
+  "owningApplicationName": "Turbine Internal - Refined",
+  "fileTypeCode": "parquet",
+  "secureGroupKey": 0,
+  "objectName": "refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_QTR_FCT/"
+}

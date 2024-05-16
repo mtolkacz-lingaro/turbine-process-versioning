@@ -1,0 +1,11 @@
+{
+  "objectDescription": "TP_PROD_ASSOC",
+  "objectTypeCode": "LOGICAL_TABLE",
+  "dataProviderCode": "TP",
+  "dataTypeCode": "TP",
+  "parameters": [],
+  "secureGroupKey": 0,
+  "owningApplicationName": "Turbine Internal - Refined",
+  "statusCode": "ACTIVE",
+  "objectName": "TP_PROD_ASSOC"
+}

@@ -1,0 +1,11 @@
+{
+  "objectDescription": "TP_MKT_STORE_DIM",
+  "objectTypeCode": "LOGICAL_TABLE",
+  "dataProviderCode": "TP",
+  "dataTypeCode": "TP",
+  "parameters": [],
+  "secureGroupKey": 0,
+  "owningApplicationName": "Turbine Internal - Refined",
+  "statusCode": "ACTIVE",
+  "objectName": "TP_MKT_STORE_DIM"
+}
