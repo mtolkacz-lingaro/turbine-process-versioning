@@ -1,0 +1,16 @@
+{
+  "objectDescription": "TP_PROD_DIM",
+  "objectTypeCode": "PHYSICAL_TABLE",
+  "parentLogicalObject": {
+    "logicalObjectName": "TP_PROD_DIM",
+    "parentLogicalObjectAssocTypeCode": "LT_2_PT"
+  },
+  "statusCode": "ACTIVE",
+  "dataProviderCode": "TP",
+  "dataTypeCode": "TP",
+  "infrastructureId": "https://dnturbineinternal301.blob.core.windows.net/refined",
+  "owningApplicationName": "Turbine Internal - Refined",
+  "fileTypeCode": "parquet",
+  "secureGroupKey": 0,
+  "objectName": "refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_DIM_VW/"
+}
