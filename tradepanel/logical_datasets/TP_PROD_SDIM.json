@@ -4,6 +4,7 @@
   "dataProviderCode": "TP",
   "dataTypeCode": "TP",
   "parameters": [],
+  "dataSignalKeys": [0],
   "secureGroupKey": 0,
   "owningApplicationName": "Turbine Internal - Refined",
   "statusCode": "ACTIVE",
