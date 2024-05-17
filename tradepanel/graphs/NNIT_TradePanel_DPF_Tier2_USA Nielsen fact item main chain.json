@@ -4,7 +4,7 @@
   "nodes": [
     {
       "operationName": "[NG] LOAD TABLES",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"CDL_TP_USA Nielsen Fact-Load Ref Tables\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_CDL_TP_USA Nielsen Fact-Load Ref Tables\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
