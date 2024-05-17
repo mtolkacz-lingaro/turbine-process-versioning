@@ -1,0 +1,69 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "[gen] prepare Mm Measure Run Log",
+      "operationDescription": "prepare Mm Measure Run Log",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\nfrom pyspark.sql.functions import lower\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nmeasr_df = dict_all_dfs['df_measr_map'][\\\"df_object\\\"]   \\nmeasr_df.createOrReplaceTempView(\\\"MLKP\\\")\\n\\n\\ncrbm2_df = dict_all_dfs['df_fct_crbm2'][\\\"df_object\\\"] \\ncrbm2_df.createOrReplaceTempView(\\\"TAB_COLS\\\")\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\nmm_measr_lkp = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"query\\\", f\\\"select * from adwgp_mm.MM_MEASR_LKP WHERE fact_type_code = '<<FACT_TYPE_CODE>>'\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\nmm_measr_lkp=mm_measr_lkp.withColumn(\\\"measr_phys_name\\\",lower(mm_measr_lkp.measr_phys_name))\\nmm_measr_lkp.createOrReplaceTempView('input')\\n\\n\\n\\ndf=spark.table(\\\"TAB_COLS\\\")\\ncol_names=df.columns\\n\\n\\nin_clause= \\\", \\\".join(\\\"'\\\"+ item + \\\"'\\\" for item in col_names)\\nquery=f\\\"\\\"\\\"\\nwith temp1 as(select  input.measr_id,input.measr_grp_id,input.measr_name,input.measr_desc,input.measr_logcl_name,input.measr_phys_name,input.fact_type_code,input.prmtn_type_name,input.uom_name,input.time_agg_methd_code,input.prod_agg_methd_code,input.mkt_agg_methd_code,input.frml_txt,input.bimth_mth_alloc_factr,input.use_ind ,<<PROCESS_RUN_KEY>> run_id,case when mlkp.measr_id is not null then 'n' else 'y' end calc_ind,mlkp.extrn_code extrn_measr_id,mlkp.extrn_name extrn_measr_name FROM  input LEFT OUTER JOIN MLKP ON input.measr_id = MLKP.measr_id\\nwhere input.measr_phys_name IN ({in_clause}))\\nselect * from temp1 \\\"\\\"\\\"\\n\\ndf_measr_plc=spark.sql(query)\\n\\ndf_output_dict['df_measr_plc'] = df_measr_plc\\n\\ndict_all_dfs['df_measr_plc'] = {\\\"df_object\\\" :df_measr_plc}\\n\\n\\n\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_xref\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_measr_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET]prepare Mm Measure Run Log",
+      "predecessorName": "[gen] prepare Mm Measure Run Log",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_measr_plc\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"<<PROCESS_RUN_KEY>>\",\n      \"columnName\": \"run_id\"\n    },\n    {\n      \"transformation\": \"case when measr_id is not null then 'n' else 'y' end\",\n      \"columnName\": \"calc_ind\"\n    },\n    {\n      \"transformation\": \"extrn_code\",\n      \"columnName\": \"extrn_measr_id\"\n    },\n    {\n      \"transformation\": \"extrn_name\",\n      \"columnName\": \"extrn_measr_name\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_measr_plc\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] MM_RUN_MEASR_PLC",
+      "predecessorName": "[CET]prepare Mm Measure Run Log",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_MEASR_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_run_measr_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN]  MM_RUN_MEASR_PLC AND MEASR_PLC",
+      "predecessorName": "[FL] MM_RUN_MEASR_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_mm_run_measr_plc\",\n  \"joinExpression\": \"ref.run_id=in.run_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_measr_plc\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_run_measr_plc\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_measr_plc_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[GEN]cc",
+      "predecessorName": "[JOIN]  MM_RUN_MEASR_PLC AND MEASR_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_measr_plc_1 = dict_all_dfs['df_measr_plc_1'][\\\"df_object\\\"]\\ndf_mm_run_measr_plc = dict_all_dfs['df_mm_run_measr_plc'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_measr_plc_1.columns\\nsdim_cols = df_mm_run_measr_plc.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_measr_plc_1 = df_measr_plc_1.withColumn(i,lit(None).cast('string'))\\n\\ndf_measr_plc_1 = df_measr_plc_1.select(*sdim_cols)\\ncols = df_measr_plc_1.columns\\n\\nfor j in cols:\\n  if dict(df_measr_plc_1.dtypes)[j] != dict(df_mm_run_measr_plc.dtypes)[j]:\\n    df_measr_plc_1 = df_measr_plc_1.withColumn(j, col(j).cast(dict(df_mm_run_measr_plc.dtypes)[j]))\\n\\ndict_all_dfs['df_measr_plc_1'] = {\\\"df_object\\\" :df_measr_plc_1}\\ndf_output_dict['df_measr_plc_1'] = df_measr_plc_1\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_run_measr_plc\"\n    },\n    {\n      \"name\": \"df_measr_plc_1\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_measr_plc_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FB] Publish MM measure run log",
+      "predecessorName": "[GEN]cc",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_MEASR_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"run_id\"\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_measr_plc_1\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CET to add Part_key",
+      "predecessorName": "[FB] Publish MM measure run log",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_measr_plc_1\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"cast(0 as integer)\",\n      \"columnName\": \"part_key\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_measr_plc_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FB] Publish MM measure run log - DDAPI",
+      "predecessorName": "CET to add Part_key",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"<@@LIGHTREFINED@@>MM_RUN_MEASR_PLC/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Turbine Internal - Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [\n    \"part_key\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_key\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_measr_plc_1\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release sem for MM_RUN_MEASR_PLC",
+      "predecessorName": "[FB] Publish MM measure run log - DDAPI",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_MEASR_PLC/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1_SFF_Measure_log_Loading"
+}

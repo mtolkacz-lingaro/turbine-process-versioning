@@ -1,0 +1,41 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \"DQ Test\",\r\n    \"description\": \"DQ test\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n        \"SRCE_SYS_ID\": {\r\n            \"title\": \"SRCE_SYS_ID\",\r\n            \"description\": \"SRCE_SYS_ID\",\r\n            \"default\": 4,\r\n            \"type\": \"integer\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [ \"SRCE_SYS_ID\"]\r\n}",
+  "nodes": [
+    {
+      "operationName": "df_prod_promo_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf = dict_all_dfs['df_prod_promo_vw'][\\\"df_object\\\"]\\n\\ndict_all_dfs['df_prod_promo_vw'] = {\\\"df_object\\\" :df}\\ndf_output_dict['df_prod_promo_vw'] = df\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_promo_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_promo_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "df_fact_promo_img",
+      "predecessorName": "df_prod_promo_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf = dict_all_dfs['df_fact_promo_vw'][\\\"df_object\\\"]\\n\\ndict_all_dfs['df_fact_promo_img'] = {\\\"df_object\\\" :df}\\ndf_output_dict['df_fact_promo_img'] = df\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_promo_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fact_promo_img\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "df_mmc_fact",
+      "predecessorName": "df_fact_promo_img",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf = dict_all_dfs['df_fact_extrn'][\\\"df_object\\\"]\\n\\ndict_all_dfs['df_mmc_fact'] = {\\\"df_object\\\" :df}\\ndf_output_dict['df_mmc_fact'] = df\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_extrn\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mmc_fact\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "tier2_mkt_mtrlz_tbl",
+      "predecessorName": "df_mmc_fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf = dict_all_dfs['df_join_mkt_dim_w_extrn_id'][\\\"df_object\\\"]\\n\\ndict_all_dfs['tier2_mkt_mtrlz_tbl'] = {\\\"df_object\\\" :df}\\ndf_output_dict['tier2_mkt_mtrlz_tbl'] = df\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_join_mkt_dim_w_extrn_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"tier2_mkt_mtrlz_tbl\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "tier2_prod_mtrlz_tbl",
+      "predecessorName": "tier2_mkt_mtrlz_tbl",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf = dict_all_dfs['df_prod_dim_lkp_vw_w_extrn_id'][\\\"df_object\\\"]\\n\\ndict_all_dfs['tier2_prod_mtrlz_tbl'] = {\\\"df_object\\\" :df}\\ndf_output_dict['tier2_prod_mtrlz_tbl'] = df\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim_lkp_vw_w_extrn_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"tier2_prod_mtrlz_tbl\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "three_file_cdl_t2_business_validations_inputs"
+}

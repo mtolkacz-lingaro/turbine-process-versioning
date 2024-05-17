@@ -1,0 +1,55 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "[DSTNT] time periods from fact image",
+      "operationDescription": "time periods from fact image",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_WK_img\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"time_perd_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_sd_timeperd\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[cet]",
+      "predecessorName": "[DSTNT] time periods from fact image",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_sd_timeperd\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"min(mm_time_perd_end_date)\",\n      \"columnName\": \"min_mm_time_perd_end_date\"\n    },\n    {\n      \"transformation\": \"max(mm_time_perd_end_date)\",\n      \"columnName\": \"max_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_sd_timeperd\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[AGG]",
+      "predecessorName": "[cet]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_sd_timeperd\"\n    }\n  ],\n  \"aggregate\": [\n    {\n      \"expression\": \"max(mm_time_perd_end_date)\",\n      \"alias\": \"max_mm_time_perd_end_date\"\n    },\n    {\n      \"expression\": \"min(mm_time_perd_end_date)\",\n      \"alias\": \"min_mm_time_perd_end_date\"\n    }\n  ],\n  \"groupBy\": [\n    \"time_perd_id\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_smm_timeperd\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Aggregator",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] time_perd_fdim",
+      "predecessorName": "[AGG]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"time_perd_type_code = '<<TIME_PERD_TYPE_CODE>>'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_time_perd_fdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_time_perd_fdim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[join] list all except  time periods",
+      "predecessorName": "[FIL] time_perd_fdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT OUTER\",\n  \"referenceDataframe\": \"df_time_perd_fdim\",\n  \"joinExpression\": \" in.min_mm_time_perd_end_date <= ref.end_date AND in.max_mm_time_perd_end_date >= ref.end_date\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_smm_timeperd\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"min_mm_time_perd_end_date\",\n          \"columnAlias\": \"min_mm_time_perd_end_date\"\n        },\n        {\n          \"columnName\": \"max_mm_time_perd_end_date\",\n          \"columnAlias\": \"max_mm_time_perd_end_date\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_time_perd_fdim\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"time_perd_id\",\n          \"columnAlias\": \"time_perd_id_2\"\n        },\n        {\n          \"columnName\": \"end_date\",\n          \"columnAlias\": \"time_perd_end_date_2\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_l_timeperd\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen]",
+      "predecessorName": "[join] list all except  time periods",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_fct_l_timeperd = dict_all_dfs['df_fct_l_timeperd'][\\\"df_object\\\"]\\n\\ncntrt_id= <<CNTRT_ID>>\\nprod_prttn_code='<<PROD_PRTTN_CODE>>'\\nsrce_sys_id= <<SRCE_SYS_ID>>\\nrun_id= <<PROCESS_RUN_KEY>>\\nrcd_orign_code='B'\\ntime_perd_class_code='<<TIME_PERD_CLASS_CODE>>'\\nfact_type_code='<<FACT_TYPE_CODE>>'\\n\\nfrom pyspark.sql.functions import lit \\n\\ndf_fct_l_timeperd = df_fct_l_timeperd.withColumn(\\\"prod_prttn_code\\\",lit(prod_prttn_code))\\ndf_fct_l_timeperd = df_fct_l_timeperd.withColumn(\\\"cntrt_id\\\",lit(cntrt_id))\\ndf_fct_l_timeperd = df_fct_l_timeperd.withColumn(\\\"srce_sys_id\\\",lit(srce_sys_id))\\ndf_fct_l_timeperd = df_fct_l_timeperd.withColumn(\\\"run_id\\\",lit(run_id))\\ndf_fct_l_timeperd = df_fct_l_timeperd.withColumn(\\\"rcd_orign_code\\\",lit(rcd_orign_code))\\ndf_fct_l_timeperd = df_fct_l_timeperd.withColumn(\\\"time_perd_class_code\\\",lit(time_perd_class_code))\\ndf_fct_l_timeperd = df_fct_l_timeperd.withColumn(\\\"fact_type_code\\\",lit(fact_type_code))\\n\\n\\ndict_all_dfs['df_fct_l_timeperd'] = {\\\"df_object\\\" :df_fct_l_timeperd}\\ndf_output_dict['df_fct_l_timeperd'] = df_fct_l_timeperd\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_l_timeperd\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_l_timeperd\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[MJ] list missing time periods",
+      "predecessorName": "[gen]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_l_timeperd\",\n      \"addAllColumns\": \"true\",\n      \"alias\": \"input\",\n      \"columns\": [\n        {\n          \"columnName\": \"min_mm_time_perd_end_date\",\n          \"columnAlias\": \"min_mm_time_perd_end_date\"\n        },\n        {\n          \"columnName\": \"max_mm_time_perd_end_date\",\n          \"columnAlias\": \"max_mm_time_perd_end_date\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_fct_sd_timeperd\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"time_fdim\",\n      \"columns\": [\n        {\n          \"columnName\": \"mm_time_perd_end_date\",\n          \"columnAlias\": \"mm_time_perd_end_date\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_time_map\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"time_map\",\n      \"columns\": [\n        {\n          \"columnName\": \"extrn_code\",\n          \"columnAlias\": \"extrn_time_perd_id\"\n        }\n      ]\n    }\n  ],\n  \"joinOperations\": [\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"time_fdim\",\n      \"joinExpression\": \"time_fdim.time_perd_id=input.time_perd_id\"\n    },\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"time_map\",\n      \"joinExpression\": \"time_map.time_perd_id=input.time_perd_id\"\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_lm_timeperd\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "MultipleJoiner",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1_SFF Fact Copy"
+}

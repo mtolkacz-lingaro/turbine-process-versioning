@@ -1,0 +1,26 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "[JOINER] ADD PROD_PRTTN_CODE TO RUN LOG",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT OUTER\",\n  \"referenceDataframe\": \"df_mm_prod_prttn_xref\",\n  \"joinExpression\": \"in.pg_categ_txt=ref.EXTRN_PROD_PRTTN_ID\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_tmp\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"pg_categ_txt\",\n          \"columnAlias\": \"pg_categ_txt\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_prod_prttn_xref\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"PROD_PRTTN_CODE\",\n          \"columnAlias\": \"prod_prttn_code\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_partition_log\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[DISTINCT] PREPARE RUN LOG",
+      "predecessorName": "[JOINER] ADD PROD_PRTTN_CODE TO RUN LOG",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_run_partition_log\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"mm_time_perd_end_date\"\n    },\n    {\n      \"name\": \"cntrt_id\"\n    },\n    {\n      \"name\": \"srce_sys_id\"\n    },\n    {\n      \"name\": \"prod_prttn_code\"\n    },\n    {\n      \"name\": \"run_id\"\n    },\n    {\n      \"name\": \"fact_type_code\"\n    },\n    {\n      \"name\": \"time_perd_class_code\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_partition_log\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[MERGE] RUN LOGS",
+      "predecessorName": "[DISTINCT] PREPARE RUN LOG",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_run_prttn_plc\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_run_partition_log\"\n    },\n    {\n      \"name\": \"df_mm_run_prttn_plc\"\n    }\n  ],\n  \"logicalKey\": [],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_run_prttn_plc\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "CDL_TP_USA Nielsen Fact-Load Run Partition Log"
+}

@@ -1,0 +1,61 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-reading fact schema]",
+      "predecessorName": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_fct_schema = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.mm_tp_fct_schema\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_fct_schema'] = df_fct_schema\\ndict_all_dfs['df_fct_schema'] = {\\\"df_object\\\" :df_fct_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_schema\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Type cast fact image",
+      "predecessorName": "[gen-reading fact schema]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_fct_img= dict_all_dfs['df_fct_WK_img'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_fct_img.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_fct_img = df_fct_img.withColumn(i,lit(None).cast('string'))\\n\\ndf_fct_img = df_fct_img.select(*sdim_cols)\\ncols = df_fct_img.columns\\n\\nfor j in cols:\\n  if dict(df_fct_img.dtypes)[j] != dict(df_fct_schema.dtypes)[j]:\\n    df_fct_img = df_fct_img.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_fct_materl_img'] = {\\\"df_object\\\" :df_fct_img}\\ndf_output_dict['df_fct_materl_img'] = df_fct_img\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_WK_img\"\n    },\n    {\n      \"name\": \"df_fct_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_materl_img\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Load Fact",
+      "predecessorName": "Type cast fact image",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_targ_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Cast and Complement the fact",
+      "predecessorName": "Load Fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_fct_img= dict_all_dfs['df_targ_fct'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_fct_img.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_fct_img = df_fct_img.withColumn(i,lit(None).cast('string'))\\n\\ndf_fct_img = df_fct_img.select(*sdim_cols)\\ncols = df_fct_img.columns\\n\\nfor j in cols:\\n  if dict(df_fct_img.dtypes)[j] != dict(df_fct_schema.dtypes)[j]:\\n    df_fct_img = df_fct_img.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_targ_fct'] = {\\\"df_object\\\" :df_fct_img}\\ndf_output_dict['df_targ_fct'] = df_fct_img\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_targ_fct\"\n    },\n    {\n      \"name\": \"df_fct_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_targ_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release fact",
+      "predecessorName": "Cast and Complement the fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt=<<CNTRT_ID>>/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Merge materialized fact",
+      "predecessorName": "Release fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_targ_fct\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_targ_fct\"\n    },\n    {\n      \"name\": \"df_fct_materl_img\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"mm_time_perd_end_date\",\n    \"prod_prttn_code\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_materl_img\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Add partition columns",
+      "predecessorName": "Merge materialized fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_materl_img\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id,0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_materl_img\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1 materialize fact image"
+}

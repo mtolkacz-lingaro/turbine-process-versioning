@@ -1,0 +1,76 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "[FL] MM_RUN_MKT_PLC ",
+      "operationDescription": "Loading MM_RUN_MKT_PLC ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_MKT_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_mkt_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] mkt_as and run_mkt_plc",
+      "predecessorName": "[FL] MM_RUN_MKT_PLC ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_run_mkt_plc\",\n  \"joinExpression\": \" ref.run_id = in.run_id and ref.mkt_skid = in.mkt_skid\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_as\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        },\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_run_mkt_plc\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        },\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_as_1\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-cc] tables",
+      "predecessorName": "[JOIN] mkt_as and run_mkt_plc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mkt_as_1 = dict_all_dfs['df_mkt_as_1'][\\\"df_object\\\"]\\ndf_run_mkt_plc = dict_all_dfs['df_run_mkt_plc'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mkt_as_1.columns\\nsdim_cols = df_run_mkt_plc.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mkt_as_1 = df_mkt_as_1.withColumn(i,lit(None).cast('string'))\\n\\ndf_mkt_as_1 = df_mkt_as_1.select(*sdim_cols)\\ncols = df_mkt_as_1.columns\\n\\nfor j in cols:\\n  if dict(df_mkt_as_1.dtypes)[j] != dict(df_run_mkt_plc.dtypes)[j]:\\n    df_mkt_as_1 = df_mkt_as_1.withColumn(j, col(j).cast(dict(df_run_mkt_plc.dtypes)[j]))\\n\\ndict_all_dfs['df_mkt_as_1'] = {\\\"df_object\\\" :df_mkt_as_1}\\ndf_output_dict['df_mkt_as_1'] = df_mkt_as_1\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_as_1\"\n    },\n    {\n      \"name\": \"df_run_mkt_plc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_as_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[PUB] mm market run log",
+      "predecessorName": "[gen-cc] tables",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_MKT_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_as_1\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release sem for MM_RUN_MKT_PLC ",
+      "predecessorName": "[PUB] mm market run log",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_MKT_PLC/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] MM_RUN_PROD_PLC ",
+      "predecessorName": "release sem for MM_RUN_MKT_PLC ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_PROD_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_prod_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] prod_as and run_prod_plc",
+      "predecessorName": "[FL] MM_RUN_PROD_PLC ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_run_prod_plc\",\n  \"joinExpression\": \"ref.run_id=in.run_id and ref.prod_skid=in.prod_skid\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_as\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        },\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_run_prod_plc\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        },\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_as_1\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-cc] both tables",
+      "predecessorName": "[JOIN] prod_as and run_prod_plc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_prod_as_1 = dict_all_dfs['df_prod_as_1'][\\\"df_object\\\"]\\ndf_run_prod_plc = dict_all_dfs['df_run_prod_plc'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_prod_as_1.columns\\nsdim_cols = df_run_prod_plc.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_prod_as_1 = df_prod_as_1.withColumn(i,lit(None).cast('string'))\\n\\ndf_prod_as_1 = df_prod_as_1.select(*sdim_cols)\\ncols = df_prod_as_1.columns\\n\\nfor j in cols:\\n  if dict(df_prod_as_1.dtypes)[j] != dict(df_run_prod_plc.dtypes)[j]:\\n    df_prod_as_1 = df_prod_as_1.withColumn(j, col(j).cast(dict(df_run_prod_plc.dtypes)[j]))\\n\\ndict_all_dfs['df_prod_as_1'] = {\\\"df_object\\\" :df_prod_as_1}\\ndf_output_dict['df_prod_as_1'] = df_prod_as_1\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_as_1\"\n    },\n    {\n      \"name\": \"df_run_prod_plc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_as_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[PUB] mm product run log",
+      "predecessorName": "[gen-cc] both tables",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_PROD_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_as_1\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release sem for MM_RUN_PROD_PLC ",
+      "predecessorName": "[PUB] mm product run log",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_PROD_PLC/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T1_SFF Run Logs Loading"
+}
