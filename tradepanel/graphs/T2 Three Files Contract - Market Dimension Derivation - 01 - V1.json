@@ -1,0 +1,118 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \" Three Files Contract Main Chain Overloading\",\r\n    \"description\": \"Overloading parameters in Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n\t\t\"RCD_ORIGN_CODE\": {\r\n            \"title\": \"RCD_ORIGN_CODE\",\r\n            \"description\": \"RCD_ORIGN_CODE\",\r\n            \"default\": \"B\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"RCD_ORIGN_CODE\"]\r\n}",
+  "nodes": [
+    {
+      "operationName": "update delivery status - phase id 5 status id 2",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nimport pyspark\\nfrom pyspark.sql import SparkSession\\nfrom pyspark.sql.types import *\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\nspark_session = SparkSession.builder.appName('Spark_Session').getOrCreate()\\n\\nrows = [['null', <<CNTRT_ID>>, <<PROCESS_RUN_KEY>>, 5, 1, 2, <<PROCESS_RUN_KEY>>]]\\n\\ncolumns = ['cmmnt_txt', 'cntrt_id', 'dlvry_id', 'dlvry_phase_id', 'dlvry_run_seq_num', 'dlvry_sttus_id', 'run_id']\\njdbcDF2 = spark_session.createDataFrame(rows, columns)\\njdbcDF2.write.format(\\\"jdbc\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.MM_DLVRY_RUN_LKP\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").mode(\\\"append\\\").save()\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Mkt Transformations",
+      "predecessorName": "update delivery status - phase id 5 status id 2",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_extrn\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"<<SRCE_SYS_ID>>\",\n      \"columnName\": \"srce_sys_id\"\n    },\n    {\n      \"transformation\": \"<<PROCESS_RUN_KEY>>\",\n      \"columnName\": \"run_id\"\n    },\n    {\n      \"transformation\": \"CAST(0 AS DECIMAL(38,10))\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"transformation\": \"'<<CNTRY_NAME>>'\",\n      \"columnName\": \"cntry_name\"\n    },\n    {\n      \"transformation\": \"'<<ISO_CNTRY_CODE>>'\",\n      \"columnName\": \"iso_cntry_code\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[DIST] Mkt Transformations",
+      "predecessorName": "[CET] Mkt Transformations",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"srce_sys_id\"\n    },\n    {\n      \"name\": \"run_id\"\n    },\n    {\n      \"name\": \"cntrt_id\"\n    },\n    {\n      \"name\": \"cntry_name\"\n    },\n    {\n      \"name\": \"iso_cntry_code\"\n    },\n    {\n      \"name\": \"extrn_mkt_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] Mkt Transformations",
+      "predecessorName": "[DIST] Mkt Transformations",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"extrn_mkt_id IS NOT NULL\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] read mkt_sdim schema",
+      "predecessorName": "[FIL] Mkt Transformations",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\nref_db_url = dbutils.secrets.get('tp_dpf2cdl', 'refDBjdbcURL')\\nrefDBname = dbutils.secrets.get('tp_dpf2cdl', 'refDBname')\\nrefDBuser = dbutils.secrets.get('tp_dpf2cdl', 'refDBuser')\\nrefDBpwd = dbutils.secrets.get('tp_dpf2cdl', 'refDBpwd')\\n\\ndf_mkt_sdim_schema = spark.read.format(\\\"jdbc\\\").option(\\\"driver\\\", \\\"org.postgresql.Driver\\\").option(\\\"url\\\", f\\\"{ref_db_url}/{refDBname}\\\").option(\\\"dbtable\\\", \\\"adwgp_mm.mm_mkt_sdim_vw_schema\\\").option(\\\"user\\\", f\\\"{refDBuser}\\\").option(\\\"password\\\", f\\\"{refDBpwd}\\\").option(\\\"ssl\\\", True).option(\\\"sslmode\\\", \\\"require\\\").option(\\\"sslfactory\\\",\\\"org.postgresql.ssl.NonValidatingFactory\\\").load()\\n    \\ndf_output_dict['df_mkt_sdim_schema'] = df_mkt_sdim_schema\\ndict_all_dfs['df_mkt_sdim_schema'] = {\\\"df_object\\\" :df_mkt_sdim_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_sdim_schema\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] MM_MKT_SDIM parquet",
+      "predecessorName": "[Gen] read mkt_sdim schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_MKT_SDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sdim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] col comp",
+      "predecessorName": "[File Load] MM_MKT_SDIM parquet",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_sdim= dict_all_dfs['df_mm_mkt_sdim'][\\\"df_object\\\"]\\ndf_mkt_sdim_schema = dict_all_dfs['df_mkt_sdim_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_sdim.columns\\nsdim_cols = df_mkt_sdim_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_mkt_sdim = df_mm_mkt_sdim.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_sdim = df_mm_mkt_sdim.select(*sdim_cols)\\ncols = df_mm_mkt_sdim.columns\\n\\nfor j in cols:\\n  df_mm_mkt_sdim = df_mm_mkt_sdim.withColumn(j, col(j).cast(dict(df_mkt_sdim_schema.dtypes)[j]))\\n\\ndf_mm_mkt_sdim  = df_mm_mkt_sdim \\n\\ndict_all_dfs['df_mm_mkt_sdim'] = {\\\"df_object\\\" :df_mm_mkt_sdim}\\ndf_output_dict['df_mm_mkt_sdim'] = df_mm_mkt_sdim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_sdim_schema\"\n    },\n    {\n      \"name\": \"df_mm_mkt_sdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "sem release MM_MKT_SDIM",
+      "predecessorName": "[Gen] col comp",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_MKT_SDIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] MM_MKT_SDIM_VW",
+      "predecessorName": "sem release MM_MKT_SDIM",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"expression\": \"srce_sys_id = <<SRCE_SYS_ID>>\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[FIL] - for testing",
+      "predecessorName": "[FIL] MM_MKT_SDIM_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"1=1\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sdim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CSH] Schema for Mkt Skids Mapping",
+      "predecessorName": "[FIL] - for testing",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"cigrt_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"phcy_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"gasln_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_store_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_trade_chanl_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_regn_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"afrcn_amrcn_denst_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"hspnc_denst_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"store_num\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"area_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"st_code\"\n    },\n    {\n      \"columnType\": \"integer\",\n      \"columnName\": \"sellg_space_msf_qty\"\n    },\n    {\n      \"columnType\": \"integer\",\n      \"columnName\": \"chkot_cnt\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"store_sttus_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"beer_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"wine_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"liqr_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"ownr_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"geo_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"indus_class_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_scan_mkt_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"indus_class_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"div_whse_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"div_whse_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"trade_chanl_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"rptng_cntry_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"addr_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"postl_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"city_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"lngtd_val\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"lttd_val\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_mkt_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"store_name\"\n    },\n    {\n      \"columnType\": \"integer\",\n      \"columnName\": \"srce_sys_id\"\n    },\n    {\n      \"columnType\": \"integer\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"columnType\": \"integer\",\n      \"columnName\": \"run_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"cntry_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"iso_cntry_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"extrn_mkt_id\"\n    },\n    {\n      \"columnType\": \"integer\",\n      \"columnName\": \"mkt_skid\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mkt_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mkt_desc\"\n    },\n    {\n      \"columnType\": \"integer\",\n      \"columnName\": \"mkt_lvl_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mkt_lvl_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mkt_grp_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mkt_grp_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mkt_brkdw_type\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mkt_brkdw_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"regn_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"regn_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"sub_regn_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"sub_regn_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"cntry_hub_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"cntry_hub_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"iso_crncy_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"root_mkt_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mkt_store_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"custm_agg_ind\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"key_acct_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"key_acct_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"cust_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"cust_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"retl_bannr_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"retl_bannr_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"geo_id\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_scan_mkt_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_rta_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_rta_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_size_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"fips_cnty_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"fips_st_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"dma_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"dma_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mgb_area_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mgb_area_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"mgb_regn_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"msa_code\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"msa_name\"\n    },\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"vendr_chanl_code\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_sch_skidsmap\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC] mkt_stgng_vw",
+      "predecessorName": "[CSH] Schema for Mkt Skids Mapping",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_sch_skidsmap\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] Mkt Skids Mapping",
+      "predecessorName": "[CC] mkt_stgng_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT OUTER\",\n  \"referenceDataframe\": \"df_mm_mkt_sdim\",\n  \"joinExpression\": \"in.extrn_mkt_id=ref.extrn_mkt_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_stgng_vw\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"extrn_mkt_id\",\n          \"columnAlias\": \"extrn_mkt_id\"\n        },\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid1\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_mkt_sdim\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC] Mkt Skids Mapping",
+      "predecessorName": "[JOIN] Mkt Skids Mapping",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_sch_skidsmap\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_cc_mkt_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] New Mkt Skids",
+      "predecessorName": "[CC] Mkt Skids Mapping",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"mkt_skid IS NULL\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_cc_mkt_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] changing mkt skids",
+      "predecessorName": "[FIL] New Mkt Skids",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"mkt_skid IS NOT NULL\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_cc_mkt_skid_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_skid_lkp_chng\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "T2 Three Files Contract - Market Dimension Derivation - 01 - V1"
+}
