@@ -4,7 +4,7 @@
   "nodes": [
     {
       "operationName": "[SQL Syntax] Fact Transformations update DLVRY LKP",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"sqlQuery\": \"UPDATE delta.`/mnt/unrefined/cloudpanel-test-unref/test/testing/testFile/delta/MM_DLVRY_LKP/` SET DLVRY_STTUS_ID = 2,DLVRY_PHASE_ID = 18 WHERE DLVRY_ID = <<PROCESS_RUN_KEY>>\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_stgng\",\n      \"alias\": \"df_fact_stgng\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_dlvry_lkp\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"sqlQuery\": \"UPDATE delta.`/mnt/unrefined/NNIT/tradepanel/cloudpanel-test-unref/test/testing/testFile/delta/MM_DLVRY_LKP/` SET DLVRY_STTUS_ID = 2,DLVRY_PHASE_ID = 18 WHERE DLVRY_ID = <<PROCESS_RUN_KEY>>\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_stgng\",\n      \"alias\": \"df_fact_stgng\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_dlvry_lkp\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
       "operationVersionName": "SQLSyntax",
       "overridableIndicator": false
     },
