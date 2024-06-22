@@ -237,7 +237,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "RUN_ON_CLUSTER_POOL",
-      "parameterVal": "1"
+      "parameterVal": "0"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
@@ -252,7 +252,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "RUN_ON_INTERACTIVE_CLUSTER",
-      "parameterVal": "0"
+      "parameterVal": "1"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
