@@ -1,0 +1,502 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \" Three Files Contract Main Chain Overloading\",\r\n    \"description\": \"Overloading parameters in Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n\t\t\"DATA_TIER\": {\r\n            \"title\": \"DATA_TIER\",\r\n            \"description\": \"DATA_TIER\",\r\n\t\t\t\"enum\": [\r\n                \"Tier1\",\r\n                \"Tier2\",\r\n\t\t\t\t\"HHP\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"TEST_PRODUCTION\": {\r\n            \"title\": \"TEST_PRODUCTION\",\r\n            \"description\": \"TEST_PRODUCTION\",\r\n\t\t\t\"enum\": [\r\n                \"Test\",\r\n                \"Production\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"FACT_TYPE_CODE\": {\r\n            \"title\": \"FACT_TYPE_CODE\",\r\n            \"description\": \"FACT_TYPE_CODE\",\r\n\t\t\t\"enum\": [\r\n                \"HHP\",\r\n                \"SF\",\r\n\t\t\t\t\"TP\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"GEOGRAPHY\": {\r\n            \"title\": \"GEOGRAPHY\",\r\n            \"description\": \"GEOGRAPHY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"GEO_ID\": {\r\n            \"title\": \"GEO_ID\",\r\n            \"description\": \"GEO_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CURRENCY\": {\r\n            \"title\": \"CURRENCY\",\r\n            \"description\": \"CURRENCY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CURRENCY_CODE\": {\r\n            \"title\": \"CURRENCY_CODE\",\r\n            \"description\": \"CURRENCY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CATEGORY\": {\r\n            \"title\": \"CATEGORY\",\r\n            \"description\": \"CATEGORY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CATEGORY_ID\": {\r\n            \"title\": \"CATEGORY_ID\",\r\n            \"description\": \"CATEGORY_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"PERIOD_TYPE\": {\r\n            \"title\": \"PERIOD_TYPE\",\r\n            \"description\": \"PERIOD_TYPE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"PERIOD_TYPE_CODE\": {\r\n            \"title\": \"PERIOD_TYPE_CODE\",\r\n            \"description\": \"PERIOD_TYPE_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"VENDOR\": {\r\n            \"title\": \"VENDOR\",\r\n            \"description\": \"VENDOR\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CONTRACT_NAME\": {\r\n            \"title\": \"CONTRACT_NAME\",\r\n            \"description\": \"CONTRACT_NAME\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CONTRACT_CODE\": {\r\n            \"title\": \"CONTRACT_CODE\",\r\n            \"description\": \"CONTRACT_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PUBLISH_TO_REFINED_LAYER\": {\r\n            \"title\": \"PUBLISH_TO_REFINED_LAYER\",\r\n            \"description\": \"PUBLISH_TO_REFINED_LAYER\",\r\n\t\t\t\"enum\": [\r\n                \"true\",\r\n                \"false\"\r\n            ],\r\n\t\t\t\"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"RETENTION_PERIOD\": {\r\n            \"title\": \"NO_OF_WEEKS\",\r\n            \"description\": \"Retention period in number of weeks\",\r\n            \"type\": \"integer\"\r\n        },\r\n\t\t\"VENDOR_FILE_PATTERN\": {\r\n            \"title\": \"VENDOR_FILE_PATTERN\",\r\n            \"description\": \"VENDOR_FILE_PATTERN\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"STEP_FILE_PATTERN_FCT\": {\r\n            \"title\": \"FILE_PATTERN_FCT\",\r\n            \"description\": \"FILE_PATTERN_FCT\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"STEP_FILE_PATTERN_MKT\": {\r\n            \"title\": \"FILE_PATTERN_MKT\",\r\n            \"description\": \"FILE_PATTERN_MKT\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"STEP_FILE_PATTERN_PROD\": {\r\n            \"title\": \"FILE_PATTERN_PROD\",\r\n            \"description\": \"FILE_PATTERN_PROD\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"STEP_EDWM_MAP\": {\r\n            \"title\": \"EDWM_MAP\",\r\n            \"description\": \"EDWM_MAP\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"TIME_MAP\": {\r\n            \"title\": \"TIME_MAP\",\r\n            \"description\": \"TIME_MAP\",\r\n\t\t\t\"enum\": [\r\n                \"MM_TIME_MH\",\r\n                \"MM_TIME_EB\",\r\n\t\t\t\t\"MM_TIME_OB\",\r\n\t\t\t\t\"MM_TIME_WK_CA_NIQ\",\r\n\t\t\t\t\"MM_TIME_CUSTM\",\r\n\t\t\t\t\"MM_TIME_WKSS\",\r\n\t\t\t\t\"MM_TIME_DACH_SH\",\r\n\t\t\t\t\"MM_TIME_QTR\",\r\n\t\t\t\t\"MM_TIME_WKMS\",\r\n\t\t\t\t\"MM_TIME_BW\",\r\n\t\t\t\t\"MM_TIME_AOS\",\r\n\t\t\t\t\"MM_TIME_WK_UK\",\r\n\t\t\t\t\"MM_TIME_WEEK_NUM\",\r\n\t\t\t\t\"MM_TIME_BIGDATA_MH\",\r\n\t\t\t\t\"MM_TIME_BIGDATA_WK\",\r\n\t\t\t\t\"MM_TIME_MTH_NUM\",\r\n\t\t\t\t\"MM_TIME_WEEK_NUM_YR_LAST\",\r\n\t\t\t\t\"MM_TIME_MTH_LA\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n        \"STEP_DVM\": {\r\n            \"title\": \"DVM\",\r\n            \"description\": \"DVM\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"DATA_AUTO_VAL_IND\": {\r\n            \"title\": \"DATA_AUTO_VAL_IND\",\r\n            \"description\": \"DATA_AUTO_VAL_IND\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"SRCE_SYS_ID\": {\r\n            \"title\": \"SRCE_SYS_ID\",\r\n            \"description\": \"SRCE_SYS_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n        \"IGRTD_PUBLISH_FILE_PATTERN\": {\r\n            \"title\": \"IGRTD_PUBLISH_FILE_PATTERN\",\r\n            \"description\": \"File pattern to create a file from atomic contract that will trigger integrated layer publishing\",\r\n\t\t\t\"default\": \"N\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"CNTRT_ID\": {\r\n            \"title\": \"CNTRT_ID\",\r\n            \"description\": \"CNTRT_ID\",\r\n            \"default\": 615,\r\n            \"type\": \"integer\"\r\n        },\r\n         \"CNTRY_NAME\": {\r\n            \"title\": \"CNTRY_NAME\",\r\n            \"description\": \"CNTRY_NAME\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"ISO_CNTRY_CODE\": {\r\n            \"title\": \"ISO_CNTRY_CODE\",\r\n            \"description\": \"ISO_CNTRY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PROD_PRTTN_CODE\": {\r\n            \"title\": \"PROD_PRTTN_CODE\",\r\n            \"description\": \"PROD_PRTTN_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"ISO_CRNCY_CODE\": {\r\n            \"title\": \"ISO_CRNCY_CODE\",\r\n            \"description\": \"ISO_CRNCY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"TIME_PERD_TYPE_CODE\": {\r\n            \"title\": \"TIME_PERD_TYPE_CODE\",\r\n            \"description\": \"TIME_PERD_TYPE_CODE\",\r\n            \"default\": \"<<PERIOD_TYPE_CODE>>\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"TIME_PERD_CLASS_CODE\": {\r\n            \"title\": \"TIME_PERD_CLASS_CODE\",\r\n            \"description\": \"TIME_PERD_CLASS_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"RCD_ORIGN_CODE\": {\r\n            \"title\": \"RCD_ORIGN_CODE\",\r\n            \"description\": \"RCD_ORIGN_CODE\",\r\n            \"default\": \"B\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"RAW_FILE_PATH\": {\r\n            \"title\": \"RAW_FILE_PATH\",\r\n            \"description\": \"Raw File Path\",\r\n            \"default\": \"turbinev1/WORK/\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PUBLISH_PATH\": {\r\n            \"title\": \"PUBLISH_PATH\",\r\n            \"description\": \"Publishing Path\",\r\n            \"default\": \"bf/unrefined/adw-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"IN_FILE_PATH\": {\r\n            \"title\": \"IN_FILE_PATH\",\r\n            \"description\": \"Input File Path\",\r\n            \"default\": \"bf/unrefined/adw-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"MAPPINGS_PATH\": {\r\n            \"title\": \"MAPPINGS_PATH\",\r\n            \"description\": \"Mappings Path\",\r\n            \"default\": \"unrefined/cloudpanel-test-unref/Files__Contract/ThreeFilesContracts/mappings/\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"FILE_DVM\": {\r\n            \"title\": \"FILE_DVM\",\r\n            \"description\": \"File Structure Checks needed\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"REF_DVM\": {\r\n            \"title\": \"REF_DVM\",\r\n            \"description\": \"Reference Checks needed\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"FYI_DVM\": {\r\n            \"title\": \"FYI_DVM\",\r\n            \"description\": \"FYI Checks needed\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"BUSINESS_DVM\": {\r\n            \"title\": \"BUSINESS_DVM\",\r\n            \"description\": \"Business Validations needed\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ1\": {\r\n            \"title\": \"CHK_DQ1\",\r\n            \"description\": \"Unexpected Change Vs Previous period or year ago\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ2\": {\r\n            \"title\": \"CHK_DQ2\",\r\n            \"description\": \"Unexpected Backdata Difference\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ3\": {\r\n            \"title\": \"CHK_DQ3\",\r\n            \"description\": \"Negative Fact values\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ4\": {\r\n            \"title\": \"CHK_DQ4\",\r\n            \"description\": \"Bad fact data format\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ5\": {\r\n            \"title\": \"CHK_DQ5\",\r\n            \"description\": \"Missing Mandatory Columns\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ6\": {\r\n            \"title\": \"CHK_DQ6\",\r\n            \"description\": \"Fact Uses supplier Tag not defined\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ7\": {\r\n            \"title\": \"CHK_DQ7\",\r\n            \"description\": \"Duplicate Fact in input file\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ8\": {\r\n            \"title\": \"CHK_DQ8\",\r\n            \"description\": \"Duplicate Market Code in input file\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ9\": {\r\n            \"title\": \"CHK_DQ9\",\r\n            \"description\": \"Duplicate Product code in input file\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ10\": {\r\n            \"title\": \"CHK_DQ10\",\r\n            \"description\": \"Unmapped and Missing optional Columns\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ11\": {\r\n            \"title\": \"CHK_DQ11\",\r\n            \"description\": \"Missing Products\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ12\": {\r\n            \"title\": \"CHK_DQ12\",\r\n            \"description\": \"Missing time periods\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ13\": {\r\n            \"title\": \"CHK_DQ13\",\r\n            \"description\": \"Modified Area description\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ14\": {\r\n            \"title\": \"CHK_DQ14\",\r\n            \"description\": \"New products list\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ15\": {\r\n            \"title\": \"CHK_DQ15\",\r\n            \"description\": \"Delivered Measures list\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ16\": {\r\n            \"title\": \"CHK_DQ16\",\r\n            \"description\": \"Missing or Delivered Areas\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ17\": {\r\n            \"title\": \"CHK_DQ17\",\r\n            \"description\": \"Missing or Delivered Hierarchies\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ18\": {\r\n            \"title\": \"CHK_DQ18\",\r\n            \"description\": \"Unknown Time Periods\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ19\": {\r\n            \"title\": \"CHK_DQ19\",\r\n            \"description\": \"Modified Product Description\",\r\n            \"default\": \"false\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"DATA_TIER\",\"TEST_PRODUCTION\",\"FACT_TYPE_CODE\",\"GEOGRAPHY\",\"GEO_ID\",\"CURRENCY\",\"CURRENCY_CODE\",\"CATEGORY\",\"CATEGORY_ID\",\"PERIOD_TYPE\",\"PERIOD_TYPE_CODE\",\"VENDOR\",\"CONTRACT_NAME\",\"CONTRACT_CODE\",\"PUBLISH_TO_REFINED_LAYER\",\"RETENTION_PERIOD\",\"STEP_FILE_PATTERN_FCT\",\"STEP_FILE_PATTERN_MKT\",\"STEP_FILE_PATTERN_PROD\",\"STEP_EDWM_MAP\",\"TIME_MAP\",\"STEP_DVM\",\"SRCE_SYS_ID\",\"ISO_CNTRY_CODE\", \"CNTRY_NAME\", \"PROD_PRTTN_CODE\", \"ISO_CRNCY_CODE\",\"TIME_PERD_TYPE_CODE\",\"CNTRT_ID\",\"VENDOR_FILE_PATTERN\",\"TIME_PERD_CLASS_CODE\",\"DATA_AUTO_VAL_IND\",\"FILE_DVM\",\"REF_DVM\",\"FYI_DVM\",\"BUSINESS_DVM\",\"CHK_DQ1\",\"CHK_DQ2\",\"CHK_DQ3\",\"CHK_DQ4\",\"CHK_DQ5\",\"CHK_DQ6\",\"CHK_DQ7\",\"CHK_DQ8\",\"CHK_DQ9\",\"CHK_DQ10\",\"CHK_DQ11\",\"CHK_DQ12\",\"CHK_DQ13\",\"CHK_DQ14\",\"CHK_DQ15\",\"CHK_DQ16\",\"CHK_DQ17\",\"CHK_DQ18\",\"CHK_DQ19\"]\r\n}",
+  "nodes": [
+    {
+      "operationName": "df_dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Columns mappings",
+      "operationDescription": "Columns mappings",
+      "predecessorName": "df_dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\ndf_dpf_col_asign_vw = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/DPF_COL_ASIGN_VW\\\")\\ndf_dpf_col_asign_vw.createOrReplaceTempView(\\\"dpf_col_asign_vw\\\")\\n\\ndf_dpf_col_asign_vw = spark.sql('''\\nselect * from dpf_col_asign_vw where cntrt_id = <<CNTRT_ID>>\\n''')\\n\\n\\n#df_dpf_col_asign_vw = spark.read.format('csv').option('header', True).option('delimiter','|').load('/mnt/unrefined/NNIT/tradepanel/cloudpanel-test-unref/test/mappings/DQ_DPF_COL_ASIGN_VW.csv')\\n\\n\\ndict_all_dfs['df_dpf_col_asign_vw'] = {\\\"df_object\\\" :df_dpf_col_asign_vw}\\ndf_output_dict['df_dpf_col_asign_vw'] = df_dpf_col_asign_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dpf_col_asign_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Update Delivery status",
+      "predecessorName": "Columns mappings",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nimport pyspark\\nfrom pyspark.sql import SparkSession\\nfrom pyspark.sql.types import *\\n\\n\\n\\nspark_session = SparkSession.builder.appName('Spark_Session').getOrCreate()\\n\\nrows = [['null', <<CNTRT_ID>>, <<PROCESS_RUN_KEY>>, 2, 1, 2, <<PROCESS_RUN_KEY>>]]\\n\\ncolumns = ['cmmnt_txt', 'cntrt_id', 'dlvry_id', 'dlvry_phase_id', 'dlvry_run_seq_num', 'dlvry_sttus_id', 'run_id']\\njdbcDF2 = spark_session.createDataFrame(rows, columns)\\njdbcDF2.write.format(\\\"parquet\\\").mode(\\\"append\\\").save(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-refined/MM_DLVRY_RUN_LKP\\\")\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "MFT",
+      "predecessorName": "Update Delivery status",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Gen - load files",
+      "predecessorName": "MFT",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\n\\nimport os\\nimport pathlib\\nfrom zipfile import ZipFile\\nfrom datetime import datetime\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_dpf_col_asign_vw = dict_all_dfs['df_dpf_col_asign_vw'][\\\"df_object\\\"]\\n\\nPK = str(<<PROCESS_RUN_KEY>>)\\nfiles = dbutils.fs.ls('/mnt/<@@RAW_PATH@@>')\\n\\nlocalpath= \\\" \\\"\\nfor fi in files:\\n  filename = fi.name\\n  filepath = fi.path\\n\\n  endwithzip = filename.endswith('.zip')\\n  endwithgz = filename.endswith('.gz')\\n  endwithcsv = filename.endswith('.csv')\\n  \\n  if ((endwithzip) and (PK in filename)): # If input file is a ZIP file\\n    localpath = os.path.join(\\\"/dbfs/mnt/<@@RAW_PATH@@>\\\", filename)\\n\\ns = '<<STEP_FILE_PATTERN_MKT>>'\\nposition = s.find('%')\\nrun_id = <<PROCESS_RUN_KEY>>\\nfile_name_for_zip = s.replace('%','*')\\nfile_name = s[0:position] + f'*{run_id}*'\\n\\nvendor_pattern ='<<VENDOR_FILE_PATTERN>>'\\n\\nif \\\".zip\\\" in localpath:\\n  df_mkt_extrn = spark.read.format('csv').option('header', True).option('delimiter', '|').load(f'/mnt/<@@RAW_PATH@@>/*{run_id}*/{file_name_for_zip}')\\nelse:\\n  df_mkt_extrn = spark.read.format('csv').option('header', True).option('delimiter', '|').load(f'/mnt/<@@RAW_PATH@@>/{file_name}')\\n  \\n\\nfrom pyspark.sql.functions import *\\nfor i in df_mkt_extrn.columns:\\n  df_mkt_extrn = df_mkt_extrn.withColumnRenamed(i, i.strip())\\n\\nlist_cols = ['MKT', 'market', 'mkt']\\n\\n#df_dpf_col_asign_vw = df_dpf_col_asign_vw.filter(\\\"table_type IN ('FACT' , 'MKT' , 'PROD') \\\").filter(col('cntrt_id')==<<CNTRT_ID>>)\\n\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.filter(col('cntrt_id')==<<CNTRT_ID>>).where(df_dpf_col_asign_vw['table_type'].rlike(\\\"|\\\".join([\\\"(\\\" + column + \\\")\\\" for column in list_cols])))\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.select(\\\"file_column_name\\\",\\\"database_column_name\\\")\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.distinct()\\n\\ndf_dpf_col_asign_vw1 = df_dpf_col_asign_vw\\n\\ndf_dpf_col_asign_vw.createOrReplaceTempView(\\\"col_asign\\\")\\n\\ndf_dpf_col_asign_vw = spark.sql(''' select t.file_column_name, array_join(collect_list(t.database_column_name),',') as    \\n                                            database_column_name\\n                                     from (\\n                                        select file_column_name, database_column_name\\n                                        from col_asign\\n                                        order by file_column_name, database_column_name\\n                                     ) t\\n                                     group by t.file_column_name                             \\n                                 \\n                                 ''')\\n\\nfact_dict = {row['file_column_name']: row['database_column_name'] \\n               for row in df_dpf_col_asign_vw.collect()}\\n\\nfor key, value in fact_dict.items():\\n    if \\\",\\\" in value:\\n        lstValues = value.split(\\\",\\\")\\n        for v in lstValues:\\n            df_mkt_extrn = df_mkt_extrn.withColumn(v, col(f'`{key}`'))\\n        df_mkt_extrn = df_mkt_extrn.drop(key)\\n    else:\\n        df_mkt_extrn = df_mkt_extrn.withColumnRenamed(key, value)\\n\\t\\t\\ndf_cols = df_mkt_extrn.columns\\nfct_cols = []\\nfor item in fact_dict:\\n    if \\\",\\\" in fact_dict[item]:\\n        lstItems = fact_dict[item].split(\\\",\\\")\\n        for v in lstItems:\\n            fct_cols.append(v)\\n    else:\\n        fct_cols.append(fact_dict[item])\\nfct_cols = [n for n in fct_cols if len(n) != 0]\\n\\ndrop_cols = [col for col in df_cols if col not in fct_cols]  # to drop extra \\\"columns\\\" and have only user-mapped columns in the df\\ndf_mkt_extrn = df_mkt_extrn.drop(*drop_cols)\\t\\n\\nlstDropRowCols = df_mkt_extrn.columns\\ndf_measr = spark.read.parquet('/mnt/unrefined/NNIT/tradepanel/adw/MM_MEASR_LKP_VW/')\\nlstMeasrs = [row['measr_phys_name'] for row in df_measr.where('fact_type_code = \\\"TP\\\"').select('measr_phys_name').distinct().collect()]\\ndrop_null_measr_cols = [col for col in lstDropRowCols if col in lstMeasrs]\\n\\ndf_mkt_extrn = df_mkt_extrn.dropna(thresh=len(drop_null_measr_cols),subset=(drop_null_measr_cols))\\t# to drop \\\"rows\\\" that have all measure columns null\\n\\ndf1 = df_dpf_col_asign_vw1.filter(\\\"database_column_name like '%#%'\\\").select(\\\"database_column_name\\\")\\n\\nfrom pyspark.sql import functions as F\\ndf2 = df1.withColumn(\\\"database_column_name\\\", F.regexp_replace(F.col(\\\"database_column_name\\\"), \\\"[0-9#\\\\s]\\\",\\\"\\\")).distinct()\\n\\nl1 = df1.select(\\\"database_column_name\\\").rdd.flatMap(lambda x: x).collect()\\nl2 = df2.select(\\\"database_column_name\\\").rdd.flatMap(lambda x: x).collect()\\n\\nfor z in l2:\\n  lst=[]\\n  for x in l1:    \\n    if x.startswith(z):\\n      lst.append(x)      \\n  lst_cols1 = sorted(lst)\\n  for d in lst_cols1:\\n    df_mkt_extrn = df_mkt_extrn.withColumn(d, when(col(d).isNull(),'')\\n                                                .otherwise(col(d)))\\n    df_mkt_extrn = df_mkt_extrn.withColumn(z, concat_ws(':',*lst_cols1))\\ndf_mkt_extrn = df_mkt_extrn.drop(*l1)\\n\\nfor i in df_mkt_extrn.columns:\\n  df_mkt_extrn = df_mkt_extrn.withColumnRenamed(i, i.lower())\\n\\ndf_output_dict['df_mkt_extrn'] = df_mkt_extrn\\n\\ndict_all_dfs['df_mkt_extrn'] = {\\\"df_object\\\" :df_mkt_extrn}\\n\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dpf_col_asign_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_extrn\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "Gen - load files - prod",
+      "predecessorName": "Gen - load files",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\n\\nimport os\\nimport pathlib\\nfrom zipfile import ZipFile\\nfrom datetime import datetime\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_dpf_col_asign_vw = dict_all_dfs['df_dpf_col_asign_vw'][\\\"df_object\\\"]\\n\\nPK = str(<<PROCESS_RUN_KEY>>)\\nfiles = dbutils.fs.ls('/mnt/<@@RAW_PATH@@>')\\n\\nlocalpath= \\\" \\\"\\nfor fi in files:\\n  filename = fi.name\\n  filepath = fi.path\\n\\n  endwithzip = filename.endswith('.zip')\\n  endwithgz = filename.endswith('.gz')\\n  endwithcsv = filename.endswith('.csv')\\n  \\n  if ((endwithzip) and (PK in filename)): # If input file is a ZIP file\\n    localpath = os.path.join(\\\"/dbfs/mnt/<@@RAW_PATH@@>\\\", filename)\\n\\ns = '<<STEP_FILE_PATTERN_PROD>>'\\nposition = s.find('%')\\nrun_id = <<PROCESS_RUN_KEY>>\\nfile_name_for_zip = s.replace('%','*')\\nfile_name = s[0:position] + f'*{run_id}*'\\n\\nvendor_pattern ='<<VENDOR_FILE_PATTERN>>'\\n\\nif \\\".zip\\\" in localpath:\\n  df_prod_extrn = spark.read.format('csv').option('header', True).option('delimiter', '|').load(f'/mnt/<@@RAW_PATH@@>/*{run_id}*/{file_name_for_zip}')\\nelse:\\n  df_prod_extrn = spark.read.format('csv').option('header', True).option('delimiter', '|').load(f'/mnt/<@@RAW_PATH@@>/{file_name}')\\n  \\n\\nfrom pyspark.sql.functions import *\\nfor i in df_prod_extrn.columns:\\n  df_prod_extrn = df_prod_extrn.withColumnRenamed(i, i.strip())\\n\\nlist_cols = ['PROD',  'product', 'prod']\\n\\n#df_dpf_col_asign_vw = df_dpf_col_asign_vw.filter(\\\"table_type IN ('FACT' , 'MKT' , 'PROD') \\\").filter(col('cntrt_id')==<<CNTRT_ID>>)\\n\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.filter(col('cntrt_id')==<<CNTRT_ID>>).where(df_dpf_col_asign_vw['table_type'].rlike(\\\"|\\\".join([\\\"(\\\" + column + \\\")\\\" for column in list_cols])))\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.select(\\\"file_column_name\\\",\\\"database_column_name\\\")\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.distinct()\\n\\ndf_dpf_col_asign_vw.createOrReplaceTempView(\\\"col_asign\\\")\\n\\ndf_dpf_col_asign_vw = spark.sql(''' select t.file_column_name, array_join(collect_list(t.database_column_name),',') as    \\n                                            database_column_name\\n                                     from (\\n                                        select file_column_name, database_column_name\\n                                        from col_asign\\n                                        order by file_column_name, database_column_name\\n                                     ) t\\n                                     group by t.file_column_name                             \\n                                 \\n                                 ''')\\n\\nfact_dict = {row['file_column_name']: row['database_column_name'] \\n               for row in df_dpf_col_asign_vw.collect()}\\n\\nfor key, value in fact_dict.items():\\n    if \\\",\\\" in value:\\n        lstValues = value.split(\\\",\\\")\\n        for v in lstValues:\\n            df_prod_extrn = df_prod_extrn.withColumn(v, col(f'`{key}`'))\\n        df_prod_extrn = df_prod_extrn.drop(key)\\n    else:\\n        df_prod_extrn = df_prod_extrn.withColumnRenamed(key, value)\\n\\t\\t\\ndf_cols = df_prod_extrn.columns\\nfct_cols = []\\nfor item in fact_dict:\\n    if \\\",\\\" in fact_dict[item]:\\n        lstItems = fact_dict[item].split(\\\",\\\")\\n        for v in lstItems:\\n            fct_cols.append(v)\\n    else:\\n        fct_cols.append(fact_dict[item])\\nfct_cols = [n for n in fct_cols if len(n) != 0]\\n\\ndrop_cols = [col for col in df_cols if col not in fct_cols]  # to drop extra \\\"columns\\\" and have only user-mapped columns in the df\\ndf_prod_extrn = df_prod_extrn.drop(*drop_cols)\\t\\n\\nlstDropRowCols = df_prod_extrn.columns\\ndf_measr = spark.read.parquet('/mnt/unrefined/NNIT/tradepanel/adw/MM_MEASR_LKP_VW/')\\nlstMeasrs = [row['measr_phys_name'] for row in df_measr.where('fact_type_code = \\\"TP\\\"').select('measr_phys_name').distinct().collect()]\\ndrop_null_measr_cols = [col for col in lstDropRowCols if col in lstMeasrs]\\n\\ndf_prod_extrn = df_prod_extrn.dropna(thresh=len(drop_null_measr_cols),subset=(drop_null_measr_cols))\\t# to drop \\\"rows\\\" that have all measure columns null\\n\\nfor i in df_prod_extrn.columns:\\n  df_prod_extrn = df_prod_extrn.withColumnRenamed(i, i.lower())\\n  \\ndf_prod_extrn = df_prod_extrn.distinct()\\n\\ndf_output_dict['df_prod_extrn'] = df_prod_extrn\\n\\ndict_all_dfs['df_prod_extrn'] = {\\\"df_object\\\" :df_prod_extrn}\\n\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dpf_col_asign_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_extrn\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "Gen - load files - fact",
+      "operationDescription": "fct",
+      "predecessorName": "Gen - load files - prod",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nimport os\\nimport pathlib\\nfrom zipfile import ZipFile\\nfrom datetime import datetime\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\ndf_dpf_col_asign_vw = dict_all_dfs['df_dpf_col_asign_vw'][\\\"df_object\\\"]\\nPK = str(<<PROCESS_RUN_KEY>>)\\nfiles = dbutils.fs.ls('/mnt/<@@RAW_PATH@@>')\\nlocalpath= \\\" \\\"\\nfor fi in files:\\n  filename = fi.name\\n  filepath = fi.path\\n  endwithzip = filename.endswith('.zip')\\n  endwithgz = filename.endswith('.gz')\\n  endwithcsv = filename.endswith('.csv')\\n  if ((endwithzip) and (PK in filename)): # If input file is a ZIP file\\n    localpath = os.path.join(\\\"/dbfs/mnt/<@@RAW_PATH@@>\\\", filename)\\ns = '<<STEP_FILE_PATTERN_FCT>>'\\nposition = s.find('%')\\nrun_id = <<PROCESS_RUN_KEY>>\\nfile_name_for_zip = s.replace('%','*')\\nfile_name = s[0:position] + f'*{run_id}*'\\nvendor_pattern ='<<VENDOR_FILE_PATTERN>>'\\nif \\\".zip\\\" in localpath:\\n  df_fact_extrn = spark.read.format('csv').option('header', True).option('delimiter', '|').load(f'/mnt/<@@RAW_PATH@@>/*{run_id}*/{file_name_for_zip}')\\nelse:\\n  df_fact_extrn = spark.read.format('csv').option('header', True).option('delimiter', '|').load(f'/mnt/<@@RAW_PATH@@>/{file_name}')\\nif \\\".zip\\\" in localpath:\\n  df_fact_extrn_raw = spark.read.format('csv').option('header', True).option('delimiter', '|').load(f'/mnt/<@@RAW_PATH@@>/*{run_id}*/{file_name_for_zip}*')\\nelse:\\n  df_fact_extrn_raw = spark.read.format('csv').option('header', True).option('delimiter', '|').load(f'/mnt/<@@RAW_PATH@@>/{file_name}')\\nfrom pyspark.sql.functions import *\\nfor i in df_fact_extrn.columns:\\n  df_fact_extrn = df_fact_extrn.withColumnRenamed(i, i.strip())\\nfor i in df_fact_extrn_raw.columns:\\n  df_fact_extrn_raw = df_fact_extrn_raw.withColumnRenamed(i, i.strip())\\nlist_cols = ['FACT', 'fact']\\n#df_dpf_col_asign_vw = df_dpf_col_asign_vw.filter(\\\"table_type IN ('FACT' , 'MKT' , 'PROD') \\\").filter(col('cntrt_id')==<<CNTRT_ID>>)\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.filter(col('cntrt_id')==<<CNTRT_ID>>).where(df_dpf_col_asign_vw['table_type'].rlike(\\\"|\\\".join([\\\"(\\\" + column + \\\")\\\" for column in list_cols])))\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.select(\\\"file_column_name\\\",\\\"database_column_name\\\")\\ndf_dpf_col_asign_vw = df_dpf_col_asign_vw.distinct()\\n\\ndf_dpf_col_asign_vw1 = df_dpf_col_asign_vw\\n\\ndf_dpf_col_asign_vw.createOrReplaceTempView(\\\"col_asign\\\")\\ndf_dpf_col_asign_vw = spark.sql(''' select t.file_column_name, array_join(collect_list(t.database_column_name),',') as    \\n                                            database_column_name\\n                                     from (\\n                                        select file_column_name, database_column_name\\n                                        from col_asign\\n                                        order by file_column_name, database_column_name\\n                                     ) t\\n                                     group by t.file_column_name                             \\n                                 ''')\\nfact_dict = {row['file_column_name']: row['database_column_name'] \\n               for row in df_dpf_col_asign_vw.collect()}\\nfor key, value in fact_dict.items():\\n    if \\\",\\\" in value:\\n        lstValues = value.split(\\\",\\\")\\n        for v in lstValues:\\n            df_fact_extrn = df_fact_extrn.withColumn(v, col(f'`{key}`'))\\n        df_fact_extrn = df_fact_extrn.drop(key)\\n    else:\\n        df_fact_extrn = df_fact_extrn.withColumnRenamed(key, value)\\ndf_cols = df_fact_extrn.columns\\nfct_cols = []\\nfor item in fact_dict:\\n    if \\\",\\\" in fact_dict[item]:\\n        lstItems = fact_dict[item].split(\\\",\\\")\\n        for v in lstItems:\\n            fct_cols.append(v)\\n    else:\\n        fct_cols.append(fact_dict[item])\\nfct_cols = [n for n in fct_cols if len(n) != 0]\\ndrop_cols = [col for col in df_cols if col not in fct_cols]  # to drop extra \\\"columns\\\" and have only user-mapped columns in the df\\ndf_fact_extrn = df_fact_extrn.drop(*drop_cols)\\n\\ndf1 = df_dpf_col_asign_vw1.filter(\\\"database_column_name like '%#%'\\\").select(\\\"database_column_name\\\")\\n\\nfrom pyspark.sql import functions as F\\ndf2 = df1.withColumn(\\\"database_column_name\\\", F.regexp_replace(F.col(\\\"database_column_name\\\"), \\\"[0-9#\\\\s]\\\",\\\"\\\")).distinct()\\n\\nl1 = df1.select(\\\"database_column_name\\\").rdd.flatMap(lambda x: x).collect()\\nl2 = df2.select(\\\"database_column_name\\\").rdd.flatMap(lambda x: x).collect()\\n\\nfrom pyspark.sql import functions as F\\nfor z in l2:\\n  lst=[]\\n  for x in l1:    \\n    if x.startswith(z):\\n      lst.append(x)   \\n  lst_cols1 = sorted(lst) \\n  lst_cols1 = ['`' + x + '`' for x in lst_cols1]\\n  for d in lst_cols1:\\n    #df_fact_extrn = df_fact_extrn.withColumn(d, when(col(d).isNull(),'')\\n                                                #.otherwise(col(d)))\\n    df_fact_extrn = df_fact_extrn.withColumn(z, F.expr('+'.join(lst_cols1)))\\ndf_fact_extrn = df_fact_extrn.drop(*l1)\\n\\nfor i in df_fact_extrn.columns:\\n  df_fact_extrn = df_fact_extrn.withColumnRenamed(i, i.lower())\\ndf_output_dict['df_fact_extrn'] = df_fact_extrn\\ndf_output_dict['df_fact_extrn_raw'] = df_fact_extrn_raw\\ndict_all_dfs['df_fact_extrn'] = {\\\"df_object\\\" :df_fact_extrn}\\ndict_all_dfs['df_fact_extrn_raw'] = {\\\"df_object\\\" :df_fact_extrn_raw}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dpf_col_asign_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fact_extrn\",\n      \"cache\": \"materialize\"\n    },\n    {\n      \"name\": \"df_fact_extrn_raw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[GEN] FACT TRANSFORMATION MULTIPLIERS",
+      "predecessorName": "Gen - load files - fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_fact_extrn = dict_all_dfs['df_fact_extrn'][\\\"df_object\\\"]\\ndf_dpf_col_asign_vw = dict_all_dfs['df_dpf_col_asign_vw'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import *\\nfrom pyspark.sql import functions as F\\n\\n#df_dpf_col_asign_vw = df_dpf_col_asign_vw.withColumn(\\\"multiplier\\\", F.regexp_replace(F.col(\\\"multiplier\\\"), \\\"[A-Za-z_*\\\\s]\\\",\\\"\\\"))\\n#df_dpf_col_asign_vw = df_dpf_col_asign_vw.withColumn(\\\"multiplier\\\",format_string('%.9f',df_dpf_col_asign_vw.multiplier\\n#.cast('float')))\\n\\nrows_measr_mul = df_dpf_col_asign_vw.where('table_type LIKE \\\"%FACT%\\\" OR table_type LIKE \\\"%fact%\\\"').where('multiplier is not null and length(multiplier)!=0').filter(col('cntrt_id')==<<CNTRT_ID>>).select('database_column_name','multiplier').select(concat_ws('*',df_dpf_col_asign_vw.database_column_name,nanvl(df_dpf_col_asign_vw.multiplier,lit(1))).alias('fct_trans'),df_dpf_col_asign_vw.database_column_name).collect()\\n\\nlst_inp_cols = df_fact_extrn.columns\\nstr_inp_cols = ','.join(lst_inp_cols)\\n\\ndict_measr_mul = {}\\nfor row in rows_measr_mul:\\n    if row.database_column_name.lower() in str_inp_cols:      # all db columns maynot be present in the input file. some maybe optional\\n        if \\\",\\\" in row.database_column_name:\\n            multFactor = row.fct_trans.split(\\\"*\\\")[1]\\n            lstKeys = row.database_column_name.split(\\\",\\\")\\n            for key2 in lstKeys:\\n                dict_measr_mul[key2.lower()] = '*'.join([key2.lower(),multFactor])\\n        else:\\n            dict_measr_mul[row.database_column_name.lower()] = row.fct_trans.lower()\\n  \\nlst_measr_mul = [f\\\"({dict_measr_mul[x]}) as {x},\\\" for x in dict_measr_mul] \\nstr_measr_mul = ''.join(lst_measr_mul)\\n\\nlst_rem_source_cols = [col for col in lst_inp_cols if col not in [x for x in dict_measr_mul]]\\nstr_rem_source_cols = ','.join(lst_rem_source_cols)\\n\\nstr_qry = str_measr_mul + str_rem_source_cols\\n#str_qry = str_qry[:len(str_qry)-1]\\n\\ndf_fact_extrn.createOrReplaceTempView('temp_input')\\n\\ndf_fact_extrn2 = spark.sql(f\\\"\\\"\\\"\\nselect {str_qry} from temp_input\\n\\\"\\\"\\\")\\n\\ndf_output_dict['df_fact_extrn'] = df_fact_extrn2\\ndict_all_dfs['df_fact_extrn'] = {\\\"df_object\\\" :df_fact_extrn2}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_extrn\"\n    },\n    {\n      \"name\": \"df_dpf_col_asign_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fact_extrn\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "Update File Names and row counts",
+      "predecessorName": "[GEN] FACT TRANSFORMATION MULTIPLIERS",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n# File Name\\nimport os\\nimport pathlib\\nimport fnmatch\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nraw_file_path = '<@@RAW_PATH@@>'\\n\\nPK = str(<<PROCESS_RUN_KEY>>)\\nfiles = dbutils.fs.ls(f'/mnt/{raw_file_path}/')\\n\\nfor fi in files:\\n  filename = fi.name\\n  endwithzip = filename.endswith('.zip')\\n  if ((endwithzip) and (PK in filename)): # If input file is a ZIP file\\n    file_name = filename\\n\\ndf_fact_extrn = dict_all_dfs['df_fact_extrn'][\\\"df_object\\\"]\\n\\n\\n\\nrow_cnt = df_fact_extrn.count()\\n#Update the mkt file name\\nmkt_pattern = '<<STEP_FILE_PATTERN_MKT>>'\\nmkt_pattern = mkt_pattern.replace('%','*')\\n\\nprod_pattern = '<<STEP_FILE_PATTERN_PROD>>'\\nprod_pattern = prod_pattern.replace('%','*')\\n\\nfact_pattern = '<<STEP_FILE_PATTERN_FCT>>'\\nfact_pattern = fact_pattern.replace('%','*')\\n\\nfor f in files:\\n  flName = f.name\\n  endwithzip = flName.endswith('.zip')\\n  if ((not (endwithzip)) and (PK in flName)):\\n    folderName = flName\\n\\t\\nfolder_files = dbutils.fs.ls(f'/mnt/{raw_file_path}/{folderName}/')\\n\\nmkt_file_name = ''\\nprod_file_name = ''\\nfact_file_name = ''\\n\\nfor f_files in folder_files:\\n  folderFileName = f_files.name\\n  if (fnmatch.fnmatch(folderFileName, mkt_pattern)):\\n    mkt_file_name = folderFileName\\n  elif (fnmatch.fnmatch(folderFileName, prod_pattern)):\\n    prod_file_name = folderFileName\\n  elif (fnmatch.fnmatch(folderFileName, fact_pattern)):\\n    fact_file_name = folderFileName\\n  else:\\n    print('no matching files')\\n\\nrun_id = <<PROCESS_RUN_KEY>>\\ncntrt_id = <<CNTRT_ID>>\\n\\nrows = [(run_id,cntrt_id,row_cnt,file_name, prod_file_name, mkt_file_name , fact_file_name)]\\ncols = ['run_id','cntrt_id','rows_cnt','filename', 'prod_filename', 'mkt_filename', 'fact_filename']\\n\\ndf = spark.createDataFrame(rows,cols)\\n\\njdbcDF2 = df\\njdbcDF2.write.format(\\\"parquet\\\").mode(\\\"append\\\").save(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-refined/MM_RUN_DTL_PLC\\\")\\n\\n####end###\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_extrn\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fact_extrn\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "Update Delivery - Phase id 2 and status id 3",
+      "predecessorName": "Update File Names and row counts",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nimport pyspark\\nfrom pyspark.sql import SparkSession\\nfrom pyspark.sql.types import *\\n\\n\\n\\nspark_session = SparkSession.builder.appName('Spark_Session').getOrCreate()\\n\\nrows = [['null', <<CNTRT_ID>>, <<PROCESS_RUN_KEY>>, 2, 1, 3, <<PROCESS_RUN_KEY>>]]\\n\\ncolumns = ['cmmnt_txt', 'cntrt_id', 'dlvry_id', 'dlvry_phase_id', 'dlvry_run_seq_num', 'dlvry_sttus_id', 'run_id']\\njdbcDF2 = spark_session.createDataFrame(rows, columns)\\njdbcDF2.write.format(\\\"parquet\\\").mode(\\\"append\\\").save(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-refined/MM_DLVRY_RUN_LKP\\\")\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Preloading phase",
+      "predecessorName": "Update Delivery - Phase id 2 and status id 3",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"Three File contracts - preloading v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "DVM - inputs",
+      "predecessorName": "[NG] Preloading phase",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_three_file_cdl_t2_dq_inputs\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "DVM - File Structure",
+      "predecessorName": "DVM - inputs",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_t2_dq_file_struct_v2\"\n  },\n  \"active\": \"false\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[NG] Market01-Three Files Contract Data",
+      "predecessorName": "DVM - File Structure",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Market Dimension Derivation - 01 - V1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Market Skid LKP",
+      "predecessorName": "[NG] Market01-Three Files Contract Data",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Single File Contract - Mkt Skid Derivation\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Market02-Three Files Contract Data",
+      "predecessorName": "[NG] Market Skid LKP",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Market Dimension Derivation - 02 - V1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Product01-CDL_TP T2 Three Files Contract Data",
+      "predecessorName": "[NG] Market02-Three Files Contract Data",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Product Dimension Derivation - 01 v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Product Skid LKP",
+      "predecessorName": "[NG] Product01-CDL_TP T2 Three Files Contract Data",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Single File Contract - Prod Skid Derivation\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Product02-CDL_TP T2 Three Files Contract Data",
+      "predecessorName": "[NG] Product Skid LKP",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Product Dimension Derivation - 02 - v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "DVM - Reference Data Checks inputs",
+      "predecessorName": "[NG] Product02-CDL_TP T2 Three Files Contract Data",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_three_file_cdl_t2_dq_ref_data_inputs\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "DVM - Reference Data Checks",
+      "predecessorName": "DVM - Reference Data Checks inputs",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_t2_reference_data_v2\"\n  },\n  \"active\": \"false\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[SQL Syntax] Fact Transformations update DLVRY LKP",
+      "predecessorName": "DVM - Reference Data Checks",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"sqlQuery\": \"UPDATE delta.`/mnt/unrefined/NNIT/tradepanel/cloudpanel-test-unref/test/testing/testFile/delta/MM_DLVRY_LKP/` SET DLVRY_STTUS_ID = 2,DLVRY_PHASE_ID = 18 WHERE DLVRY_ID = <<PROCESS_RUN_KEY>>\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_stgng\",\n      \"alias\": \"df_fact_stgng\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_dlvry_lkp\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "SQLSyntax",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Fact01-CDL_TP T2 Three Files Contract Data",
+      "predecessorName": "[SQL Syntax] Fact Transformations update DLVRY LKP",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Fact Derivation - 01 v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[NG] Exchange_Rate_Fct_VW",
+      "predecessorName": "[NG] Fact01-CDL_TP T2 Three Files Contract Data",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_exchng_rate_fct_vw - v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] EDWM TIME MAPPING",
+      "predecessorName": "[NG] Exchange_Rate_Fct_VW",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_edwm_mapping - v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Fact02-CDL_TP T2 Three Files Contract Data",
+      "predecessorName": "[NG] EDWM TIME MAPPING",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Fact Derivation - 02 v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "DVM - FYI checks inputs",
+      "predecessorName": "[NG] Fact02-CDL_TP T2 Three Files Contract Data",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_three_file_cdl_t2_dq_fyi_inputs\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "DVM - FYI Checks",
+      "predecessorName": "DVM - FYI checks inputs",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_t2_fyi_v2\"\n  },\n  \"active\": \"false\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "DVM - Business Validation checks inputs",
+      "predecessorName": "DVM - FYI Checks",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_three_file_cdl_t2_business_validations_inputs\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "DVM - Business validations",
+      "predecessorName": "DVM - Business Validation checks inputs",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_dq_business_validation v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "DVM - Business Validations Checks",
+      "predecessorName": "DVM - Business validations",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_t2_business_checks v1\"\n  },\n  \"active\": \"false\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "Auto Approval Indicator - calc",
+      "predecessorName": "DVM - Business Validations Checks",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nauto_val_ind = '<<DATA_AUTO_VAL_IND>>'\\nbuiness_dvm = '<<BUSINESS_DVM>>'\\n\\nif ( (auto_val_ind == 'N') & (buiness_dvm ==\\\"false\\\")):\\n  auto_val_ind = 'Y'\\n\\ncntrt_id = <<CNTRT_ID>>\\ndata = [(cntrt_id, auto_val_ind)]\\nsch = ['cntrt_id', 'auto_appr_ind']\\n\\ndf = spark.createDataFrame(data, sch)\\n\\nimport pyspark\\nfrom pyspark.sql import SparkSession\\nfrom pyspark.sql.types import *\\n\\n\\n\\nspark_session = SparkSession.builder.appName('Spark_Session').getOrCreate()\\n\\nrows = [['null', <<CNTRT_ID>>, <<PROCESS_RUN_KEY>>, 13, 1, 3, <<PROCESS_RUN_KEY>>]]\\n\\ncolumns = ['cmmnt_txt', 'cntrt_id', 'dlvry_id', 'dlvry_phase_id', 'dlvry_run_seq_num', 'dlvry_sttus_id', 'run_id']\\njdbcDF2 = spark_session.createDataFrame(rows, columns)\\njdbcDF2.write.format(\\\"parquet\\\").mode(\\\"append\\\").save(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-refined/MM_DLVRY_RUN_LKP\\\")\\n\\n\\ndict_all_dfs['df_auto_appr'] = {\\\"df_object\\\" :df}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_auto_appr\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Auto Approval - Stop Calculations",
+      "predecessorName": "Auto Approval Indicator - calc",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"expression\": \"auto_appr_ind = 'N'\",\n  \"processStatus\": \"DQ_ISSUE\",\n  \"conditionValue\": \"true\",\n  \"milestone\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_auto_appr\"\n    }\n  ]\n}",
+      "operationVersionName": "ConditionalStop",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Adding Partitions - MKT DIM_TE",
+      "predecessorName": "Auto Approval - Stop Calculations",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Adding Partitions - Prod DIM_te",
+      "predecessorName": "Adding Partitions - MKT DIM_TE",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_promo_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_promo_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Adding Partitions - Fact",
+      "predecessorName": "Adding Partitions - Prod DIM_te",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_promo_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id, 0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id, 0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fact_promo_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "load mkt_schema",
+      "predecessorName": "Adding Partitions - Fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\n\\ndf_mkt_schema = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_DIM_VW_SCHEMA\\\")\\n    \\ndf_output_dict['df_mkt_schema'] = df_mkt_schema\\ndict_all_dfs['df_mkt_schema'] = {\\\"df_object\\\" :df_mkt_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_schema\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL ] mm_mkt_dim_vw_latest",
+      "predecessorName": "load mkt_schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_MKT_DIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_latest\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CC mm_mkt_dim latest",
+      "predecessorName": "[FL ] mm_mkt_dim_vw_latest",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_mkt_dim_latest= dict_all_dfs['df_mm_mkt_dim_latest'][\\\"df_object\\\"]\\ndf_mkt_schema = dict_all_dfs['df_mkt_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_mkt_dim_latest.columns\\nsdim_cols = df_mkt_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_mkt_dim_latest = df_mm_mkt_dim_latest.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_mkt_dim_latest = df_mm_mkt_dim_latest.select(*sdim_cols)\\ncols = df_mm_mkt_dim_latest.columns\\n\\nfor j in cols:\\n  df_mm_mkt_dim_latest = df_mm_mkt_dim_latest.withColumn(j, col(j).cast(dict(df_mkt_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_mkt_dim_latest'] = {\\\"df_object\\\" :df_mm_mkt_dim_latest}\\ndf_output_dict['df_mm_mkt_dim_latest'] = df_mm_mkt_dim_latest\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_latest\"\n    },\n    {\n      \"name\": \"df_mkt_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Adding Partitions - MKT DIM",
+      "predecessorName": "CC mm_mkt_dim latest",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_dim_lkp_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mkt_promo_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Adding Partition Columns for Mkt latest",
+      "predecessorName": "Adding Partitions - MKT DIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_latest\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[merger] merges latest dat with processed mkt_dim data",
+      "predecessorName": "Adding Partition Columns for Mkt latest",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_mkt_dim_latest\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_latest\"\n    },\n    {\n      \"name\": \"df_mkt_promo_vw\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_final\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Agg] mkt_dim",
+      "predecessorName": "[merger] merges latest dat with processed mkt_dim data",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_mkt_dim_final\"\r\n    }\r\n  ],\r\n  \"aggregate\": [\r\n    {\r\n      \"expression\": \"count(*)\",\r\n      \"alias\": \"cnt\"\r\n    }\r\n  ],\r\n  \"groupBy\": [\r\n    \"mkt_skid\"\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df\",\r\n      \"cache\": \"materialize\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "Aggregator",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[cond stop] mkt_dim",
+      "predecessorName": "[Agg] mkt_dim",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"expression\": \"cnt > 1\",\r\n  \"processStatus\": \"FAILED\",\r\n  \"conditionValue\": \"true\",\r\n  \"milestone\": \"false\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "ConditionalStop",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] MM_MKT_DIM",
+      "operationDescription": "publish MM_MKT_DIM_VW",
+      "predecessorName": "[cond stop] mkt_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_DIM_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Turbine Internal - Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_final\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[semaphore] release mm_mkt_dim",
+      "predecessorName": "[File Pub] MM_MKT_DIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_MKT_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "load prod_schema",
+      "operationDescription": "",
+      "predecessorName": "[semaphore] release mm_mkt_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\n\\ndf_prod_schema = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_DIM_VW_SCHEMA\\\")\\n    \\ndf_output_dict['df_prod_schema'] = df_prod_schema\\ndict_all_dfs['df_prod_schema'] = {\\\"df_object\\\" :df_prod_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_schema\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] mm_prod_dim_latest",
+      "predecessorName": "load prod_schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_PROD_DIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CC mm_prod_dim_latest",
+      "operationDescription": "",
+      "predecessorName": "[FL] mm_prod_dim_latest",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_prod_dim_latest= dict_all_dfs['df_mm_prod_dim_latest'][\\\"df_object\\\"]\\ndf_prod_schema = dict_all_dfs['df_prod_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_prod_dim_latest.columns\\nsdim_cols = df_prod_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_prod_dim_latest = df_mm_prod_dim_latest.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_prod_dim_latest = df_mm_prod_dim_latest.select(*sdim_cols)\\ncols = df_mm_prod_dim_latest.columns\\n\\nfor j in cols:\\n  df_mm_prod_dim_latest = df_mm_prod_dim_latest.withColumn(j, col(j).cast(dict(df_prod_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_prod_dim_latest'] = {\\\"df_object\\\" :df_mm_prod_dim_latest}\\ndf_output_dict['df_mm_prod_dim_latest'] = df_mm_prod_dim_latest\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\"\n    },\n    {\n      \"name\": \"df_prod_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Adding Partitions - Prod DIM",
+      "predecessorName": "CC mm_prod_dim_latest",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim_lkp_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_promo_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Adding Partition Columns for Product latest",
+      "predecessorName": "Adding Partitions - Prod DIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[merger] latest data with processed data",
+      "predecessorName": "Adding Partition Columns for Product latest",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_prod_dim_latest\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\"\n    },\n    {\n      \"name\": \"df_prod_promo_vw\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"prod_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_final\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Agg] prod_dim",
+      "predecessorName": "[merger] latest data with processed data",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_mm_prod_dim_final\"\r\n    }\r\n  ],\r\n  \"aggregate\": [\r\n    {\r\n      \"expression\": \"count(*)\",\r\n      \"alias\": \"cnt\"\r\n    }\r\n  ],\r\n  \"groupBy\": [\r\n    \"prod_skid\"\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df\",\r\n      \"cache\": \"materialize\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "Aggregator",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Cond stop] prod_dim",
+      "predecessorName": "[Agg] prod_dim",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"expression\": \"cnt > 1\",\r\n  \"processStatus\": \"FAILED\",\r\n  \"conditionValue\": \"true\",\r\n  \"milestone\": \"false\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "ConditionalStop",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] MM_PROD_DIM",
+      "predecessorName": "[Cond stop] prod_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_DIM_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Turbine Internal - Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_final\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[semaphore] release prod_dim",
+      "predecessorName": "[File Pub] MM_PROD_DIM",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_PROD_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "AGR prttn keys",
+      "operationDescription": "agr",
+      "predecessorName": "[semaphore] release prod_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_time_lkp\"\n    }\n  ],\n  \"aggregate\": [\n    {\n      \"expression\": \"concat(format_string('part_srce_sys_id=%d/part_cntrt_id=%d/part_prod_prttn_code=%s/part_mm_time_perd_end_date=',  part_srce_sys_id, part_cntrt_id,part_prod_prttn_code), date_format(part_mm_time_perd_end_date, 'yyyy-MM-dd'))\",\n      \"alias\": \"PartitionSet\"\n    }\n  ],\n  \"groupBy\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prttn_fltr\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Aggregator",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Load] Fact data",
+      "predecessorName": "AGR prttn keys",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"<|df_prttn_fltr.PartitionSet|>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[Gen]raw Complement and typecast the columns",
+      "predecessorName": "[File Load] Fact data",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"separateSparkSession\": \"false\",\r\n  \"milestone\": \"false\",\r\n  \"saveOutputDfsToTempTable\": \"false\",\r\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_fact_time_lkp= dict_all_dfs['df_fact_time_lkp'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_fact_time_lkp.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_fact_time_lkp = df_fact_time_lkp.withColumn(i,lit(None).cast('string'))\\n\\ndf_fact_time_lkp = df_fact_time_lkp.select(*sdim_cols)\\ncols = df_fact_time_lkp.columns\\n\\nfor j in cols:\\n  df_fact_time_lkp = df_fact_time_lkp.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_fact_time_lkp'] = {\\\"df_object\\\" :df_fact_time_lkp}\\ndf_output_dict['df_fact_time_lkp'] = df_fact_time_lkp\",\r\n  \"inputDataframes\": [\r\n    {\r\n      \"name\": \"df_fact_time_lkp\"\r\n    },\r\n    {\r\n      \"name\": \"df_fct_schema\"\r\n    }\r\n  ],\r\n  \"outputDataframes\": [\r\n    {\r\n      \"name\": \"df_fact_time_lkp\",\r\n      \"cache\": \"materialize\"\r\n    }\r\n  ]\r\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] read fct sch",
+      "predecessorName": "[Gen]raw Complement and typecast the columns",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\n\\ndf_fct_schema = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_FCT_SCHEMA\\\")\\n    \\ndf_output_dict['df_fct_schema'] = df_fct_schema\\ndict_all_dfs['df_fct_schema'] = {\\\"df_object\\\" :df_fct_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_schema\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[Gen] complementing with latest",
+      "predecessorName": "[Gen] read fct sch",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_tp_wk_fct_latest= dict_all_dfs['df_mm_tp_wk_fct_latest'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_tp_wk_fct_latest.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_tp_wk_fct_latest = df_mm_tp_wk_fct_latest.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_tp_wk_fct_latest = df_mm_tp_wk_fct_latest.select(*sdim_cols)\\ncols = df_mm_tp_wk_fct_latest.columns\\n\\nfor j in cols:\\n  df_mm_tp_wk_fct_latest = df_mm_tp_wk_fct_latest.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_tp_wk_fct_latest'] = {\\\"df_object\\\" :df_mm_tp_wk_fct_latest}\\ndf_output_dict['df_mm_tp_wk_fct_latest'] = df_mm_tp_wk_fct_latest\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\"\n    },\n    {\n      \"name\": \"df_fct_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[Fil] changing raw dataframe",
+      "predecessorName": "[Gen] complementing with latest",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"1=1\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_time_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fact_promo_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "CMP column complementer",
+      "predecessorName": "[Fil] changing raw dataframe",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_fact_time_lkp\",\n  \"deleteColumns\": \"false\",\n  \"referenceColumnOrder\": \"false\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\"\n    },\n    {\n      \"name\": \"df_fact_time_lkp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[CET] Add partition columns fact - wk fct latest",
+      "predecessorName": "CMP column complementer",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id, 0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id, 0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[MERGE] WK FACT DATA",
+      "predecessorName": "[CET] Add partition columns fact - wk fct latest",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_tp_wk_fct_latest\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_latest\"\n    },\n    {\n      \"name\": \"df_fact_promo_vw\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"prod_prttn_code\",\n    \"mm_time_perd_end_date\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_final\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Add partition columns fact",
+      "predecessorName": "[MERGE] WK FACT DATA",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_final\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id, 0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id, 0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_final\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[File Pub] Publishing Facts",
+      "predecessorName": "[CET] Add partition columns fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Turbine Internal - Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\",\n    \"part_cntrt_id\",\n    \"part_prod_prttn_code\",\n    \"part_mm_time_perd_end_date\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_wk_fct_final\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release smphr MM_TP_WK_FCT",
+      "predecessorName": "[File Pub] Publishing Facts",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[GEN] - Fact data indicator update",
+      "predecessorName": "release smphr MM_TP_WK_FCT",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\nfrom pyspark.sql.functions import lit, col, date_sub, current_date\\n\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nimport datetime;\\n\\ncntrt_id = <<CNTRT_ID>>\\nprocess_run_key = <<PROCESS_RUN_KEY>>\\nfact_avlb_ind = 'Y'\\nupdate_timestamp = datetime.datetime.now()\\nsch = ['process_run_key', 'cntrt_id', 'fact_avlb_ind', 'update_timestamp']\\ndata = [(process_run_key, cntrt_id, fact_avlb_ind, update_timestamp )]\\n\\ndf_new_fct = spark.createDataFrame(data, sch)\\n\\n# Check Fact indicator available\\n\\n\\ndf_fact_lkp = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_CNTRT_FACT_IND_LKP\\\")\\ndf_fact_lkp = df_fact_lkp.filter(f\\\"cntrt_id = {cntrt_id} and fact_avlb_ind = 'Y'\\\")\\n\\npublish_fact_ind = (df_fact_lkp.count()==0)\\n###################\\n\\nif publish_fact_ind:\\n    df_new_fct.write.format(\\\"parquet\\\").partitionBy('cntrt_id').mode(\\\"append\\\").option(\\\"partitionOverwriteMode\\\", \\\"dynamic\\\").save(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-refined/MM_CNTRT_FACT_IND_LKP\\\")\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fact_promo_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fact_promo_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] move file to archive",
+      "predecessorName": "[GEN] - Fact data indicator update",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "NNIT_TradePanel_DPF_Tier2_Three_Files_Contract"
+}

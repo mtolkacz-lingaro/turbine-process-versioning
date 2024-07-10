@@ -1,0 +1,18 @@
+{
+  "rubik_trgt_path_name": "unrefined_rubik/export",
+  "PATH3": "refined/NNIT/tradepanel/prod-tp-lightrefined/",
+  "DEF_SEC_GRP_KEY": "540000",
+  "PATH4": "prod-hhp-lightrefined/",
+  "PATH1": "refined/NNIT/tradepanel/prod-tp-lightrefined/",
+  "SOURCE_PATH_FOR_DELTA": "refined/NNIT/tradepanel/prod-tp-refined/turbine_delta/prod/lastProcessedDelta/",
+  "PATH2": "refined/NNIT/tradepanel/prod-tp-lightrefined/",
+  "VENDOR_LANDING_PATH": "turbinev1/INVendorFiles",
+  "refinedInfrastructureId": "https://dnturbineinternal301.blob.core.windows.net/refined",
+  "LANDING_PATH": "turbinev1/IN",
+  "LIGHTREFINED": "refined/NNIT/tradepanel/prod-tp-lightrefined/",
+  "ARCH_PATH": "turbinev1/ARCH/",
+  "RAW_PATH": "turbinev1/WORK/",
+  "HHP_MAP_SRC": "prod-hhp-mappings/",
+  "REFINED_PATH": "refined/NNIT/tradepanel/prod-tp-refined/",
+  "external_location": "abfss://catalog@dnturbineinternal301.dfs.core.windows.net/"
+}

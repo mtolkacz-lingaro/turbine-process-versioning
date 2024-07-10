@@ -1,0 +1,21 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \"CDL_TradePanel_ASJ\",\r\n    \"description\": \"CDL_TradePanel_ASJ\",\r\n    \"type\": \"object\",\r\n    \"properties\": {},\r\n    \"required\": [],\r\n   \"configurable\": []\r\n}",
+  "nodes": [
+    {
+      "operationName": "dummySchema",
+      "operationDescription": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df1\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Backup Process",
+      "predecessorName": "dummySchema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"customCode\": \"spark = self.spark_session\\nfrom pyspark.sql.functions import *\\nfrom IPython import get_ipython\\nimport pyspark.sql.utils\\nfrom pyspark.sql.functions import col,concat_ws, nanvl, lit,round,lower\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nPK =  str(<<PROCESS_RUN_KEY>>)\\n\\nfile_location = \\\"/mnt/<@@PATH1@@>/MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>/\\\"\\nfile_type = \\\"parquet\\\"\\ninfer_schema = \\\"true\\\"\\nfirst_row_is_header = \\\"true\\\"\\ndelimiter = \\\",\\\"\\n\\ntry:\\n  dfilter = spark.read.format(file_type) \\\\\\n  .option(\\\"inferSchema\\\", infer_schema) \\\\\\n  .option(\\\"ignoreCorruptFiles\\\", True) \\\\\\n  .option('ignoreMissingFiles', True) \\\\\\n  .option(\\\"header\\\",first_row_is_header)\\\\\\n  .option(\\\"sep\\\", delimiter) \\\\\\n  .load(file_location)\\n  dfilter = dfilter.withColumn('part_srce_sys_id',round('srce_sys_id')).withColumn('part_cntrt_id',round('cntrt_id'))\\n  dfilter.write.format('parquet').mode('overwrite').save('/mnt/<@@PATH1@@>/BACKUP_FILES/RUN_ID_'+PK)\\n  data = [(1,'dummy')]\\n  schema = ['id','name']\\n  df = spark.createDataFrame(data=data,schema=schema)\\n  df_meta = df.withColumn(\\\"RUN_ID\\\",lit(PK)).withColumn(\\\"CONTRACT_ID\\\",lit(<<CNTRT_ID>>)).withColumn(\\\"TIME\\\",current_timestamp()).drop(\\\"id\\\",\\\"name\\\")\\n  df_meta.write.format('parquet').mode('append').save('/mnt/<@@PATH1@@>/BACKUP_METADATA/')\\nexcept Exception as x:  \\n  if \\\"PATH_NOT_FOUND\\\" in str(x):\\n    print(\\\"No record found for passed CNTRT_ID\\\")\\n  else:\\n    print(\\\"Exception occured :: \\\",str(x))\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df1\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df2\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": true
+    }
+  ],
+  "graphName": "NNIT_cp_fact_backup_process"
+}

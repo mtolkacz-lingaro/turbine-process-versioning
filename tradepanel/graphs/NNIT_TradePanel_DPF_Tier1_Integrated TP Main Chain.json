@@ -1,0 +1,118 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \"NNIT_T1 Integrated TP Main Chain\",\r\n    \"description\": \"NNIT_T1 Integrated TP Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n\t\t\"FACT_TYPE_CODE\": {\r\n            \"title\": \"FACT_TYPE_CODE\",\r\n            \"description\": \"FACT_TYPE_CODE\",\r\n\t\t\t\"enum\": [\r\n                \"HHP\",\r\n                \"SF\",\r\n\t\t\t\t\"TP\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CATEGORY_ID\": {\r\n            \"title\": \"CATEGORY_ID\",\r\n            \"description\": \"CATEGORY_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"SRCE_SYS_ID\": {\r\n            \"title\": \"SRCE_SYS_ID\",\r\n            \"description\": \"SRCE_SYS_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n        \"IGRTD_PUBLISH_FILE_PATTERN\": {\r\n            \"title\": \"IGRTD_PUBLISH_FILE_PATTERN\",\r\n            \"description\": \"File pattern to create a file from atomic contract that will trigger integrated layer publishing\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"CNTRT_ID\": {\r\n            \"title\": \"CNTRT_ID\",\r\n            \"description\": \"CNTRT_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n         \"DLVRY_ID\": {\r\n            \"title\": \"DLVRY_ID\",\r\n            \"description\": \"DLVRY_ID\",\r\n            \"default\": 0,\r\n            \"type\": \"integer\"\r\n        },\r\n        \r\n        \"RAW_FILE_PATH\": {\r\n            \"title\": \"RAW_FILE_PATH\",\r\n            \"description\": \"Raw File Path\",\r\n            \"default\": \"turbinev1/WORK/\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PUBLISH_PATH\": {\r\n            \"title\": \"PUBLISH_PATH\",\r\n            \"description\": \"Publishing Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"IN_FILE_PATH\": {\r\n            \"title\": \"IN_FILE_PATH\",\r\n            \"description\": \"Input File Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"MAPPINGS_PATH\": {\r\n            \"title\": \"MAPPINGS_PATH\",\r\n            \"description\": \"Mappings Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"FACT_TYPE_CODE\",\"CATEGORY_ID\", \"DLVRY_ID\", \"SRCE_SYS_ID\", \"IGRTD_PUBLISH_FILE_PATTERN\", \"CNTRT_ID\"]\r\n}",
+  "nodes": [
+    {
+      "operationName": "df_dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] update dlvry run ",
+      "predecessorName": "df_dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nimport pyspark\\nfrom pyspark.sql.types import *\\nfrom pyspark.sql import Window, functions as fn\\nfrom pyspark.sql.functions import *\\nfrom pyspark.sql import SparkSession\\n\\n# File Name\\nimport os\\nimport pathlib\\nimport fnmatch\\n\\n\\n\\nspark_session = SparkSession.builder.appName('Spark_Session').getOrCreate()\\n\\nraw_file_path = '/<@@RAW_PATH@@>/'\\n\\nPK = str(<<PROCESS_RUN_KEY>>)\\nfiles = dbutils.fs.ls(f'/mnt/{raw_file_path}/')\\n\\nextract_refresh = ''\\n\\nfor fi in files:\\n  filename = fi.name\\n  if (PK in filename): # If input file is a ZIP file\\n    extract_refresh = 'Y'\\n\\t\\ndlvry_id = 0\\n\\nif extract_refresh == 'Y':\\n  df = spark.read.format('csv').option('header', True).option('delimiter', ',').load(f'/mnt/<@@RAW_PATH@@>/*{PK}*')\\n  dlvry = df.select(\\\"dlvry_id\\\").rdd.flatMap(lambda x: x).collect()\\n  s = ''\\n  for i in dlvry:\\n\\t  s = s + str(i)\\n  s1 = int(s)\\n  dlvry_id = s1\\n  rows = [['null', <<CNTRT_ID>>, s1, 7, 2, 3, <<PROCESS_RUN_KEY>>]]\\n\\n  columns = ['cmmnt_txt', 'cntrt_id', 'dlvry_id', 'dlvry_phase_id', 'dlvry_run_seq_num', 'dlvry_sttus_id', 'run_id']\\nelse:\\n  dlvry_id1 = <<DLVRY_ID>>\\n  dlvry_id = <<DLVRY_ID>>\\n  rows = [['null', <<CNTRT_ID>>, dlvry_id1, 7, 2, 3, <<PROCESS_RUN_KEY>>]]\\n\\n  columns = ['cmmnt_txt', 'cntrt_id', 'dlvry_id', 'dlvry_phase_id', 'dlvry_run_seq_num', 'dlvry_sttus_id', 'run_id']\\n  \\njdbcDF2 = spark_session.createDataFrame(rows, columns)\\n\\n# Integrated proecss details\\ndf_intg_dtl = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_DLVRY_RUN_LKP\\\")\\ndf_intg_dtl = df_intg_dtl.filter(f'dlvry_id = {dlvry_id} and dlvry_phase_id = 7 and dlvry_run_seq_num = 2')\\n\\nif (df_intg_dtl.count() == 0):\\n  pass #jdbcDF2.write.format(\\\"parquet\\\").mode(\\\"append\\\").save(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-refined/MM_DLVRY_RUN_LKP\\\")\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated Product Transformation_v1",
+      "predecessorName": "[Gen] update dlvry run ",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated Product Transformation_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated Market Transformation_v1",
+      "predecessorName": "[NG] T1 Integrated Product Transformation_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated Market Transformation_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated TP Market Association Loading_v1",
+      "predecessorName": "[NG] T1 Integrated Market Transformation_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated TP Market Association Loading_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated TP Product Association Loading_v1",
+      "predecessorName": "[NG] T1 Integrated TP Market Association Loading_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated TP Product Association Loading_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated Fact Transformation_v1",
+      "predecessorName": "[NG] T1 Integrated TP Product Association Loading_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated Fact Transformation_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated Market Custom Aggregate Calculation_v1",
+      "predecessorName": "[NG] T1 Integrated Fact Transformation_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated Market Custom Aggregate Calculation_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated TP Market Publication_v1",
+      "predecessorName": "[NG] T1 Integrated Market Custom Aggregate Calculation_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated TP Market Publication_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated Product IDIM Contract Loading_v1",
+      "predecessorName": "[NG] T1 Integrated TP Market Publication_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated Product IDIM Contract Loading_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated Market IDIM Contract Loading_v1",
+      "predecessorName": "[NG] T1 Integrated Product IDIM Contract Loading_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated Market IDIM Contract Loading_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] T1 Integrated Dimension Publication_v1",
+      "predecessorName": "[NG] T1 Integrated Market IDIM Contract Loading_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 Integrated Dimension Publication_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Publish Atomic Fact",
+      "predecessorName": "[NG] T1 Integrated Dimension Publication_v1",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_Atomic_Fact_publications_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[NG] Product IDIM to Refined Layer",
+      "predecessorName": "[NG] Publish Atomic Fact",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF_Tier1-MD-PROD-v1.0\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[NG] Market IDIM to Refined Layer",
+      "predecessorName": "[NG] Product IDIM to Refined Layer",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF_Tier1-MD-MARKET-v1.0\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[NG] Publish refined facts from staging",
+      "predecessorName": "[NG] Market IDIM to Refined Layer",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_Refined_Fact_publications_v1\"\n  },\n  \"active\": \"true\"\n}",
+      "operationVersionName": "NestedGraph",
+      "overridableIndicator": true
+    }
+  ],
+  "graphName": "NNIT_TradePanel_DPF_Tier1_Integrated TP Main Chain"
+}
