@@ -3,14 +3,14 @@
   "nodes": [
     {
       "operationName": "[File Load] mm_mkt_dim_vw",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_DIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_DIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_dim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
     {
       "operationName": "[sem] release mm_mkt_dim_VW",
       "predecessorName": "[File Load] mm_mkt_dim_vw",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_DIM_VW/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_DIM_VW/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
@@ -25,7 +25,7 @@
       "operationName": "[File Load] mm_mkt_sidim_vw",
       "operationDescription": "<GC 1401> updated from MM_MKT_DIM_VW to MM_MKT_SIDIM_VW",
       "predecessorName": "[FIL] mm_mkt_dim",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_SIDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sidim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_SIDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sidim_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
@@ -53,21 +53,21 @@
     {
       "operationName": "[File Pub] MM_MKT_SIDIM_VW",
       "predecessorName": "[CET] partitioning sdim$2",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_MKT_SIDIM_VW/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sidim_vw\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_SIDIM_VW/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_sidim_vw\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
     {
       "operationName": "[sem] release mm_mkt_sidim_vw1",
       "predecessorName": "[File Pub] MM_MKT_SIDIM_VW",
-      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_SIDIM_VW/\"\r\n}",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_SIDIM_VW/\"\r\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
     {
       "operationName": "[sem] [ADDED BY ANDRZEJ ON JAN 12TH] release mm_mkt_dim_vw",
       "predecessorName": "[sem] release mm_mkt_sidim_vw1",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_MKT_DIM_VW/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_DIM_VW/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     }

@@ -3,14 +3,14 @@
   "nodes": [
     {
       "operationName": "[File Load] MM_PROD_SKID_LKP",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_SKID_LKP/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_SKID_LKP/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_skid_lkp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
     {
       "operationName": "[sem] release MM_PROD_SKID_LKP",
       "predecessorName": "[File Load] MM_PROD_SKID_LKP",
-      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_SKID_LKP/\"\r\n}",
+      "jsonSpecification": "{\r\n  \"active\": \"true\",\r\n  \"actionType\": \"release\",\r\n  \"itemType\": \"path\",\r\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_SKID_LKP/\"\r\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },

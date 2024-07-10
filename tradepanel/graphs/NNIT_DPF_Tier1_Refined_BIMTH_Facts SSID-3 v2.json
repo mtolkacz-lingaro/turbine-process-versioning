@@ -3,14 +3,14 @@
   "nodes": [
     {
       "operationName": "[LOAD] fact",
-      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TP_BIMTH_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"part_cntrt_id=<<CNTRT_ID>>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_BIMTH_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"part_cntrt_id=<<CNTRT_ID>>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
     {
       "operationName": "MM_TP_BIMTH_FCT",
       "predecessorName": "[LOAD] fact",
-      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TP_BIMTH_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_BIMTH_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
@@ -31,28 +31,28 @@
     {
       "operationName": "[LOAD] product xref",
       "predecessorName": "merge df with latest contract data",
-      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_XREF\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_xref\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_XREF\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_xref\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
     {
       "operationName": "MM_PROD_XREF",
       "predecessorName": "[LOAD] product xref",
-      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_XREF\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_XREF\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
     {
       "operationName": "[LOAD] contracts extended",
       "predecessorName": "MM_PROD_XREF",
-      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_CNTRT_EXTND_VW\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_cntrt_extnd\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_CNTRT_EXTND_VW\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_cntrt_extnd\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
     {
       "operationName": "MM_CNTRT_EXTND_VW",
       "predecessorName": "[LOAD] contracts extended",
-      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_CNTRT_EXTND_VW\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"<<BIMTH_REFINED_ACTIVE>>\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_CNTRT_EXTND_VW\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },

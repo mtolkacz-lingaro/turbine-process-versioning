@@ -4,7 +4,7 @@
     {
       "operationName": "[FL] MM_RUN_MKT_PLC ",
       "operationDescription": "Loading MM_RUN_MKT_PLC ",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_MKT_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_mkt_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_MKT_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_mkt_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
@@ -25,21 +25,21 @@
     {
       "operationName": "[PUB] mm market run log",
       "predecessorName": "[gen-cc] tables",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_MKT_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_as_1\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_MKT_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mkt_as_1\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
     {
       "operationName": "release sem for MM_RUN_MKT_PLC ",
       "predecessorName": "[PUB] mm market run log",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_MKT_PLC/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_MKT_PLC/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
     {
       "operationName": "[FL] MM_RUN_PROD_PLC ",
       "predecessorName": "release sem for MM_RUN_MKT_PLC ",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_PROD_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_prod_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_PROD_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_prod_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
@@ -60,14 +60,14 @@
     {
       "operationName": "[PUB] mm product run log",
       "predecessorName": "[gen-cc] both tables",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_PROD_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_as_1\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_PROD_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_as_1\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
     {
       "operationName": "release sem for MM_RUN_PROD_PLC ",
       "predecessorName": "[PUB] mm product run log",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_PROD_PLC/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_PROD_PLC/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     }

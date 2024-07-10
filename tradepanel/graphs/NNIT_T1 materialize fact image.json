@@ -24,7 +24,7 @@
     {
       "operationName": "Load Fact",
       "predecessorName": "Type cast fact image",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_targ_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_targ_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
@@ -38,7 +38,7 @@
     {
       "operationName": "Release fact",
       "predecessorName": "Cast and Complement the fact",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt=<<CNTRT_ID>>/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt=<<CNTRT_ID>>/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
