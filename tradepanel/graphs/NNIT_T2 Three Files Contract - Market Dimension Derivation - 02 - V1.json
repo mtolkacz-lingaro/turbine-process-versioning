@@ -84,7 +84,7 @@
       "predecessorName": "[DIST]  Get list of external Mkt IDs",
       "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_MKT_XREF/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_mkt_xref\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
-      "overridableIndicator": true
+      "overridableIndicator": false
     },
     {
       "operationName": "mkt xref - lower case",
