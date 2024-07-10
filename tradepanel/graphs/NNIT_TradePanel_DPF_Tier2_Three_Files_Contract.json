@@ -76,7 +76,7 @@
     {
       "operationName": "[NG] Preloading phase",
       "predecessorName": "Update Delivery - Phase id 2 and status id 3",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"Three File contracts - preloading v1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_Three File contracts - preloading v1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
