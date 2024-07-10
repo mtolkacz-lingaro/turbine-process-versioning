@@ -320,14 +320,14 @@
     {
       "operationName": "DVM - File Structure Validation - Inputs",
       "predecessorName": "Update Delivery Status(phase id 2, status id 3)",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_file_structure_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_file_structure_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "DVM - File Structure Validations",
       "predecessorName": "DVM - File Structure Validation - Inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_file_structure_validation_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_file_structure_validation_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -1250,42 +1250,42 @@
     {
       "operationName": "[DVM] Reference Data Vendors Inputs",
       "predecessorName": "[NG] fact_01",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_ref_data_vendors_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_ref_data_vendors_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] Reference Data Vendors",
       "predecessorName": "[DVM] Reference Data Vendors Inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_ref_data_vendors_validation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_ref_data_vendors_validation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] - FYI inputs",
       "predecessorName": "[DVM] Reference Data Vendors",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_fyi_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_fyi_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] - FYI Validations checks",
       "predecessorName": "[DVM] - FYI inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_fyi_validation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_fyi_validation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] - Reference Data inputs",
       "predecessorName": "[DVM] - FYI Validations checks",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_ref_data_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_ref_data_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] - Reference Data Valdiations",
       "predecessorName": "[DVM] - Reference Data inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_ref_data\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_ref_data\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
