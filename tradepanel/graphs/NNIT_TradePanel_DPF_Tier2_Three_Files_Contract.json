@@ -97,42 +97,42 @@
     {
       "operationName": "[NG] Market01-Three Files Contract Data",
       "predecessorName": "DVM - File Structure",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Market Dimension Derivation - 01 - V1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T2Three Files Contract - Market Dimension Derivation - 01 - V1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Market Skid LKP",
       "predecessorName": "[NG] Market01-Three Files Contract Data",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Single File Contract - Mkt Skid Derivation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T2Single File Contract - Mkt Skid Derivation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Market02-Three Files Contract Data",
       "predecessorName": "[NG] Market Skid LKP",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Market Dimension Derivation - 02 - V1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T2Three Files Contract - Market Dimension Derivation - 02 - V1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Product01-CDL_TP T2 Three Files Contract Data",
       "predecessorName": "[NG] Market02-Three Files Contract Data",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Product Dimension Derivation - 01 v1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T2Three Files Contract - Product Dimension Derivation - 01 v1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Product Skid LKP",
       "predecessorName": "[NG] Product01-CDL_TP T2 Three Files Contract Data",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Single File Contract - Prod Skid Derivation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T2Single File Contract - Prod Skid Derivation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Product02-CDL_TP T2 Three Files Contract Data",
       "predecessorName": "[NG] Product Skid LKP",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Product Dimension Derivation - 02 - v1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T2Three Files Contract - Product Dimension Derivation - 02 - v1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -160,7 +160,7 @@
     {
       "operationName": "[NG] Fact01-CDL_TP T2 Three Files Contract Data",
       "predecessorName": "[SQL Syntax] Fact Transformations update DLVRY LKP",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Fact Derivation - 01 v1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T2Three Files Contract - Fact Derivation - 01 v1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -181,7 +181,7 @@
     {
       "operationName": "[NG] Fact02-CDL_TP T2 Three Files Contract Data",
       "predecessorName": "[NG] EDWM TIME MAPPING",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T2 Three Files Contract - Fact Derivation - 02 v1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T2Three Files Contract - Fact Derivation - 02 v1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
