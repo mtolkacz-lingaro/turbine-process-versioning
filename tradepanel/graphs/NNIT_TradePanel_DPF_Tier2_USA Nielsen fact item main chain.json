@@ -11,7 +11,7 @@
     {
       "operationName": "[NG] unzip raw files",
       "predecessorName": "[NG] LOAD TABLES",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -131,7 +131,7 @@
     {
       "operationName": "[NG] LOAD RUN LOGS",
       "predecessorName": "[JOIN] TP_WK_FCT",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"CDL_TP_USA Nielsen Fact-Load Run Partition Log\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_CDL_TP_USA Nielsen Fact-Load Run Partition Log\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -257,28 +257,28 @@
     {
       "operationName": "[NG] NEW DIMENSIONS",
       "predecessorName": "[semaphore] release prod_dim",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"CDL_TP_USA Nielsen Fact-Load Dimensions\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_CDL_TP_USA Nielsen Fact-Load Dimensions\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] WK Facts",
       "predecessorName": "[NG] NEW DIMENSIONS",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"CDL_TP_USA Nielsen Fact-WK Facts\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_CDL_TP_USA Nielsen Fact-WK Facts\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] MTH Facts",
       "predecessorName": "[NG] WK Facts",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"CDL_TP_USA Nielsen Fact-Aggregate MTH Facts\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_CDL_TP_USA Nielsen Fact-Aggregate MTH Facts\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] BIMTH Facts",
       "predecessorName": "[NG] MTH Facts",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"CDL_TP_USA Nielsen Fact-Aggregate BIMTH Facts\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_CDL_TP_USA Nielsen Fact-Aggregate BIMTH Facts\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -425,7 +425,7 @@
     {
       "operationName": "move file to archive",
       "predecessorName": "[PUBLISH] MM_PROD_DIM",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     }

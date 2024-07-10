@@ -1,10 +1,10 @@
 {
   "applicationName": "TURBINE_INTERNAL",
-  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \"T1 Atomic TP Main Chain\",\r\n    \"description\": \"T1 Atomic TP Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n\t\t\"DATA_TIER\": {\r\n            \"title\": \"DATA_TIER\",\r\n            \"description\": \"DATA_TIER\",\r\n\t\t\t\"enum\": [\r\n                \"Tier1\",\r\n                \"Tier2\",\r\n\t\t\t\t\"HHP\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"TEST_PRODUCTION\": {\r\n            \"title\": \"TEST_PRODUCTION\",\r\n            \"description\": \"TEST_PRODUCTION\",\r\n\t\t\t\"enum\": [\r\n                \"Test\",\r\n                \"Production\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"FACT_TYPE_CODE\": {\r\n            \"title\": \"FACT_TYPE_CODE\",\r\n            \"description\": \"FACT_TYPE_CODE\",\r\n\t\t\t\"enum\": [\r\n                \"HHP\",\r\n                \"SF\",\r\n\t\t\t\t\"TP\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"GEOGRAPHY\": {\r\n            \"title\": \"GEOGRAPHY\",\r\n            \"description\": \"GEOGRAPHY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"GEO_ID\": {\r\n            \"title\": \"GEO_ID\",\r\n            \"description\": \"GEO_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"AREA_BREAKDOWN\": {\r\n            \"title\": \"AREA_BREAKDOWN\",\r\n            \"description\": \"AREA_BREAKDOWN\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"MARKET\": {\r\n            \"title\": \"MARKET\",\r\n            \"description\": \"MARKET\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CURRENCY\": {\r\n            \"title\": \"CURRENCY\",\r\n            \"description\": \"CURRENCY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CURRENCY_CODE\": {\r\n            \"title\": \"CURRENCY_CODE\",\r\n            \"description\": \"CURRENCY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CATEGORY\": {\r\n            \"title\": \"CATEGORY\",\r\n            \"description\": \"CATEGORY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CATEGORY_ID\": {\r\n            \"title\": \"CATEGORY_ID\",\r\n            \"description\": \"CATEGORY_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"PERIOD_TYPE\": {\r\n            \"title\": \"PERIOD_TYPE\",\r\n            \"description\": \"PERIOD_TYPE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"PERIOD_TYPE_CODE\": {\r\n            \"title\": \"PERIOD_TYPE_CODE\",\r\n            \"description\": \"PERIOD_TYPE_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"VENDOR\": {\r\n            \"title\": \"VENDOR\",\r\n            \"description\": \"VENDOR\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"VENDOR_ID\": {\r\n            \"title\": \"VENDOR_ID\",\r\n            \"description\": \"VENDOR_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CONTRACT_NAME\": {\r\n            \"title\": \"CONTRACT_NAME\",\r\n            \"description\": \"CONTRACT_NAME\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CONTRACT_CODE\": {\r\n            \"title\": \"CONTRACT_CODE\",\r\n            \"description\": \"CONTRACT_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"RETENTION_PERIOD\": {\r\n            \"title\": \"NO_OF_WEEKS\",\r\n            \"description\": \"Retention period in number of weeks\",\r\n            \"type\": \"integer\"\r\n        },\r\n\t\t\"VENDOR_FILE_PATTERN\": {\r\n            \"title\": \"VENDOR_FILE_PATTERN\",\r\n            \"description\": \"VENDOR_FILE_PATTERN\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"STEP_FILE_PATTERN_COMMON\": {\r\n            \"title\": \"STEP_FILE_PATTERN_COMMON\",\r\n            \"description\": \"STEP_FILE_PATTERN_COMMON\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"STEP_DVM\": {\r\n            \"title\": \"DVM\",\r\n            \"description\": \"DVM\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"DATA_AUTO_VAL_IND\": {\r\n            \"title\": \"DATA_AUTO_VAL_IND\",\r\n            \"description\": \"DATA_AUTO_VAL_IND\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"SRCE_SYS_ID\": {\r\n            \"title\": \"SRCE_SYS_ID\",\r\n            \"description\": \"SRCE_SYS_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n        \"IGRTD_PUBLISH_FILE_PATTERN\": {\r\n            \"title\": \"IGRTD_PUBLISH_FILE_PATTERN\",\r\n            \"description\": \"File pattern to create a file from atomic contract that will trigger integrated layer publishing\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"CNTRT_ID\": {\r\n            \"title\": \"CNTRT_ID\",\r\n            \"description\": \"CNTRT_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n         \"CNTRY_NAME\": {\r\n            \"title\": \"CNTRY_NAME\",\r\n            \"description\": \"CNTRY_NAME\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"ISO_CNTRY_CODE\": {\r\n            \"title\": \"ISO_CNTRY_CODE\",\r\n            \"description\": \"ISO_CNTRY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PROD_PRTTN_CODE\": {\r\n            \"title\": \"PROD_PRTTN_CODE\",\r\n            \"description\": \"PROD_PRTTN_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"ISO_CRNCY_CODE\": {\r\n            \"title\": \"ISO_CRNCY_CODE\",\r\n            \"description\": \"ISO_CRNCY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"TIME_PERD_TYPE_CODE\": {\r\n            \"title\": \"TIME_PERD_TYPE_CODE\",\r\n            \"description\": \"TIME_PERD_TYPE_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"TIME_PERD_CLASS_CODE\": {\r\n            \"title\": \"TIME_PERD_CLASS_CODE\",\r\n            \"description\": \"TIME_PERD_CLASS_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CONTACTS\": {\r\n            \"title\": \"CONTACTS\",\r\n            \"description\": \"CONTACTS\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"EXTRACT_REFRESH\": {\r\n            \"title\": \"EXTRACT_REFRESH\",\r\n            \"description\": \"EXTRACT_REFRESH\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"RAW_FILE_PATH\": {\r\n            \"title\": \"RAW_FILE_PATH\",\r\n            \"description\": \"Raw File Path\",\r\n            \"default\": \"turbinev1/WORK/\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PUBLISH_PATH\": {\r\n            \"title\": \"PUBLISH_PATH\",\r\n            \"description\": \"Publishing Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"IN_FILE_PATH\": {\r\n            \"title\": \"IN_FILE_PATH\",\r\n            \"description\": \"Input File Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"MAPPINGS_PATH\": {\r\n            \"title\": \"MAPPINGS_PATH\",\r\n            \"description\": \"Mappings Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"BUSINESS_DVM\": {\r\n            \"title\": \"BUSINESS_DVM\",\r\n            \"description\": \"Business Validations needed\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ1\": {\r\n            \"title\": \"CHK_DQ1\",\r\n            \"description\": \"Missing or delivered product level\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ2\": {\r\n            \"title\": \"CHK_DQ2\",\r\n            \"description\": \"Unexpected change vs previous period or year ago\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ3\": {\r\n            \"title\": \"CHK_DQ3\",\r\n            \"description\": \"Unexpected backdata difference\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ4\": {\r\n            \"title\": \"CHK_DQ4\",\r\n            \"description\": \"Product Parent-Children mismatch on Volume Sales MSU\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ5\": {\r\n            \"title\": \"CHK_DQ5\",\r\n            \"description\": \"Top level Volume or Value Sales mismatch between hierarchies\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ6\": {\r\n            \"title\": \"CHK_DQ6\",\r\n            \"description\": \"Missing fact data for parent product level\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ7\": {\r\n            \"title\": \"CHK_DQ7\",\r\n            \"description\": \"Negative fact values\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"DATA_TIER\", \"TEST_PRODUCTION\", \"FACT_TYPE_CODE\", \"GEOGRAPHY\", \"GEO_ID\", \"AREA_BREAKDOWN\", \"MARKET\", \"CURRENCY\", \"CURRENCY_CODE\", \"CATEGORY\", \"CATEGORY_ID\", \"PERIOD_TYPE\", \"PERIOD_TYPE_CODE\", \"VENDOR\", \"VENDOR_ID\", \"CONTRACT_NAME\", \"CONTRACT_CODE\", \"RETENTION_PERIOD\", \"VENDOR_FILE_PATTERN\", \"STEP_FILE_PATTERN_COMMON\", \"STEP_DVM\", \"DATA_AUTO_VAL_IND\", \"SRCE_SYS_ID\",  \"IGRTD_PUBLISH_FILE_PATTERN\", \"CNTRT_ID\", \"CNTRY_NAME\", \"ISO_CNTRY_CODE\", \"PROD_PRTTN_CODE\", \"ISO_CRNCY_CODE\", \"TIME_PERD_TYPE_CODE\", \"TIME_PERD_CLASS_CODE\", \"CONTACTS\", \"EXTRACT_REFRESH\", \"BUSINESS_DVM\", \"CHK_DQ1\", \"CHK_DQ2\", \"CHK_DQ3\", \"CHK_DQ4\", \"CHK_DQ5\", \"CHK_DQ6\", \"CHK_DQ7\"]\r\n}",
+  "jsonSpecification": "{\r\n    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n    \"title\": \"NNIT_T1 Atomic TP Main Chain\",\r\n    \"description\": \"NNIT_T1 Atomic TP Main Chain\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n\t\t\"DATA_TIER\": {\r\n            \"title\": \"DATA_TIER\",\r\n            \"description\": \"DATA_TIER\",\r\n\t\t\t\"enum\": [\r\n                \"Tier1\",\r\n                \"Tier2\",\r\n\t\t\t\t\"HHP\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"TEST_PRODUCTION\": {\r\n            \"title\": \"TEST_PRODUCTION\",\r\n            \"description\": \"TEST_PRODUCTION\",\r\n\t\t\t\"enum\": [\r\n                \"Test\",\r\n                \"Production\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"FACT_TYPE_CODE\": {\r\n            \"title\": \"FACT_TYPE_CODE\",\r\n            \"description\": \"FACT_TYPE_CODE\",\r\n\t\t\t\"enum\": [\r\n                \"HHP\",\r\n                \"SF\",\r\n\t\t\t\t\"TP\"\r\n            ],\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"GEOGRAPHY\": {\r\n            \"title\": \"GEOGRAPHY\",\r\n            \"description\": \"GEOGRAPHY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"GEO_ID\": {\r\n            \"title\": \"GEO_ID\",\r\n            \"description\": \"GEO_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"AREA_BREAKDOWN\": {\r\n            \"title\": \"AREA_BREAKDOWN\",\r\n            \"description\": \"AREA_BREAKDOWN\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"MARKET\": {\r\n            \"title\": \"MARKET\",\r\n            \"description\": \"MARKET\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CURRENCY\": {\r\n            \"title\": \"CURRENCY\",\r\n            \"description\": \"CURRENCY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CURRENCY_CODE\": {\r\n            \"title\": \"CURRENCY_CODE\",\r\n            \"description\": \"CURRENCY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CATEGORY\": {\r\n            \"title\": \"CATEGORY\",\r\n            \"description\": \"CATEGORY\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CATEGORY_ID\": {\r\n            \"title\": \"CATEGORY_ID\",\r\n            \"description\": \"CATEGORY_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"PERIOD_TYPE\": {\r\n            \"title\": \"PERIOD_TYPE\",\r\n            \"description\": \"PERIOD_TYPE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"PERIOD_TYPE_CODE\": {\r\n            \"title\": \"PERIOD_TYPE_CODE\",\r\n            \"description\": \"PERIOD_TYPE_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"VENDOR\": {\r\n            \"title\": \"VENDOR\",\r\n            \"description\": \"VENDOR\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"VENDOR_ID\": {\r\n            \"title\": \"VENDOR_ID\",\r\n            \"description\": \"VENDOR_ID\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CONTRACT_NAME\": {\r\n            \"title\": \"CONTRACT_NAME\",\r\n            \"description\": \"CONTRACT_NAME\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CONTRACT_CODE\": {\r\n            \"title\": \"CONTRACT_CODE\",\r\n            \"description\": \"CONTRACT_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"RETENTION_PERIOD\": {\r\n            \"title\": \"NO_OF_WEEKS\",\r\n            \"description\": \"Retention period in number of weeks\",\r\n            \"type\": \"integer\"\r\n        },\r\n\t\t\"VENDOR_FILE_PATTERN\": {\r\n            \"title\": \"VENDOR_FILE_PATTERN\",\r\n            \"description\": \"VENDOR_FILE_PATTERN\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"STEP_FILE_PATTERN_COMMON\": {\r\n            \"title\": \"STEP_FILE_PATTERN_COMMON\",\r\n            \"description\": \"STEP_FILE_PATTERN_COMMON\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"STEP_DVM\": {\r\n            \"title\": \"DVM\",\r\n            \"description\": \"DVM\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"DATA_AUTO_VAL_IND\": {\r\n            \"title\": \"DATA_AUTO_VAL_IND\",\r\n            \"description\": \"DATA_AUTO_VAL_IND\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"SRCE_SYS_ID\": {\r\n            \"title\": \"SRCE_SYS_ID\",\r\n            \"description\": \"SRCE_SYS_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n        \"IGRTD_PUBLISH_FILE_PATTERN\": {\r\n            \"title\": \"IGRTD_PUBLISH_FILE_PATTERN\",\r\n            \"description\": \"File pattern to create a file from atomic contract that will trigger integrated layer publishing\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"CNTRT_ID\": {\r\n            \"title\": \"CNTRT_ID\",\r\n            \"description\": \"CNTRT_ID\",\r\n            \"type\": \"integer\"\r\n        },\r\n         \"CNTRY_NAME\": {\r\n            \"title\": \"CNTRY_NAME\",\r\n            \"description\": \"CNTRY_NAME\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"ISO_CNTRY_CODE\": {\r\n            \"title\": \"ISO_CNTRY_CODE\",\r\n            \"description\": \"ISO_CNTRY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PROD_PRTTN_CODE\": {\r\n            \"title\": \"PROD_PRTTN_CODE\",\r\n            \"description\": \"PROD_PRTTN_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"ISO_CRNCY_CODE\": {\r\n            \"title\": \"ISO_CRNCY_CODE\",\r\n            \"description\": \"ISO_CRNCY_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"TIME_PERD_TYPE_CODE\": {\r\n            \"title\": \"TIME_PERD_TYPE_CODE\",\r\n            \"description\": \"TIME_PERD_TYPE_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"TIME_PERD_CLASS_CODE\": {\r\n            \"title\": \"TIME_PERD_CLASS_CODE\",\r\n            \"description\": \"TIME_PERD_CLASS_CODE\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"CONTACTS\": {\r\n            \"title\": \"CONTACTS\",\r\n            \"description\": \"CONTACTS\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"EXTRACT_REFRESH\": {\r\n            \"title\": \"EXTRACT_REFRESH\",\r\n            \"description\": \"EXTRACT_REFRESH\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"RAW_FILE_PATH\": {\r\n            \"title\": \"RAW_FILE_PATH\",\r\n            \"description\": \"Raw File Path\",\r\n            \"default\": \"turbinev1/WORK/\",\r\n            \"type\": \"string\"\r\n        },\r\n         \"PUBLISH_PATH\": {\r\n            \"title\": \"PUBLISH_PATH\",\r\n            \"description\": \"Publishing Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"IN_FILE_PATH\": {\r\n            \"title\": \"IN_FILE_PATH\",\r\n            \"description\": \"Input File Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        }, \r\n         \"MAPPINGS_PATH\": {\r\n            \"title\": \"MAPPINGS_PATH\",\r\n            \"description\": \"Mappings Path\",\r\n            \"default\": \"bf/unrefined/adw-t1-unrefined-bf/\",\r\n            \"type\": \"string\"\r\n        },\r\n\t\t\"BUSINESS_DVM\": {\r\n            \"title\": \"BUSINESS_DVM\",\r\n            \"description\": \"Business Validations needed\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ1\": {\r\n            \"title\": \"CHK_DQ1\",\r\n            \"description\": \"Missing or delivered product level\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ2\": {\r\n            \"title\": \"CHK_DQ2\",\r\n            \"description\": \"Unexpected change vs previous period or year ago\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ3\": {\r\n            \"title\": \"CHK_DQ3\",\r\n            \"description\": \"Unexpected backdata difference\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ4\": {\r\n            \"title\": \"CHK_DQ4\",\r\n            \"description\": \"Product Parent-Children mismatch on Volume Sales MSU\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ5\": {\r\n            \"title\": \"CHK_DQ5\",\r\n            \"description\": \"Top level Volume or Value Sales mismatch between hierarchies\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ6\": {\r\n            \"title\": \"CHK_DQ6\",\r\n            \"description\": \"Missing fact data for parent product level\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        },\r\n        \"CHK_DQ7\": {\r\n            \"title\": \"CHK_DQ7\",\r\n            \"description\": \"Negative fact values\",\r\n            \"default\": \"true\",\r\n            \"type\": \"string\"\r\n        }\r\n   },\r\n    \"required\": [],\r\n    \"configurable\": [\"DATA_TIER\", \"TEST_PRODUCTION\", \"FACT_TYPE_CODE\", \"GEOGRAPHY\", \"GEO_ID\", \"AREA_BREAKDOWN\", \"MARKET\", \"CURRENCY\", \"CURRENCY_CODE\", \"CATEGORY\", \"CATEGORY_ID\", \"PERIOD_TYPE\", \"PERIOD_TYPE_CODE\", \"VENDOR\", \"VENDOR_ID\", \"CONTRACT_NAME\", \"CONTRACT_CODE\", \"RETENTION_PERIOD\", \"VENDOR_FILE_PATTERN\", \"STEP_FILE_PATTERN_COMMON\", \"STEP_DVM\", \"DATA_AUTO_VAL_IND\", \"SRCE_SYS_ID\",  \"IGRTD_PUBLISH_FILE_PATTERN\", \"CNTRT_ID\", \"CNTRY_NAME\", \"ISO_CNTRY_CODE\", \"PROD_PRTTN_CODE\", \"ISO_CRNCY_CODE\", \"TIME_PERD_TYPE_CODE\", \"TIME_PERD_CLASS_CODE\", \"CONTACTS\", \"EXTRACT_REFRESH\", \"BUSINESS_DVM\", \"CHK_DQ1\", \"CHK_DQ2\", \"CHK_DQ3\", \"CHK_DQ4\", \"CHK_DQ5\", \"CHK_DQ6\", \"CHK_DQ7\"]\r\n}",
   "nodes": [
     {
       "operationName": "Unzip the file",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -1243,7 +1243,7 @@
     {
       "operationName": "[NG] fact_01",
       "predecessorName": "[CET] on result assign market",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Standardization\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF Fact Standardization\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -1292,63 +1292,63 @@
     {
       "operationName": "[NG] run_loading",
       "predecessorName": "[DVM] - Reference Data Valdiations",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Run Logs Loading\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF Run Logs Loading\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] atomic measure calculation",
       "predecessorName": "[NG] run_loading",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF_Atomic Measure Calculation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF_Atomic Measure Calculation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] fact skid",
       "predecessorName": "[NG] atomic measure calculation",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Dimension Skid\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF Fact Dimension Skid\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] FACT IMAGE CREATION",
       "predecessorName": "[NG] fact skid",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Image Derivation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF Fact Image Derivation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Materialize Fact Image",
       "predecessorName": "[NG] FACT IMAGE CREATION",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1 materialize fact image\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1 materialize fact image\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] measure log",
       "predecessorName": "[NG] Materialize Fact Image",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF_Measure_log_Loading\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF_Measure_log_Loading\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] fact copy",
       "predecessorName": "[NG] measure log",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Copy\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF Fact Copy\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] fact_time",
       "predecessorName": "[NG] fact copy",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Time calculations\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF Fact Time calculations\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] business data quality",
       "predecessorName": "[NG] fact_time",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Business Data Quality\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF Business Data Quality\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -1447,28 +1447,28 @@
     {
       "operationName": "Backup Fact",
       "predecessorName": "Auto Approval - Stop Calculations",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"cp_fact_backup_process\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cp_fact_backup_process\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] product publication",
       "predecessorName": "Backup Fact",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF_Atomic Product_Publication\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF_Atomic Product_Publication\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Fact publications",
       "predecessorName": "[NG] product publication",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF_Atomic_Fact_Publication\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF_Atomic_Fact_Publication\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "Refresh Integrated Contract based on Extract Refresh",
       "predecessorName": "[NG] Fact publications",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"Refresh_t1_integrated_processing\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_Refresh_t1_integrated_processing\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -1489,7 +1489,7 @@
     {
       "operationName": "Move to Archive",
       "predecessorName": "[GEN] - Fact data indicator update",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -1517,21 +1517,21 @@
     {
       "operationName": "[NG] Publish BIMTH facts to Refined Layer",
       "predecessorName": "test control - filter",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF_Tier1_Refined_BIMTH_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF_Tier1_Refined_BIMTH_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Publish MTH facts to Refined Layer",
       "predecessorName": "[NG] Publish BIMTH facts to Refined Layer",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF_Tier1_Refined_MTH_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF_Tier1_Refined_MTH_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Publish WK facts to Refined Layer",
       "predecessorName": "[NG] Publish MTH facts to Refined Layer",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF_Tier1_Refined_WK_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF_Tier1_Refined_WK_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     }

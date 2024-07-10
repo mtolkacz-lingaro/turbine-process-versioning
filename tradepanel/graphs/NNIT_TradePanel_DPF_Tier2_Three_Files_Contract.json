@@ -26,7 +26,7 @@
     {
       "operationName": "MFT",
       "predecessorName": "Update Delivery status",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -83,14 +83,14 @@
     {
       "operationName": "DVM - inputs",
       "predecessorName": "[NG] Preloading phase",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"three_file_cdl_t2_dq_inputs\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_three_file_cdl_t2_dq_inputs\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "DVM - File Structure",
       "predecessorName": "DVM - inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"cdl_t2_dq_file_struct_v2\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_t2_dq_file_struct_v2\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -139,14 +139,14 @@
     {
       "operationName": "DVM - Reference Data Checks inputs",
       "predecessorName": "[NG] Product02-CDL_TP T2 Three Files Contract Data",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"three_file_cdl_t2_dq_ref_data_inputs\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_three_file_cdl_t2_dq_ref_data_inputs\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "DVM - Reference Data Checks",
       "predecessorName": "DVM - Reference Data Checks inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"cdl_t2_reference_data_v2\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_t2_reference_data_v2\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -167,14 +167,14 @@
     {
       "operationName": "[NG] Exchange_Rate_Fct_VW",
       "predecessorName": "[NG] Fact01-CDL_TP T2 Three Files Contract Data",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"exchng_rate_fct_vw - v1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_exchng_rate_fct_vw - v1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] EDWM TIME MAPPING",
       "predecessorName": "[NG] Exchange_Rate_Fct_VW",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"edwm_mapping - v1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_edwm_mapping - v1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -188,35 +188,35 @@
     {
       "operationName": "DVM - FYI checks inputs",
       "predecessorName": "[NG] Fact02-CDL_TP T2 Three Files Contract Data",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"three_file_cdl_t2_dq_fyi_inputs\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_three_file_cdl_t2_dq_fyi_inputs\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "DVM - FYI Checks",
       "predecessorName": "DVM - FYI checks inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"cdl_t2_fyi_v2\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_t2_fyi_v2\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "DVM - Business Validation checks inputs",
       "predecessorName": "DVM - FYI Checks",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"three_file_cdl_t2_business_validations_inputs\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_three_file_cdl_t2_business_validations_inputs\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "DVM - Business validations",
       "predecessorName": "DVM - Business Validation checks inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"cdl_dq_business_validation v1\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_dq_business_validation v1\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "DVM - Business Validations Checks",
       "predecessorName": "DVM - Business validations",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"cdl_t2_business_checks v1\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_cdl_t2_business_checks v1\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -493,7 +493,7 @@
     {
       "operationName": "[NG] move file to archive",
       "predecessorName": "[GEN] - Fact data indicator update",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     }

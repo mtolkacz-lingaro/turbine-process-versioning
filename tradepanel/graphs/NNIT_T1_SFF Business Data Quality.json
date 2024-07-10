@@ -1,0 +1,693 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "[FL] MM_DVM_CNTRT_STRCT_PRC2_VW",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"path\": \"<@@PATH1@@>/MM_DVM_CNTRT_STRCT_PRC2_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_prc2_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "dummy",
+      "operationDescription": "dummy",
+      "predecessorName": "[FL] MM_DVM_CNTRT_STRCT_PRC2_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Load fact schema",
+      "predecessorName": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\n\\ndf_fct_schema = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_FCT_SCHEMA\\\")\\n    \\ndf_output_dict['df_fct_schema'] = df_fct_schema\\ndict_all_dfs['df_fct_schema'] = {\\\"df_object\\\" :df_fct_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_schema\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "CC - Fact - temp",
+      "predecessorName": "Load fact schema",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_fct_img= dict_all_dfs['df_fct_WK_img'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_fct_img.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_fct_img = df_fct_img.withColumn(i,lit(None).cast('string'))\\n\\ndf_fct_img = df_fct_img.select(*sdim_cols)\\ncols = df_fct_img.columns\\n\\nfor j in cols:\\n  if dict(df_fct_img.dtypes)[j] != dict(df_fct_schema.dtypes)[j]:\\n    df_fct_img = df_fct_img.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_fct_MTH_img'] = {\\\"df_object\\\" :df_fct_img}\\ndf_output_dict['df_fct_MTH_img'] = df_fct_img\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_WK_img\"\n    },\n    {\n      \"name\": \"df_fct_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Assigning Fact image",
+      "predecessorName": "CC - Fact - temp",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"1=1\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_materl_img\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "temp CET",
+      "predecessorName": "Assigning Fact image",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id,0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-load]",
+      "predecessorName": "temp CET",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\ndf_dvm_cntrt_strct_prc2_vw = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_DVM_CNTRT_STRCT_PRC2_VW\\\")\\n\\n\\ndict_all_dfs['df_dvm_cntrt_strct_prc2_vw'] = {\\\"df_object\\\" :df_dvm_cntrt_strct_prc2_vw}\\ndf_output_dict['df_dvm_cntrt_strct_prc2_vw'] = df_dvm_cntrt_strct_prc2_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_prc2_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] get product structure setup",
+      "predecessorName": "[gen-load]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_prc2_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"cntrt_id\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"transformation\": \"strct_id\",\n      \"columnName\": \"strct_id\"\n    },\n    {\n      \"transformation\": \"strct_code\",\n      \"columnName\": \"strct_code\"\n    },\n    {\n      \"transformation\": \"parnt_child_check_val\",\n      \"columnName\": \"parnt_child_check_val\"\n    },\n    {\n      \"transformation\": \"neg_check_val\",\n      \"columnName\": \"neg_check_val\"\n    },\n    {\n      \"transformation\": \"<<PROCESS_RUN_KEY>>\",\n      \"columnName\": \"run_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_prc2_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen ] run_id",
+      "predecessorName": "[CET] get product structure setup",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nfrom pyspark.sql.functions import *\\n\\ndf_dvm_cntrt_strct_prc2_vw = dict_all_dfs['df_dvm_cntrt_strct_prc2_vw'][\\\"df_object\\\"]\\n\\n\\nrun_id=152203\\n\\n\\nfrom pyspark.sql.functions import lit \\n\\ndf_dvm_cntrt_strct_prc2_vw = df_dvm_cntrt_strct_prc2_vw.withColumn(\\\"run_id\\\",lit(run_id))\\n\\ndict_all_dfs['df_dvm_cntrt_strct_prc2_vw'] = {\\\"df_object\\\" :df_dvm_cntrt_strct_prc2_vw}\\ndf_output_dict['df_dvm_cntrt_strct_prc2_vw'] = df_dvm_cntrt_strct_prc2_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_prc2_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_prc2_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] mm_dvm_cntrt_strct_prc2_vw",
+      "predecessorName": "[gen ] run_id",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"cntrt_id = <<CNTRT_ID>>\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_prc2_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rsp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FLT] MM_DVM_RUN_STRCT_PLC",
+      "predecessorName": "[FIL] mm_dvm_cntrt_strct_prc2_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"delta\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>mm_dvm_run_strct_plc/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_run_strct_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] dqm_dvm_rsp and dvm_run_strct_plc",
+      "predecessorName": "[FLT] MM_DVM_RUN_STRCT_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_dvm_run_strct_plc\",\n  \"joinExpression\": \"ref.run_id = in.run_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rsp\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dvm_run_strct_plc\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rsp_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-cc]columncomplement",
+      "predecessorName": "[JOIN] dqm_dvm_rsp and dvm_run_strct_plc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_dqm_dvm_rsp_1 = dict_all_dfs['df_dqm_dvm_rsp_1'][\\\"df_object\\\"]\\ndf_dvm_run_strct_plc = dict_all_dfs['df_dvm_run_strct_plc'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_dqm_dvm_rsp_1.columns\\nsdim_cols = df_dvm_run_strct_plc.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_dqm_dvm_rsp_1 = df_dqm_dvm_rsp_1.withColumn(i,lit(None).cast('string'))\\n\\ndf_dqm_dvm_rsp_1 = df_dqm_dvm_rsp_1.select(*sdim_cols)\\ncols = df_dqm_dvm_rsp_1.columns\\n\\nfor j in cols:\\n  if dict(df_dqm_dvm_rsp_1.dtypes)[j] != dict(df_dvm_run_strct_plc.dtypes)[j]:\\n    df_dqm_dvm_rsp_1 = df_dqm_dvm_rsp_1.withColumn(j, col(j).cast(dict(df_dvm_run_strct_plc.dtypes)[j]))\\n\\ndict_all_dfs['df_dqm_dvm_rsp_1'] = {\\\"df_object\\\" :df_dqm_dvm_rsp_1}\\ndf_output_dict['df_dqm_dvm_rsp_1'] = df_dqm_dvm_rsp_1\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rsp_1\"\n    },\n    {\n      \"name\": \"df_dvm_run_strct_plc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rsp_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[PUB] MM_DVM_RUN_STRCT_PLC",
+      "predecessorName": "[gen-cc]columncomplement",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"delta\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>/mm_dvm_run_strct_plc/\",\n  \"mode\": \"append\",\n  \"addStaticMergeCondition\": \"false\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"mergeActions\": [\n    {}\n  ],\n  \"transformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rsp_1\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release mm_dvm_run_strct_plc/",
+      "predecessorName": "[PUB] MM_DVM_RUN_STRCT_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>mm_dvm_run_strct_plc/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FLT] MM_DVM_CNTRT_STRCT_LVL_PRC2_VW",
+      "predecessorName": "release mm_dvm_run_strct_plc/",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"path\": \"bf/unrefined/cloudpanel-test/cloudpanel-test-unref/Tier1/5000/MM_DVM_CNTRT_STRCT_LVL_PRC2_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_lvl_prc2_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-load] MM_DVM_CNTRT_STRCT_LVL_PRC2_VW",
+      "predecessorName": "[FLT] MM_DVM_CNTRT_STRCT_LVL_PRC2_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\ndf_dvm_cntrt_strct_lvl_prc2_vw = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_DVM_CNTRT_STRCT_LVL_PRC2_VW\\\")\\n\\n\\ndict_all_dfs['df_dvm_cntrt_strct_lvl_prc2_vw'] = {\\\"df_object\\\" :df_dvm_cntrt_strct_lvl_prc2_vw}\\ndf_output_dict['df_dvm_cntrt_strct_lvl_prc2_vw'] = df_dvm_cntrt_strct_lvl_prc2_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rsp_1\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_lvl_prc2_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] get product structure level",
+      "predecessorName": "[gen-load] MM_DVM_CNTRT_STRCT_LVL_PRC2_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_lvl_prc2_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"cntrt_id\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"transformation\": \"strct_lvl_id\",\n      \"columnName\": \"strct_lvl_id\"\n    },\n    {\n      \"transformation\": \"lvl_num\",\n      \"columnName\": \"lvl_num\"\n    },\n    {\n      \"transformation\": \"parnt_lvl_num\",\n      \"columnName\": \"parnt_lvl_num\"\n    },\n    {\n      \"transformation\": \"abslt_thshd_val\",\n      \"columnName\": \"abslt_thshd_val\"\n    },\n    {\n      \"transformation\": \"ipp_check_val\",\n      \"columnName\": \"ipp_check_val\"\n    },\n    {\n      \"transformation\": \"iya_check_val\",\n      \"columnName\": \"iya_check_val\"\n    },\n    {\n      \"transformation\": \"ipd_check_val\",\n      \"columnName\": \"ipd_check_val\"\n    },\n    {\n      \"transformation\": \"top_lvl_ind\",\n      \"columnName\": \"top_lvl_ind\"\n    },\n    {\n      \"transformation\": \"<<PROCESS_RUN_KEY>>\",\n      \"columnName\": \"run_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_lvl_prc2_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen ] adds run_id",
+      "predecessorName": "[CET] get product structure level",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\nfrom pyspark.sql.functions import *\\n\\ndf_dvm_cntrt_strct_lvl_prc2_vw = dict_all_dfs['df_dvm_cntrt_strct_lvl_prc2_vw'][\\\"df_object\\\"]\\n\\n\\nrun_id=<<PROCESS_RUN_KEY>>\\n\\n\\nfrom pyspark.sql.functions import lit \\n\\ndf_dvm_cntrt_strct_lvl_prc2_vw = df_dvm_cntrt_strct_lvl_prc2_vw.withColumn(\\\"run_id\\\",lit(run_id))\\n\\ndict_all_dfs['df_dvm_cntrt_strct_lvl_prc2_vw'] = {\\\"df_object\\\" :df_dvm_cntrt_strct_lvl_prc2_vw}\\ndf_output_dict['df_dvm_cntrt_strct_lvl_prc2_vw'] = df_dvm_cntrt_strct_lvl_prc2_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_lvl_prc2_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_lvl_prc2_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] df_dvm_cntrt_strct_lvl_prc2_vw",
+      "predecessorName": "[gen ] adds run_id",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"cntrt_id=<<CNTRT_ID>>\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dvm_cntrt_strct_lvl_prc2_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rslp\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FLT] mm_dvm_run_strct_lvl_plc",
+      "predecessorName": "[FL] df_dvm_cntrt_strct_lvl_prc2_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"delta\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>mm_dvm_run_strct_lvl_plc/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dvm_run_strct_lvl_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] dqm_dvm_rslp and dvm_run_strct_lvl_plc",
+      "predecessorName": "[FLT] mm_dvm_run_strct_lvl_plc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_dvm_run_strct_lvl_plc\",\n  \"joinExpression\": \"ref.run_id=in.run_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rslp\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dvm_run_strct_lvl_plc\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rslp_1\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-cc]",
+      "predecessorName": "[JOIN] dqm_dvm_rslp and dvm_run_strct_lvl_plc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_dqm_dvm_rslp_1 = dict_all_dfs['df_dqm_dvm_rslp_1'][\\\"df_object\\\"]\\ndf_dvm_run_strct_lvl_plc = dict_all_dfs['df_dvm_run_strct_lvl_plc'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_dqm_dvm_rslp_1.columns\\nsdim_cols = df_dvm_run_strct_lvl_plc.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_dqm_dvm_rslp_1 = df_dqm_dvm_rslp_1.withColumn(i,lit(None).cast('string'))\\n\\ndf_dqm_dvm_rslp_1 = df_dqm_dvm_rslp_1.select(*sdim_cols)\\ncols = df_dqm_dvm_rslp_1.columns\\n\\nfor j in cols:\\n  if dict(df_dqm_dvm_rslp_1.dtypes)[j] != dict(df_dvm_run_strct_lvl_plc.dtypes)[j]:\\n    df_dqm_dvm_rslp_1 = df_dqm_dvm_rslp_1.withColumn(j, col(j).cast(dict(df_dvm_run_strct_lvl_plc.dtypes)[j]))\\n\\ndict_all_dfs['df_dqm_dvm_rslp_1'] = {\\\"df_object\\\" :df_dqm_dvm_rslp_1}\\ndf_output_dict['df_dqm_dvm_rslp_1'] = df_dqm_dvm_rslp_1\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rslp_1\"\n    },\n    {\n      \"name\": \"df_dvm_run_strct_lvl_plc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rslp_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[PUB] MM_DVM_RUN_STRCT_LVL_PLC",
+      "predecessorName": "[gen-cc]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"delta\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>mm_dvm_run_strct_lvl_plc/\",\n  \"mode\": \"append\",\n  \"addStaticMergeCondition\": \"false\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"mergeActions\": [\n    {\n      \"by\": \"\",\n      \"condition\": \"\",\n      \"action\": \"\"\n    }\n  ],\n  \"transformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rslp_1\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release mm_dvm_run_strct_lvl_plc/",
+      "predecessorName": "[PUB] MM_DVM_RUN_STRCT_LVL_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>mm_dvm_run_strct_lvl_plc/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] df_dqm_dvm_rslp",
+      "predecessorName": "release mm_dvm_run_strct_lvl_plc/",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"top_lvl_ind='Y'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rslp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_dvm_rslp2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] get product for business checks",
+      "predecessorName": "[FL] df_dqm_dvm_rslp",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_nav\",\n      \"addAllColumns\": \"true\",\n      \"alias\": \"input\",\n      \"columns\": [\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_dvm_rslp\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"lvl\",\n      \"columns\": [\n        {\n          \"columnName\": \"top_lvl_ind\",\n          \"columnAlias\": \"top_lvl_ind\"\n        },\n        {\n          \"columnName\": \"lvl_num\",\n          \"columnAlias\": \"lvl_num\"\n        },\n        {\n          \"columnName\": \"parnt_lvl_num\",\n          \"columnAlias\": \"parnt_lvl_num\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_dvm_rslp2\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"top_lvl\",\n      \"columns\": [\n        {\n          \"columnName\": \"lvl_num\",\n          \"columnAlias\": \"lvl_num_2\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_prod_cxref\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"xref\",\n      \"columns\": [\n        {\n          \"columnName\": \"extrn_prod_attr_val_list\",\n          \"columnAlias\": \"extrn_prod_attr_val_list\"\n        }\n      ]\n    }\n  ],\n  \"joinOperations\": [\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"lvl\",\n      \"joinExpression\": \"input.prod_lvl_id = lvl.strct_lvl_id\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"top_lvl\",\n      \"joinExpression\": \"top_lvl.cntrt_id = input.cntrt_id\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"xref\",\n      \"joinExpression\": \"xref.prod_skid=input.prod_skid\"\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "MultipleJoiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] df_dqm_prod",
+      "predecessorName": "[JOIN] get product for business checks",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"case when top_lvl_ind = 'N' then substring_index(extrn_prod_attr_val_list, ' ',  ((lvl_num+1)-(lvl_num - lvl_num_2))  ) else extrn_prod_attr_val_list end\",\n      \"columnName\": \"top_lvl_prod_attr_val_list\"\n    },\n    {\n      \"transformation\": \"row_number()over(partition by extrn_prod_attr_val_list order by run_id desc)\",\n      \"columnName\": \"rn\"\n    },\n    {\n      \"transformation\": \"substring_index(extrn_prod_attr_val_list, ' ', ((lvl_num+1) - (lvl_num - parnt_lvl_num)))\",\n      \"columnName\": \"parnt_extrn_prod_attr_val_list\"\n    },\n    {\n      \"transformation\": \"extrn_prod_attr_val_list\",\n      \"columnName\": \"extrn_prod_attr_val_list\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] Filter first row",
+      "predecessorName": "[CET] df_dqm_prod",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"rn = 1\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[GEN] duplication",
+      "predecessorName": "[FIL] Filter first row",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\n \\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n \\n\\ndf_dqm_prod = dict_all_dfs['df_dqm_prod'][\\\"df_object\\\"]\\n\\n \\n\\ndf_dqm_prod2 = df_dqm_prod\\n\\ndict_all_dfs['df_dqm_prod2'] = {\\\"df_object\\\" :df_dqm_prod2}\\ndf_output_dict['df_dqm_prod2'] = df_dqm_prod2\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] on set product parent",
+      "predecessorName": "[GEN] duplication",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT OUTER\",\n  \"referenceDataframe\": \"df_dqm_prod2\",\n  \"joinExpression\": \"ref.parnt_extrn_prod_attr_val_list = in.extrn_prod_attr_val_list\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"parnt_extrn_prod_attr_val_list\",\n          \"columnAlias\": \"parnt_extrn_prod_attr_val_list\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_prod2\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"parnt_prod_skid\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod_assoc\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] df_dqm_prod_assoc",
+      "predecessorName": "[JOIN] on set product parent",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod_assoc\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"nvl(parnt_prod_skid,prod_skid)\",\n      \"columnName\": \"parnt_prod_skid\"\n    },\n    {\n      \"transformation\": \"attr_val\",\n      \"columnName\": \"prod_attr_val_name\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_pre_prod_pub\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FLT] mm_tp_valdn_prod_dim",
+      "predecessorName": "[CET] df_dqm_prod_assoc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"delta\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TP_VALDN_PROD_DIM/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_tp_valdn_prod_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] dqm_pre_prod_pub and tp_valdn_prod_dim",
+      "predecessorName": "[FLT] mm_tp_valdn_prod_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_tp_valdn_prod_dim\",\n  \"joinExpression\": \"ref.run_id = in.run_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_pre_prod_pub\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_tp_valdn_prod_dim\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_pre_prod_pub_1\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-cc] columncomplement",
+      "predecessorName": "[JOIN] dqm_pre_prod_pub and tp_valdn_prod_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_dqm_pre_prod_pub_1 = dict_all_dfs['df_dqm_pre_prod_pub_1'][\\\"df_object\\\"]\\ndf_tp_valdn_prod_dim = dict_all_dfs['df_tp_valdn_prod_dim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_dqm_pre_prod_pub_1.columns\\nsdim_cols = df_tp_valdn_prod_dim.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_dqm_pre_prod_pub_1 = df_dqm_pre_prod_pub_1.withColumn(i,lit(None).cast('string'))\\n\\ndf_dqm_pre_prod_pub_1 = df_dqm_pre_prod_pub_1.select(*sdim_cols)\\ncols = df_dqm_pre_prod_pub_1.columns\\n\\nfor j in cols:\\n  if dict(df_dqm_pre_prod_pub_1.dtypes)[j] != dict(df_tp_valdn_prod_dim.dtypes)[j]:\\n    df_dqm_pre_prod_pub_1 = df_dqm_pre_prod_pub_1.withColumn(j, col(j).cast(dict(df_tp_valdn_prod_dim.dtypes)[j]))\\n\\ndict_all_dfs['df_dqm_pre_prod_pub_1'] = {\\\"df_object\\\" :df_dqm_pre_prod_pub_1}\\ndf_output_dict['df_dqm_pre_prod_pub_1'] = df_dqm_pre_prod_pub_1\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_pre_prod_pub_1\"\n    },\n    {\n      \"name\": \"df_tp_valdn_prod_dim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_pre_prod_pub_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[PUB] publish validation products",
+      "predecessorName": "[gen-cc] columncomplement",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"delta\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>/MM_TP_VALDN_PROD_DIM/\",\n  \"mode\": \"append\",\n  \"addStaticMergeCondition\": \"false\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"mergeActions\": [\n    {}\n  ],\n  \"transformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_pre_prod_pub_1\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release MM_TP_VALDN_PROD_DIM/",
+      "predecessorName": "[PUB] publish validation products",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TP_VALDN_PROD_DIM/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FLT] MM_CNTRT_TIER_EXTND_VW",
+      "predecessorName": "release MM_TP_VALDN_PROD_DIM/",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"path\": \"bf/unrefined/cloudpanel-test/cloudpanel-test-unref/Tier1/5000/MM_CNTRT_TIER_EXTND_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_cntrt_tier_extnd_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-loads]",
+      "predecessorName": "[FLT] MM_CNTRT_TIER_EXTND_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\ndf_cntrt_tier_extnd_vw = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_CNTRT_TIER_EXTND_VW\\\")\\n\\n\\ndict_all_dfs['df_cntrt_tier_extnd_vw'] = {\\\"df_object\\\" :df_cntrt_tier_extnd_vw}\\ndf_output_dict['df_cntrt_tier_extnd_vw'] = df_cntrt_tier_extnd_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_pre_prod_pub_1\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_cntrt_tier_extnd_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] on MM_CNTRT_TIER_EXTND_VW",
+      "predecessorName": "[gen-loads]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_cntrt_tier_extnd_vw\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"cntrt_id\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"transformation\": \"mkt_top_node_skid\",\n      \"columnName\": \"mkt_top_node_skid\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_cntrt_tier_extnd_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] df_cntrt_tier_extnd_vw",
+      "predecessorName": "[CET] on MM_CNTRT_TIER_EXTND_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"cntrt_id=<<CNTRT_ID>>\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_cntrt_tier_extnd_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_cntrt_mkt\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FLT] MM_RUN_PRTTN_RUN_STTUS_VW",
+      "predecessorName": "[FL] df_cntrt_tier_extnd_vw",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"path\": \"bf/unrefined/cloudpanel-test/cloudpanel-test-unref/Tier1/5000/MM_RUN_PRTTN_RUN_STTUS_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_prttn_run_sttus_vw\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": " FL mm_run_prttn_plc",
+      "predecessorName": "[FLT] MM_RUN_PRTTN_RUN_STTUS_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_PRTTN_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_run_prttn_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "MM_RUN_PRTTN_PLC/",
+      "predecessorName": " FL mm_run_prttn_plc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_PRTTN_PLC/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-FILELOAd]",
+      "predecessorName": "MM_RUN_PRTTN_PLC/",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\ncntrt_id = <<CNTRT_ID>>\\n\\ndf_mm_process_all_run_data_vw = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/DPF_ALL_RUN_LREF_VW\\\")\\ndf_mm_process_all_run_data_vw = df_mm_process_all_run_data_vw.filter(f'prcsg_id={cntrt_id}')\\n\\n\\ndf_dpf_all_run_legacy = spark.read.format('parquet').load('/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/DPF_ALL_RUN_VW_LEGACY/')\\ndf_mm_process_all_run_data_vw = df_mm_process_all_run_data_vw.unionByName(df_dpf_all_run_legacy, True)\\ndf_mm_process_all_run_data_vw.createOrReplaceTempView(\\\"mm_process_all_run_data_vw\\\")\\n\\n#df_mm_run_prttn_plc=spark.read.format('parquet').load('/mnt/<@@PATH1@@>/MM_RUN_PRTTN_PLC/')\\ndf_mm_run_prttn_plc = dict_all_dfs['df_mm_run_prttn_plc'][\\\"df_object\\\"]\\n\\ndf_mm_run_prttn_plc_legacy = spark.read.format('parquet').load('/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_PRTTN_PLC_LEGACY/')\\ndf_mm_run_prttn_plc = df_mm_run_prttn_plc.unionByName(df_mm_run_prttn_plc_legacy, True)\\ndf_mm_run_prttn_plc.createOrReplaceTempView(\\\"MM_RUN_PRTTN_PLC\\\")\\n\\n\\nquery=\\\"\\\"\\\"SELECT plc.fact_type_code,\\n          plc.time_perd_class_code,\\n          plc.srce_sys_id,\\n          plc.cntrt_id,\\n          plc.prod_prttn_code,\\n          plc.mm_time_perd_end_date,\\n          plc.run_id,\\n          process_status\\n     FROM (select * from MM_RUN_PRTTN_PLC ) plc JOIN mm_process_all_run_data_vw run ON run.run_id = plc.run_id\\\"\\\"\\\"\\n\\n\\ndf_run_prttn_run_sttus_vw=spark.sql(query)\\n\\ndict_all_dfs['df_run_prttn_run_sttus_vw'] = {\\\"df_object\\\" :df_run_prttn_run_sttus_vw}\\ndf_output_dict['df_run_prttn_run_sttus_vw'] = df_run_prttn_run_sttus_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_cntrt_mkt\"\n    },\n    {\n      \"name\": \"df_mm_run_prttn_plc\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_prttn_run_sttus_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] df_run_prttn_run_sttus_vw",
+      "predecessorName": "[gen-FILELOAd]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"cntrt_id = <<CNTRT_ID>> and time_perd_class_code = '<<TIME_PERD_CLASS_CODE>>' and ( run_id = <<PROCESS_RUN_KEY>>  or (run_id != <<PROCESS_RUN_KEY>>  and process_status IN('COMPLETED', 'FINISHED')))\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_run_prttn_run_sttus_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_prttn_run_sttus_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Read fact schema",
+      "predecessorName": "[FL] df_run_prttn_run_sttus_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\n\\n\\ndf_fct_schema = spark.read.format(\\\"parquet\\\").load(\\\"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_FCT_SCHEMA\\\")\\n    \\ndf_output_dict['df_fct_schema'] = df_fct_schema\\ndict_all_dfs['df_fct_schema'] = {\\\"df_object\\\" :df_fct_schema}\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_schema\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] MM_TP_FCT ",
+      "predecessorName": "Read fact schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC] - TP_FCT",
+      "predecessorName": "[FL] MM_TP_FCT ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_tp_mth_fct = dict_all_dfs['df_mm_tp_mth_fct'][\\\"df_object\\\"]\\ndf_fct_schema = dict_all_dfs['df_fct_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_tp_mth_fct.columns\\nsdim_cols = df_fct_schema.columns\\n\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_tp_mth_fct = df_mm_tp_mth_fct.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_tp_mth_fct = df_mm_tp_mth_fct.select(*sdim_cols)\\ncols = df_mm_tp_mth_fct.columns\\n\\nfor j in cols:\\n  if dict(df_mm_tp_mth_fct.dtypes)[j] != dict(df_fct_schema.dtypes)[j]:\\n    df_mm_tp_mth_fct = df_mm_tp_mth_fct.withColumn(j, col(j).cast(dict(df_fct_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_tp_mth_fct'] = {\\\"df_object\\\" :df_mm_tp_mth_fct}\\ndf_output_dict['df_mm_tp_mth_fct'] = df_mm_tp_mth_fct\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\"\n    },\n    {\n      \"name\": \"df_fct_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[fil] - TP",
+      "predecessorName": "[CC] - TP_FCT",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"fact_type_code='TP'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Add partition columns fact",
+      "predecessorName": "[fil] - TP",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    },\n    {\n      \"transformation\": \"round(cntrt_id,0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"part_prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"part_mm_time_perd_end_date\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release MM_TP_FCT/",
+      "predecessorName": "Add partition columns fact",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[fil]",
+      "operationDescription": "disabled by suhail",
+      "predecessorName": "release MM_TP_FCT/",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"expression\": \"part_srce_sys_id=<<SRCE_SYS_ID>> and part_cntrt_id= <<CNTRT_ID>> and part_prod_prttn_code='<<PROD_PRTTN_CODE>>' and fact_type_code='TP'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] on mm_fct",
+      "predecessorName": "[fil]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"srce_sys_id\",\n      \"columnName\": \"srce_sys_id\"\n    },\n    {\n      \"transformation\": \"cntrt_id\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"mm_time_perd_end_date\"\n    },\n    {\n      \"transformation\": \"mkt_skid\",\n      \"columnName\": \"mkt_skid\"\n    },\n    {\n      \"transformation\": \"run_id\",\n      \"columnName\": \"run_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[DSTNT] mth_fct",
+      "predecessorName": "[CET] on mm_fct",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct2\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] for img",
+      "predecessorName": "[DSTNT] mth_fct",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"srce_sys_id\",\n      \"columnName\": \"srce_sys_id\"\n    },\n    {\n      \"transformation\": \"cntrt_id\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"transformation\": \"prod_prttn_code\",\n      \"columnName\": \"prod_prttn_code\"\n    },\n    {\n      \"transformation\": \"mm_time_perd_end_date\",\n      \"columnName\": \"mm_time_perd_end_date\"\n    },\n    {\n      \"transformation\": \"mkt_skid\",\n      \"columnName\": \"mkt_skid\"\n    },\n    {\n      \"transformation\": \"run_id\",\n      \"columnName\": \"run_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[dstnt] fct_mth_img",
+      "predecessorName": "[CET] for img",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img1\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[MERGER]",
+      "predecessorName": "[dstnt] fct_mth_img",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_tp_mth_fct2\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_fct_MTH_img1\"\n    }\n  ],\n  \"logicalKey\": [],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_all_fct_mkt_list\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "mm_run_prttn_plc",
+      "predecessorName": "[MERGER]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_RUN_PRTTN_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_run_prttn_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release MM_RUN_PRTTN_PLC",
+      "predecessorName": "mm_run_prttn_plc",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_RUN_PRTTN_PLC/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "refresh df_run_prttn_run_sttus_vw",
+      "predecessorName": "release MM_RUN_PRTTN_PLC",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_run_prttn_run_sttus_vw = dict_all_dfs['df_run_prttn_run_sttus_vw'][\\\"df_object\\\"]\\n\\ndf_run_prttn_run_sttus_vw.createOrReplaceTempView('run_prttn_run_sttus_vw')\\n\\nspark.sql(\\\"\\\"\\\"REFRESH TABLE run_prttn_run_sttus_vw\\\"\\\"\\\")\\n\\ndict_all_dfs['df_run_prttn_run_sttus_vw'] = {\\\"df_object\\\" :df_run_prttn_run_sttus_vw}\\ndf_output_dict['df_run_prttn_run_sttus_vw'] = df_run_prttn_run_sttus_vw\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_run_prttn_run_sttus_vw\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_run_prttn_run_sttus_vw\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] run_prttn_run_sttus_vw and all_fct_mkt_list",
+      "predecessorName": "refresh df_run_prttn_run_sttus_vw",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"joinType\": \"INNER\",\n  \"referenceDataframe\": \"df_all_fct_mkt_list\",\n  \"joinExpression\": \"ref.mm_time_perd_end_date = in.mm_time_perd_end_date and ref.cntrt_id = in.cntrt_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_run_prttn_run_sttus_vw\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"mm_time_perd_end_date\",\n          \"columnAlias\": \"mm_time_perd_end_date\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_all_fct_mkt_list\",\n      \"addAllColumns\": \"false\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_all_time_perd\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[DSTNT]",
+      "predecessorName": "[JOIN] run_prttn_run_sttus_vw and all_fct_mkt_list",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_all_time_perd\"\n    }\n  ],\n  \"columns\": [\n    {\n      \"name\": \"fact_type_code\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_all_time_perd\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Distinct",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] Filter last 5 yrs data",
+      "predecessorName": "[DSTNT]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"mm_time_perd_end_date >= ADD_MONTHS(TRUNC(current_date(),'MM'), -62)\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_all_time_perd\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_all_time_perd\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[AG] calculate rmax run_id and time_perd",
+      "predecessorName": "[FIL] Filter last 5 yrs data",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_all_time_perd\"\n    }\n  ],\n  \"aggregate\": [\n    {\n      \"expression\": \"max(run_id)\",\n      \"alias\": \"run_id\"\n    },\n    {\n      \"expression\": \"count(*)\",\n      \"alias\": \"cnt\"\n    }\n  ],\n  \"groupBy\": [\n    \"mm_time_perd_end_date\",\n    \"prod_prttn_code\",\n    \"fact_type_code\",\n    \"cntrt_id\",\n    \"time_perd_class_code\",\n    \"srce_sys_id\",\n    \"mkt_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_time_perd_cnt\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Aggregator",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] Publish for usage in sqlsyntax",
+      "predecessorName": "[AG] calculate rmax run_id and time_perd",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>/TIME_PERD_CNT\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_time_perd_cnt\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sqlsyntax]",
+      "predecessorName": "[FP] Publish for usage in sqlsyntax",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"sqlQuery\": \"select\\n(case when run_id = <<PROCESS_RUN_KEY>> and cnt=1   then 'y' else 'n' end ) new_time_perd_ind,\\n(case when run_id = <<PROCESS_RUN_KEY>> and cnt>1   then 'y' else 'n' end ) pd_time_perd_ind,\\n\\nnvl((case when (select count(*) from parquet.`/mnt/<@@PATH1@@>/MM_RUN_PRTTN_PLC/` where run_id = <<PROCESS_RUN_KEY>> and time_perd_class_code = 'wk') > 0\\nthen (case when (select count (*)\\nfrom (select a.time_perd_id time_perd_id_a, a.TIME_PERD_END_DATE TIME_PERD_END_DATE_A, b.time_perd_id time_perd_id_b from\\nparquet.`/mnt/<@@PATH1@@>/MM_TIME_PERD_ASSOC_VW/` t,\\nparquet.`/mnt/<@@PATH1@@>/MM_TIME_PERD_FDIM_VW/` a, \\nparquet.`/mnt/<@@PATH1@@>/MM_TIME_PERD_FDIM_VW/` b\\nwhere t.time_perd_id_a = a.time_perd_id\\nand t.time_perd_id_b = b.time_perd_id\\nand a.time_perd_type_code = 'MH'\\nand b.time_perd_type_code = 'WKMS')\\n\\nwhere TIME_PERD_END_DATE_A = mm_time_perd_end_date) = 5 then 4/5 else 1 end)\\nelse 1 end ),(1)) time_factr,\\nmm_time_perd_end_date,prod_prttn_code,fact_type_code,cntrt_id,time_perd_class_code,srce_sys_id,mkt_skid,run_id,cnt\\nfrom parquet.`/mnt/<@@PATH1@@>/TIME_PERD_CNT`\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_time_perd_cnt\",\n      \"alias\": \"df_dqm_time_perd_cnt\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_new_time_perd\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "SQLSyntax",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Load MM_TIME_PERD_ASSOC_VW",
+      "predecessorName": "[sqlsyntax]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TIME_PERD_ASSOC_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"time_perd_assoc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release MM_TIME_PERD_ASSOC_VW",
+      "predecessorName": "Load MM_TIME_PERD_ASSOC_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TIME_PERD_ASSOC_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Load MM_TIME_PERD_FDIM_VW",
+      "predecessorName": "Release MM_TIME_PERD_ASSOC_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TIME_PERD_FDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"time_perd_fdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Release MM_TIME_PERD_FDIM_VW",
+      "predecessorName": "Load MM_TIME_PERD_FDIM_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TIME_PERD_FDIM_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[Gen] Calculate time_perd_ind",
+      "predecessorName": "Release MM_TIME_PERD_FDIM_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nrun_prttn_plc = dict_all_dfs['df_mm_run_prttn_plc'][\\\"df_object\\\"]\\ndf_mm_run_prttn_plc_legacy = spark.read.format('parquet').load('/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_PRTTN_PLC_LEGACY/')\\nrun_prttn_plc = run_prttn_plc.unionByName(df_mm_run_prttn_plc_legacy, True)\\nrun_prttn_plc.createOrReplaceTempView('run_prttn_plc')\\n\\ntime_perd_assoc = dict_all_dfs['time_perd_assoc'][\\\"df_object\\\"]\\ntime_perd_assoc.createOrReplaceTempView('MM_TIME_PERD_ASSOC_VW')\\n\\ntime_perd_fdim = dict_all_dfs['time_perd_fdim'][\\\"df_object\\\"]\\ntime_perd_fdim.createOrReplaceTempView('MM_TIME_PERD_FDIM_VW')\\n\\ntime_perd_cnt = dict_all_dfs['df_dqm_time_perd_cnt'][\\\"df_object\\\"]\\ntime_perd_cnt.createOrReplaceTempView('TIME_PERD_CNT')\\n\\nquery = f\\\"\\\"\\\" select\\n(case when run_id = <<PROCESS_RUN_KEY>> and cnt=1   then 'y' else 'n' end ) new_time_perd_ind,\\n(case when run_id = <<PROCESS_RUN_KEY>> and cnt>1   then 'y' else 'n' end ) pd_time_perd_ind,\\n\\nnvl((case when (select count(*) from run_prttn_plc where run_id = <<PROCESS_RUN_KEY>> and lower(time_perd_class_code) = 'wk') > 0\\nthen (case when (select count (*)\\nfrom (select a.time_perd_id time_perd_id_a, a.TIME_PERD_END_DATE TIME_PERD_END_DATE_A, b.time_perd_id time_perd_id_b from\\nMM_TIME_PERD_ASSOC_VW t,\\nMM_TIME_PERD_FDIM_VW a, \\nMM_TIME_PERD_FDIM_VW b\\nwhere t.time_perd_id_a = a.time_perd_id\\nand t.time_perd_id_b = b.time_perd_id\\nand a.time_perd_type_code = 'MH'\\nand b.time_perd_type_code = 'WKMS')\\n\\nwhere TIME_PERD_END_DATE_A = mm_time_perd_end_date) = 5 then 4/5 else 1 end)\\nelse 1 end ),(1)) time_factr,\\nmm_time_perd_end_date,prod_prttn_code,fact_type_code,cntrt_id,time_perd_class_code,srce_sys_id,mkt_skid,run_id,cnt\\nfrom TIME_PERD_CNT\\\"\\\"\\\"\\n\\ndf_dqm_new_time_perd = spark.sql(query)\\n\\n\\ndict_all_dfs['df_dqm_new_time_perd'] = {\\\"df_object\\\" :df_dqm_new_time_perd}\\ndf_output_dict['df_dqm_new_time_perd'] = df_dqm_new_time_perd\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_time_perd_cnt\"\n    },\n    {\n      \"name\": \"df_mm_run_prttn_plc\"\n    },\n    {\n      \"name\": \"time_perd_assoc\"\n    },\n    {\n      \"name\": \"time_perd_fdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_new_time_perd\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FLT] MM_TP_MTH_FCT",
+      "predecessorName": "[Gen] Calculate time_perd_ind",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"path\": \"<@@PATH1@@>/MM_TP_MTH_FCT/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_tp_mth_fct2\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "fct_mth_img2",
+      "predecessorName": "[FLT] MM_TP_MTH_FCT",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"path\": \"bf/unrefined/cloudpanel-test/cloudpanel-test-unref/Tier1/Target/FCT_MTH_IMG/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_fct_mth_img2\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] dqm_new_time_perd",
+      "predecessorName": "fct_mth_img2",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"new_time_perd_ind='n'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_new_time_perd\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_new_time_perd_n\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] get fact data for previously delivered time periods ",
+      "predecessorName": "[FL] dqm_new_time_perd",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\",\n      \"addAllColumns\": \"true\",\n      \"alias\": \"input\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_fct_MTH_img\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"curr_fct\",\n      \"columns\": [\n        {\n          \"columnName\": \"sales_msu_qty\",\n          \"columnAlias\": \"sales_msu_qty\"\n        },\n        {\n          \"columnName\": \"sales_mlc_amt\",\n          \"columnAlias\": \"sales_mlc_amt\"\n        },\n        {\n          \"columnName\": \"sales_musd_amt\",\n          \"columnAlias\": \"sales_musd_amt\"\n        },\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        },\n        {\n          \"columnName\": \"time_perd_id\",\n          \"columnAlias\": \"time_perd_id\"\n        },\n        {\n          \"columnName\": \"fact_type_code\",\n          \"columnAlias\": \"fact_type_code\"\n        },\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid_2\"\n        },\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id_2\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id_2\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_new_time_perd_n\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"time_perd\",\n      \"columns\": [\n        {\n          \"columnName\": \"new_time_perd_ind\",\n          \"columnAlias\": \"new_time_perd_ind\"\n        },\n        {\n          \"columnName\": \"mm_time_perd_end_date\",\n          \"columnAlias\": \"mm_time_perd_end_date_3\"\n        },\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id_3\"\n        },\n        {\n          \"columnName\": \"prod_prttn_code\",\n          \"columnAlias\": \"prod_prttn_code_3\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id_3\"\n        },\n        {\n          \"columnName\": \"fact_type_code\",\n          \"columnAlias\": \"fact_type_code_3\"\n        },\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid_3\"\n        },\n        {\n          \"columnName\": \"time_factr\",\n          \"columnAlias\": \"time_factr\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_cntrt_mkt\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"cntrt\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_top_node_skid\",\n          \"columnAlias\": \"mkt_top_node_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_tp_mth_fct\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"prev_fct\",\n      \"columns\": [\n        {\n          \"columnName\": \"mm_time_perd_end_date\",\n          \"columnAlias\": \"mm_time_perd_end_date_4\"\n        },\n        {\n          \"columnName\": \"sales_msu_qty\",\n          \"columnAlias\": \"sales_msu_qty_1\"\n        },\n        {\n          \"columnName\": \"sales_mlc_amt\",\n          \"columnAlias\": \"sales_mlc_amt_1\"\n        },\n        {\n          \"columnName\": \"sales_musd_amt\",\n          \"columnAlias\": \"sales_musd_amt_1\"\n        },\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid_4\"\n        },\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id_4\"\n        },\n        {\n          \"columnName\": \"prod_prttn_code\",\n          \"columnAlias\": \"prod_prttn_code_4\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id_4\"\n        },\n        {\n          \"columnName\": \"fact_type_code\",\n          \"columnAlias\": \"fact_type_code_4\"\n        },\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid_4\"\n        }\n      ]\n    }\n  ],\n  \"joinOperations\": [\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"curr_fct\",\n      \"joinExpression\": \"input.prod_skid = curr_fct.prod_skid\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"time_perd\",\n      \"joinExpression\": \"curr_fct.mm_time_perd_end_date = time_perd.mm_time_perd_end_date and curr_fct.srce_sys_id = time_perd.srce_sys_id and curr_fct.prod_prttn_code = time_perd.prod_prttn_code and curr_fct.cntrt_id = time_perd.cntrt_id and curr_fct.fact_type_code = time_perd.fact_type_code\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"cntrt\",\n      \"joinExpression\": \"curr_fct.mkt_skid = cntrt.mkt_top_node_skid and time_perd.mkt_skid = cntrt.mkt_top_node_skid\"\n    },\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"prev_fct\",\n      \"joinExpression\": \"cntrt.mkt_top_node_skid = prev_fct.mkt_skid and time_perd.mm_time_perd_end_date = prev_fct.mm_time_perd_end_date and time_perd.srce_sys_id = prev_fct.srce_sys_id and time_perd.prod_prttn_code = prev_fct.prod_prttn_code and time_perd.cntrt_id = prev_fct.cntrt_id and time_perd.fact_type_code = prev_fct.fact_type_code and input.prod_skid = prev_fct.prod_skid\"\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "MultipleJoiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET]",
+      "predecessorName": "[JOIN] get fact data for previously delivered time periods ",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"'y'\",\n      \"columnName\": \"pd_time_perd_ind\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] get fact data for previously delivered time",
+      "predecessorName": "[CET]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"case when pd_time_perd_ind = 'y' then sales_msu_qty_1 end\",\n      \"columnName\": \"sales_msu_qty_pd\"\n    },\n    {\n      \"transformation\": \"case when pd_time_perd_ind = 'y' then sales_mlc_amt_1 end\",\n      \"columnName\": \"sales_mlc_amt_pd\"\n    },\n    {\n      \"transformation\": \"case when pd_time_perd_ind = 'y' then sales_musd_amt_1 end\",\n      \"columnName\": \"sales_musd_amt_pd\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] DQM_NEW_TIME_PERD",
+      "predecessorName": "[CET] get fact data for previously delivered time",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"new_time_perd_ind='y'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_new_time_perd\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_new_time_perd_y\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] get fact data for new delivered time",
+      "predecessorName": "[FL] DQM_NEW_TIME_PERD",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_prod\",\n      \"addAllColumns\": \"true\",\n      \"alias\": \"input\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_fct_MTH_img\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"fct\",\n      \"columns\": [\n        {\n          \"columnName\": \"sales_msu_qty\",\n          \"columnAlias\": \"sales_msu_qty\"\n        },\n        {\n          \"columnName\": \"sales_mlc_amt\",\n          \"columnAlias\": \"sales_mlc_amt\"\n        },\n        {\n          \"columnName\": \"sales_musd_amt\",\n          \"columnAlias\": \"sales_musd_amt\"\n        },\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid_2\"\n        },\n        {\n          \"columnName\": \"time_perd_id\",\n          \"columnAlias\": \"time_perd_id\"\n        },\n        {\n          \"columnName\": \"fact_type_code\",\n          \"columnAlias\": \"fact_type_code_2\"\n        },\n        {\n          \"columnName\": \"prod_skid\",\n          \"columnAlias\": \"prod_skid_2\"\n        },\n        {\n          \"columnName\": \"mm_time_perd_end_date\",\n          \"columnAlias\": \"mm_time_perd_end_date_2\"\n        },\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id_2\"\n        },\n        {\n          \"columnName\": \"prod_prttn_code\",\n          \"columnAlias\": \"prod_prttn_code_2\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id_2\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_new_time_perd_y\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"time_perd_new\",\n      \"columns\": [\n        {\n          \"columnName\": \"mm_time_perd_end_date\",\n          \"columnAlias\": \"mm_time_perd_end_date_3\"\n        },\n        {\n          \"columnName\": \"new_time_perd_ind\",\n          \"columnAlias\": \"new_time_perd_ind\"\n        },\n        {\n          \"columnName\": \"time_factr\",\n          \"columnAlias\": \"time_factr_3\"\n        },\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id_3\"\n        },\n        {\n          \"columnName\": \"prod_prttn_code\",\n          \"columnAlias\": \"prod_prttn_code_3\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id_3\"\n        },\n        {\n          \"columnName\": \"fact_type_code\",\n          \"columnAlias\": \"fact_type_code_3\"\n        },\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid_3\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_new_time_perd_n\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"time_perd_pd\",\n      \"columns\": [\n        {\n          \"columnName\": \"prod_prttn_code\",\n          \"columnAlias\": \"prod_prttn_code_4\"\n        },\n        {\n          \"columnName\": \"srce_sys_id\",\n          \"columnAlias\": \"srce_sys_id_4\"\n        },\n        {\n          \"columnName\": \"time_factr\",\n          \"columnAlias\": \"time_factr_4\"\n        },\n        {\n          \"columnName\": \"cntrt_id\",\n          \"columnAlias\": \"cntrt_id_4\"\n        },\n        {\n          \"columnName\": \"fact_type_code\",\n          \"columnAlias\": \"fact_type_code_4\"\n        },\n        {\n          \"columnName\": \"mm_time_perd_end_date\",\n          \"columnAlias\": \"mm_time_perd_end_date_4\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_cntrt_mkt\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"cntrt\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_top_node_skid\",\n          \"columnAlias\": \"mkt_top_node_skid\"\n        }\n      ]\n    }\n  ],\n  \"joinOperations\": [\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"fct\",\n      \"joinExpression\": \" input.prod_skid = fct.prod_skid\"\n    },\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"time_perd_new\",\n      \"joinExpression\": \"fct.mm_time_perd_end_date = time_perd_new.mm_time_perd_end_date and fct.srce_sys_id = time_perd_new.srce_sys_id and fct.prod_prttn_code = time_perd_new.prod_prttn_code and fct.cntrt_id = time_perd_new.cntrt_id and fct.fact_type_code = time_perd_new.fact_type_code\"\n    },\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"time_perd_pd\",\n      \"joinExpression\": \"fct.mm_time_perd_end_date = time_perd_pd.mm_time_perd_end_date and fct.srce_sys_id = time_perd_pd.srce_sys_id and fct.prod_prttn_code = time_perd_pd.prod_prttn_code and fct.cntrt_id = time_perd_pd.cntrt_id and fct.fact_type_code = time_perd_pd.fact_type_code\"\n    },\n    {\n      \"joinType\": \"INNER\",\n      \"joinDataframeAlias\": \"cntrt\",\n      \"joinExpression\": \"fct.mkt_skid = cntrt.mkt_top_node_skid and time_perd_new.mkt_skid = cntrt.mkt_top_node_skid\"\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "MultipleJoiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] get fact data for new delivered time",
+      "predecessorName": "[JOIN] get fact data for new delivered time",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"nvl(new_time_perd_ind,'n')\",\n      \"columnName\": \"new_time_perd_ind\"\n    },\n    {\n      \"transformation\": \"case when srce_sys_id_4 is not null then 'y' else 'n' end\",\n      \"columnName\": \"pd_time_perd_ind\"\n    },\n    {\n      \"transformation\": \"nvl(time_factr_3,time_factr_4)\",\n      \"columnName\": \"time_factr\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FIL] - filter pd_time_perd_ind",
+      "predecessorName": "[CET] get fact data for new delivered time",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"pd_time_perd_ind = 'n'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Renaming the necessary Columns",
+      "predecessorName": "[FIL] - filter pd_time_perd_ind",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"mkt_skid_2\",\n      \"columnName\": \"mkt_skid\"\n    },\n    {\n      \"transformation\": \"fact_type_code_2\",\n      \"columnName\": \"fact_type_code\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC]",
+      "predecessorName": "Renaming the necessary Columns",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"referenceDataframe\": \"df_dqm_fct\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\"\n    },\n    {\n      \"name\": \"df_dqm_fct\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[merger]",
+      "predecessorName": "[CC]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_dqm_fct\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\"\n    },\n    {\n      \"name\": \"df_dqm_fct\"\n    }\n  ],\n  \"logicalKey\": [],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] DQM_FCT",
+      "predecessorName": "[merger]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"expression\": \"lower(top_lvl_ind)='y'\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct2\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Filter",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] mm_time_perd_fdim",
+      "predecessorName": "[FL] DQM_FCT",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_TIME_PERD_FDIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_time_perd_fdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release /MM_TIME_PERD_FDIM_VW/",
+      "predecessorName": "[FL] mm_time_perd_fdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_TIME_PERD_FDIM_VW/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] calculate year ago",
+      "predecessorName": "release /MM_TIME_PERD_FDIM_VW/",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_fct\",\n      \"addAllColumns\": \"true\",\n      \"alias\": \"input\",\n      \"columns\": [\n        {\n          \"columnName\": \"mkt_skid\",\n          \"columnAlias\": \"mkt_skid\"\n        },\n        {\n          \"columnName\": \"time_factr\",\n          \"columnAlias\": \"time_factr\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_fct2\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"fct_top_lvl\",\n      \"columns\": [\n        {\n          \"columnName\": \"sales_msu_qty\",\n          \"columnAlias\": \"sales_msu_qty_top\"\n        },\n        {\n          \"columnName\": \"sales_mlc_amt\",\n          \"columnAlias\": \"sales_mlc_amt_top\"\n        },\n        {\n          \"columnName\": \"sales_msu_qty_pd\",\n          \"columnAlias\": \"sales_msu_qty_pd_top\"\n        },\n        {\n          \"columnName\": \"sales_mlc_amt_pd\",\n          \"columnAlias\": \"sales_mlc_amt_pd_top\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_mm_time_perd_fdim\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"time_perd\",\n      \"columns\": [\n        {\n          \"columnName\": \"time_perd_id\",\n          \"columnAlias\": \"time_perd_id_3\"\n        },\n        {\n          \"columnName\": \"time_perd_id_ya\",\n          \"columnAlias\": \"time_perd_id_ya\"\n        },\n        {\n          \"columnName\": \"time_perd_id_prev\",\n          \"columnAlias\": \"time_perd_id_prev\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_fct\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"fct_ya\",\n      \"columns\": [\n        {\n          \"columnName\": \"sales_msu_qty\",\n          \"columnAlias\": \"sales_msu_qty_ya\"\n        },\n        {\n          \"columnName\": \"sales_mlc_amt\",\n          \"columnAlias\": \"sales_mlc_amt_ya\"\n        },\n        {\n          \"columnName\": \"sales_musd_amt\",\n          \"columnAlias\": \"sales_musd_amt_ya\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_dqm_fct\",\n      \"addAllColumns\": \"false\",\n      \"alias\": \"fct_pp\",\n      \"columns\": [\n        {\n          \"columnName\": \"sales_msu_qty\",\n          \"columnAlias\": \"sales_msu_qty_pp\"\n        },\n        {\n          \"columnName\": \"sales_mlc_amt\",\n          \"columnAlias\": \"sales_mlc_amt_pp\"\n        },\n        {\n          \"columnName\": \"sales_musd_amt\",\n          \"columnAlias\": \"sales_musd_amt_pp\"\n        },\n        {\n          \"columnName\": \"time_factr\",\n          \"columnAlias\": \"time_factr_pp\"\n        }\n      ]\n    }\n  ],\n  \"joinOperations\": [\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"fct_top_lvl\",\n      \"joinExpression\": \"input.mkt_skid = fct_top_lvl.mkt_skid and input.time_perd_id = fct_top_lvl.time_perd_id and input.top_lvl_prod_attr_val_list = fct_top_lvl.extrn_prod_attr_val_list\"\n    },\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"time_perd\",\n      \"joinExpression\": \"input.time_perd_id = time_perd.time_perd_id\"\n    },\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"fct_ya\",\n      \"joinExpression\": \"time_perd.time_perd_id_ya = fct_ya.time_perd_id and input.prod_skid = fct_ya.prod_skid and input.mkt_skid = fct_ya.mkt_skid\"\n    },\n    {\n      \"joinType\": \"LEFT OUTER\",\n      \"joinDataframeAlias\": \"fct_pp\",\n      \"joinExpression\": \"time_perd.time_perd_id_prev = fct_pp.time_perd_id and input.prod_skid = fct_pp.prod_skid and input.mkt_skid = fct_pp.mkt_skid\"\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_calc_measr\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "MultipleJoiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] calculate year ago",
+      "predecessorName": "[JOIN] calculate year ago",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_calc_measr\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"CASE WHEN sales_msu_qty_top != 0 THEN sales_msu_qty/sales_msu_qty_top *100 end\",\n      \"columnName\": \"share_su_pct\"\n    },\n    {\n      \"transformation\": \"case when sales_mlc_amt_top != 0 then sales_mlc_amt/sales_mlc_amt_top*100 end\",\n      \"columnName\": \"share_lc_pct\"\n    },\n    {\n      \"transformation\": \"case when sales_msu_qty_pd_top != 0 then sales_msu_qty_pd/sales_msu_qty_pd_top*100 end\",\n      \"columnName\": \"share_su_pct_pd\"\n    },\n    {\n      \"transformation\": \"case when sales_mlc_amt_pd_top != 0 then sales_mlc_amt_pd/sales_mlc_amt_pd_top*100 end\",\n      \"columnName\": \"share_lc_pct_pd\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_calc_measr\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] calculate indexes",
+      "predecessorName": "[CET] calculate year ago",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_calc_measr\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"(case when sales_msu_qty_pp != 0 then (sales_msu_qty * time_factr-sales_msu_qty_pp*time_factr_pp)/sales_msu_qty_pp*100 end)\",\n      \"columnName\": \"ipp_su_pct\"\n    },\n    {\n      \"transformation\": \"(case when sales_msu_qty_ya !=0 then (sales_msu_qty - sales_msu_qty_ya)/sales_msu_qty_ya*100 end)\",\n      \"columnName\": \"iya_su_pct\"\n    },\n    {\n      \"transformation\": \"(case when sales_msu_qty_pd !=0 then (sales_msu_qty - sales_msu_qty_pd)/sales_msu_qty_pd*100 end)\",\n      \"columnName\": \"ipd_su_pct\"\n    },\n    {\n      \"transformation\": \"(case when sales_mlc_amt_pp !=0 then (sales_mlc_amt * time_factr-sales_mlc_amt_pp*time_factr_pp)/sales_mlc_amt_pp*100 end)\",\n      \"columnName\": \"ipp_lc_pct\"\n    },\n    {\n      \"transformation\": \"(case when sales_mlc_amt_ya !=0 then (sales_mlc_amt-sales_mlc_amt_ya)/sales_mlc_amt_ya*100 end)\",\n      \"columnName\": \"iya_lc_pct\"\n    },\n    {\n      \"transformation\": \"(case when sales_mlc_amt_pd !=0 then (sales_mlc_amt - sales_mlc_amt_pd)/sales_mlc_amt_pd*100 end)\",\n      \"columnName\": \"ipd_lc_pct\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_calc_index\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] prepare fact data for business",
+      "predecessorName": "[CET] calculate indexes",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_calc_index\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"cast( 1 as integer)\",\n      \"columnName\": \"parnt_strct_lvl_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_per_publ\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FLT] MM_TP_VALDN_AGG_FCT",
+      "predecessorName": "[CET] prepare fact data for business",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"path\": \"<@@PATH1@@>/MM_TP_VALDN_AGG_FCT/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"none\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_tp_valdn_agg_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[JOIN] dqm_per_publ and tp_valdn_agg_fct",
+      "predecessorName": "[FLT] MM_TP_VALDN_AGG_FCT",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"joinType\": \"LEFT ANTI\",\n  \"referenceDataframe\": \"df_tp_valdn_agg_fct\",\n  \"joinExpression\": \"ref.cntrt_id = in.cntrt_id and ref.srce_sys_id = in.srce_sys_id and ref.run_id = in.run_id\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"true\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_per_publ\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    },\n    {\n      \"name\": \"df_tp_valdn_agg_fct\",\n      \"addAllColumns\": \"true\",\n      \"columns\": [\n        {\n          \"columnName\": \"run_id\",\n          \"columnAlias\": \"run_id\"\n        }\n      ]\n    }\n  ],\n  \"alterQuery\": [\n    {\n      \"hintType\": \"none\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_per_publ_1\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Joiner",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen_cc]",
+      "predecessorName": "[JOIN] dqm_per_publ and tp_valdn_agg_fct",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_dqm_per_publ_1 = dict_all_dfs['df_dqm_per_publ_1'][\\\"df_object\\\"]\\ndf_tp_valdn_agg_fct = dict_all_dfs['df_tp_valdn_agg_fct'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_dqm_per_publ_1.columns\\nsdim_cols = df_tp_valdn_agg_fct.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_dqm_per_publ_1 = df_dqm_per_publ_1.withColumn(i,lit(None).cast('string'))\\n\\ndf_dqm_per_publ_1 = df_dqm_per_publ_1.select(*sdim_cols)\\ncols = df_dqm_per_publ_1.columns\\n\\nfor j in cols:\\n  df_dqm_per_publ_1 = df_dqm_per_publ_1.withColumn(j, col(j).cast(dict(df_tp_valdn_agg_fct.dtypes)[j]))\\n\\ndict_all_dfs['df_dqm_per_publ_1'] = {\\\"df_object\\\" :df_dqm_per_publ_1}\\ndf_output_dict['df_dqm_per_publ_1'] = df_dqm_per_publ_1\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_per_publ_1\"\n    },\n    {\n      \"name\": \"df_tp_valdn_agg_fct\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_per_publ_1\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] Adding prttn",
+      "predecessorName": "[gen_cc]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_per_publ\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(cntrt_id,0)\",\n      \"columnName\": \"part_cntrt_id\"\n    },\n    {\n      \"transformation\": \"run_id\",\n      \"columnName\": \"run_id\"\n    },\n    {\n      \"transformation\": \"srce_sys_id\",\n      \"columnName\": \"srce_sys_id\"\n    },\n    {\n      \"transformation\": \"cntrt_id\",\n      \"columnName\": \"cntrt_id\"\n    },\n    {\n      \"transformation\": \"fact_type_code\",\n      \"columnName\": \"fact_type_code\"\n    },\n    {\n      \"transformation\": \"mkt_skid\",\n      \"columnName\": \"mkt_skid\"\n    },\n    {\n      \"transformation\": \"prod_skid\",\n      \"columnName\": \"prod_skid\"\n    },\n    {\n      \"transformation\": \"time_perd_id\",\n      \"columnName\": \"time_perd_id\"\n    },\n    {\n      \"transformation\": \"new_time_perd_ind\",\n      \"columnName\": \"new_time_perd_ind\"\n    },\n    {\n      \"transformation\": \"sales_msu_qty\",\n      \"columnName\": \"sales_msu_qty\"\n    },\n    {\n      \"transformation\": \"sales_msu_qty_pp\",\n      \"columnName\": \"sales_msu_qty_pp\"\n    },\n    {\n      \"transformation\": \"sales_msu_qty_ya\",\n      \"columnName\": \"sales_msu_qty_ya\"\n    },\n    {\n      \"transformation\": \"sales_msu_qty_pd\",\n      \"columnName\": \"sales_msu_qty_pd\"\n    },\n    {\n      \"transformation\": \"sales_mlc_amt\",\n      \"columnName\": \"sales_mlc_amt\"\n    },\n    {\n      \"transformation\": \"sales_mlc_amt_pp\",\n      \"columnName\": \"sales_mlc_amt_pp\"\n    },\n    {\n      \"transformation\": \"sales_mlc_amt_ya\",\n      \"columnName\": \"sales_mlc_amt_ya\"\n    },\n    {\n      \"transformation\": \"sales_mlc_amt_pd\",\n      \"columnName\": \"sales_mlc_amt_pd\"\n    },\n    {\n      \"transformation\": \"share_su_pct\",\n      \"columnName\": \"share_su_pct\"\n    },\n    {\n      \"transformation\": \"share_su_pct_pd\",\n      \"columnName\": \"share_su_pct_pd\"\n    },\n    {\n      \"transformation\": \"share_lc_pct\",\n      \"columnName\": \"share_lc_pct\"\n    },\n    {\n      \"transformation\": \"share_lc_pct_pd\",\n      \"columnName\": \"share_lc_pct_pd\"\n    },\n    {\n      \"transformation\": \"ipp_su_pct\",\n      \"columnName\": \"ipp_su_pct\"\n    },\n    {\n      \"transformation\": \"iya_su_pct\",\n      \"columnName\": \"iya_su_pct\"\n    },\n    {\n      \"transformation\": \"ipd_su_pct\",\n      \"columnName\": \"ipd_su_pct\"\n    },\n    {\n      \"transformation\": \"ipp_lc_pct\",\n      \"columnName\": \"ipp_lc_pct\"\n    },\n    {\n      \"transformation\": \"iya_lc_pct\",\n      \"columnName\": \"iya_lc_pct\"\n    },\n    {\n      \"transformation\": \"ipd_lc_pct\",\n      \"columnName\": \"ipd_lc_pct\"\n    },\n    {\n      \"transformation\": \"time_factr\",\n      \"columnName\": \"time_factr\"\n    },\n    {\n      \"transformation\": \"sales_musd_amt\",\n      \"columnName\": \"sales_musd_amt\"\n    },\n    {\n      \"transformation\": \"sales_musd_amt_pp\",\n      \"columnName\": \"sales_musd_amt_pp\"\n    },\n    {\n      \"transformation\": \"sales_musd_amt_ya\",\n      \"columnName\": \"sales_musd_amt_ya\"\n    },\n    {\n      \"transformation\": \"sales_musd_amt_pd\",\n      \"columnName\": \"sales_musd_amt_pd\"\n    },\n    {\n      \"transformation\": \"time_factr_pp\",\n      \"columnName\": \"time_factr_pp\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dqm_per_publ_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "[PUB] publish fact data for business",
+      "predecessorName": "[CET] Adding prttn",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"exclusive\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>/MM_TP_VALDN_AGG_FCT/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [\n    \"part_cntrt_id\"\n  ],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_cntrt_id\"\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dqm_per_publ_1\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": true
+    },
+    {
+      "operationName": "release MM_TP_VALDN_AGG_FCT",
+      "predecessorName": "[PUB] publish fact data for business",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>/MM_TP_VALDN_AGG_FCT/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "NNIT_T1_SFF Business Data Quality"
+}
