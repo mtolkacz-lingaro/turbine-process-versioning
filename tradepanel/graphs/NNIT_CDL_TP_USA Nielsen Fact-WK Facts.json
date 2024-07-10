@@ -40,7 +40,7 @@
     {
       "operationName": "[Load] MM_PROD_DIM_VW",
       "predecessorName": "Load PROD_VW Schema",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_PROD_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dim_connect\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dim_connect\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
@@ -61,7 +61,7 @@
     {
       "operationName": "release sem MM_PROD_DIM_VW",
       "predecessorName": "[CET] Adding prttn",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_PROD_DIM_VW/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_DIM_VW/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
@@ -75,7 +75,7 @@
     {
       "operationName": "[Load] MM_PROD_SDIM_VW",
       "predecessorName": "Load prod_sdim schema",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_PROD_SDIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_sdim_connect\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_SDIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_sdim_connect\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": false
     },
@@ -96,7 +96,7 @@
     {
       "operationName": "release sem MM_PROD_SDIM_VW",
       "predecessorName": "[CET] Adding prttn sdim",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_PROD_SDIM_VW/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_SDIM_VW/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },

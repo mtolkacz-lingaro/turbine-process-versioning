@@ -165,7 +165,7 @@
     {
       "operationName": "[File Pub] MM_TIME_PERD_XREF",
       "predecessorName": "[Merge] TIME_PERD_XREF",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH3@@>/MM_TIME_PERD_XREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_time_perd_xref\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined//MM_TIME_PERD_XREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_time_perd_xref\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
@@ -180,7 +180,7 @@
       "operationName": "[File Load] MM_RUN_PRTTN_PLC",
       "operationDescription": "load MM_RUN_PRTTN_PLC",
       "predecessorName": "Pub - MM_TIME_PERD_XREF",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_RUN_PRTTN_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_run_prttn_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_PRTTN_PLC/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_run_prttn_plc\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": true
     },
@@ -215,14 +215,14 @@
     {
       "operationName": "[File Pub]",
       "predecessorName": "[MERGE] prod prttn plc",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"none\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_RUN_PRTTN_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_run_prttn_plc\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"none\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_PRTTN_PLC/\",\n  \"mode\": \"append\",\n  \"compression\": \"None\",\n  \"coalesceByNumber\": 30,\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_run_prttn_plc\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": true
     },
     {
       "operationName": "release sem for MM_RUN_PRTTN_PLC",
       "predecessorName": "[File Pub]",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_RUN_PRTTN_PLC/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_RUN_PRTTN_PLC/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
@@ -313,7 +313,7 @@
     {
       "operationName": "[File Load] MM_TP_MTH_FCT",
       "predecessorName": "AGR prttn keys",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH3@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"<|df_prttn_fltr.PartitionSet|>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"partitions\": \"<|df_prttn_fltr.PartitionSet|>\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_tp_mth_fct\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
       "operationVersionName": "FileLoaderTabular",
       "overridableIndicator": true
     },
@@ -334,7 +334,7 @@
     {
       "operationName": "release sem for MM FCT ",
       "predecessorName": "[CET] PRTIONS",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH3@@>MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TP_<<TIME_PERD_CLASS_CODE>>_FCT/part_srce_sys_id=<<SRCE_SYS_ID>>/part_cntrt_id=<<CNTRT_ID>>/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
