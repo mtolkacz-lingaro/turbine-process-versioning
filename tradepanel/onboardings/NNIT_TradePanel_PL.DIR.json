@@ -1,0 +1,303 @@
+{
+  "graphName": "NNIT_TradePanel_DPF_Tier1_Atomic TP Main Chain SFF",
+  "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{\n  \"DATA_TIER\" : \"Tier1\",\n  \"TEST_PRODUCTION\" : \"Production\",\n  \"FACT_TYPE_CODE\" : \"TP\",\n  \"CNTRY_NAME\" : \"POLAND\",\n  \"GEOGRAPHY\" : \"POLAND\",\n  \"GEO_ID\" : \"PL\",\n  \"AREA_BREAKDOWN\" : \"CUSTOMER\",\n  \"MARKET\" : \"BIEDRONKA\",\n  \"CURRENCY\" : \"POLAND NEW ZLOTY\",\n  \"CURRENCY_CODE\" : \"PLN\",\n  \"CATEGORY\" : \"DIAPERS V2 (DIP)\",\n  \"CATEGORY_ID\" : \"DIP\",\n  \"PERIOD_TYPE\" : \"WEEK - MONDAY THROUGH SUNDAY\",\n  \"PERIOD_TYPE_CODE\" : \"WKMS\",\n  \"VENDOR\" : \"Nielsen\",\n  \"VENDOR_ID\" : \"1\",\n  \"CONTRACT_NAME\" : \"POLAND DIAPERS V2 (DIP)\",\n  \"CONTRACT_CODE\" : \"PL.DIR\",\n  \"RETENTION_PERIOD\" : 9999,\n  \"STEP_FILE_PATTERN_COMMON\" : \"NA\",\n  \"STEP_DVM\" : \"false\",\n  \"SRCE_SYS_ID\" : 3,\n  \"IGRTD_PUBLISH_FILE_PATTERN\" : \"TIER1.TP.DIP.PL.Test%\",\n  \"CNTRT_ID\" : 10000101756162,\n  \"ISO_CNTRY_CODE\" : \"PL\",\n  \"PROD_PRTTN_CODE\" : \"DIP\",\n  \"ISO_CRNCY_CODE\" : \"PLN\",\n  \"TIME_PERD_TYPE_CODE\" : \"WKMS\",\n  \"RAW_FILE_PATH\" : \"turbinev1/WORK/\",\n  \"PUBLISH_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"IN_FILE_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"MAPPINGS_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"EXTRACT_REFRESH\" : \"N\",\n  \"CHK_DQ1\" : \"false\",\n  \"CHK_DQ2\" : \"false\",\n  \"CHK_DQ3\" : \"false\",\n  \"CHK_DQ4\" : \"false\",\n  \"CHK_DQ5\" : \"false\",\n  \"CHK_DQ6\" : \"false\",\n  \"CHK_DQ7\" : \"false\",\n  \"BUSINESS_DVM\" : \"true\",\n  \"TIME_PERD_CLASS_CODE\" : \"WK\",\n  \"DATA_AUTO_VAL_IND\" : \"N\",\n  \"VENDOR_FILE_PATTERN\" : \"%DIR_PL%.zip\",\n  \"CONTACTS\" : \"client.response@nielseniq.com; Daniel.Lenicki@nielseniq.com; europemm.im@pg.com; kumtepe.o@pg.com; Sena.Usta@nielseniq.com; sylwia.krawczyk@nielseniq.com; ulbrych.b@pg.com\"\n}",
+  "processDescription": "PL.DIR",
+  "processParameters": [
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DATA_TIER",
+      "parameterVal": "Tier1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "TEST_PRODUCTION",
+      "parameterVal": "Production"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "FACT_TYPE_CODE",
+      "parameterVal": "TP"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "GEOGRAPHY",
+      "parameterVal": "POLAND"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "GEO_ID",
+      "parameterVal": "PL"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "AREA_BREAKDOWN",
+      "parameterVal": "CUSTOMER"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "MARKET",
+      "parameterVal": "BIEDRONKA"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CURRENCY",
+      "parameterVal": "POLAND NEW ZLOTY"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CURRENCY_CODE",
+      "parameterVal": "PLN"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CATEGORY",
+      "parameterVal": "DIAPERS V2 (DIP)"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CATEGORY_ID",
+      "parameterVal": "DIP"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "PERIOD_TYPE",
+      "parameterVal": "WEEK - MONDAY THROUGH SUNDAY"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "PERIOD_TYPE_CODE",
+      "parameterVal": "WKMS"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "VENDOR",
+      "parameterVal": "Nielsen"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "VENDOR_ID",
+      "parameterVal": "1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CONTRACT_NAME",
+      "parameterVal": "POLAND DIAPERS V2 (DIP)"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CONTRACT_CODE",
+      "parameterVal": "PL.DIR"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RETENTION_PERIOD",
+      "parameterVal": "9999"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "VENDOR_FILE_PATTERN",
+      "parameterVal": "%DIR_PL%.zip"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DATA_AUTO_VAL_IND",
+      "parameterVal": "N"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "STEP_FILE_PATTERN_COMMON",
+      "parameterVal": "NA"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "SRCE_SYS_ID",
+      "parameterVal": "3"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "IGRTD_PUBLISH_FILE_PATTERN",
+      "parameterVal": "TIER1.TP.DIP.PL.Test%"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "ISO_CNTRY_CODE",
+      "parameterVal": "PL"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CNTRY_NAME",
+      "parameterVal": "POLAND"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "PROD_PRTTN_CODE",
+      "parameterVal": "DIP"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "ISO_CRNCY_CODE",
+      "parameterVal": "PLN"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "TIME_PERD_TYPE_CODE",
+      "parameterVal": "WKMS"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "TIME_PERD_CLASS_CODE",
+      "parameterVal": "WK"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CONTACTS",
+      "parameterVal": "client.response@nielseniq.com; Daniel.Lenicki@nielseniq.com; europemm.im@pg.com; kumtepe.o@pg.com; Sena.Usta@nielseniq.com; sylwia.krawczyk@nielseniq.com; ulbrych.b@pg.com"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "EXTRACT_REFRESH",
+      "parameterVal": "N"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RAW_FILE_PATH",
+      "parameterVal": "turbinev1/WORK/"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "IN_FILE_PATH",
+      "parameterVal": "bf/unrefined/adw-t1-unrefined-bf/"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "PUBLISH_PATH",
+      "parameterVal": "bf/unrefined/adw-t1-unrefined-bf/"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "MAPPINGS_PATH",
+      "parameterVal": "bf/unrefined/adw-t1-unrefined-bf/"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CNTRT_ID",
+      "parameterVal": "10000101756162"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "STEP_DVM",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "BUSINESS_DVM",
+      "parameterVal": "true"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CHK_DQ1",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CHK_DQ2",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CHK_DQ3",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CHK_DQ4",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CHK_DQ5",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CHK_DQ6",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "CHK_DQ7",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RUN_ON_AUTOMATED_CLUSTER",
+      "parameterVal": "1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RUN_ON_CLUSTER_POOL",
+      "parameterVal": "0"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "MIN_CLUSTER_POOL_WORKERS",
+      "parameterVal": "2"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "MAX_CLUSTER_POOL_WORKERS",
+      "parameterVal": "12"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RUN_ON_INTERACTIVE_CLUSTER",
+      "parameterVal": "1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DATABRICKS_CLUSTER_INFRA_NAME",
+      "parameterVal": "Large"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "PARALLEL_EXECUTION",
+      "parameterVal": "FALSE"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "SEC_GRP_KEY",
+      "parameterVal": "540000"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "APP_INFRA",
+      "parameterVal": "NEW_INFRA"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "WK_REFINED_ACTIVE",
+      "parameterVal": "true"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "MTH_REFINED_ACTIVE",
+      "parameterVal": "false"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "BIMTH_REFINED_ACTIVE",
+      "parameterVal": "false"
+    }
+  ],
+  "nodes": [],
+  "objects": [
+    {
+      "objectName": "NNIT_TradePanel_CDL-TP-PTRN-PL.DIR",
+      "objectRoleTypeName": "INPUT"
+    }
+  ],
+  "metrics": [],
+  "upstreams": [],
+  "processName": "NNIT_TradePanel_PL.DIR"
+}
