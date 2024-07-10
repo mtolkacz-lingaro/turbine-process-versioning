@@ -1355,7 +1355,7 @@
     {
       "operationName": "Business Validations inputs",
       "predecessorName": "[NG] business data quality",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_business_validations_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_business_validations_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -1363,7 +1363,7 @@
       "operationName": "Business Validations",
       "operationDescription": "business",
       "predecessorName": "Business Validations inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_t1_dq_business_validations\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_business_validations\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
