@@ -2,7 +2,7 @@
   "graphName": "NNIT_TradePanel_DPF_Tier1_Integrated TP Main Chain",
   "applicationName": "TURBINE_INTERNAL",
   "jsonSpecification": "{\n  \"FACT_TYPE_CODE\" : \"TP\",\n  \"CATEGORY_ID\" : \"DIP\",\n  \"SRCE_SYS_ID\" : 3,\n  \"IGRTD_PUBLISH_FILE_PATTERN\" : \"N/A\",\n  \"CNTRT_ID\" : 10000101754157,\n  \"RAW_FILE_PATH\" : \"turbinev1/WORK/\",\n  \"PUBLISH_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"IN_FILE_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"MAPPINGS_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"DLVRY_ID\" : 672612072\n}",
-  "processDescription": "T1I TP DIP PL Active",
+  "processDescription": "NNIT_T1I TP DIP PL Active",
   "schedules": [],
   "processParameters": [
     {
