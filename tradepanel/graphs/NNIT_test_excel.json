@@ -1,0 +1,20 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+  "nodes": [
+    {
+      "operationName": "dummy schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Test excel",
+      "predecessorName": "dummy schema",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"import subprocess\\nimport os\\nimport shutil\\nimport subprocess\\nimport sys\\nfrom pyspark.sql.types import StructType,StructField, StringType, IntegerType\\nimport pandas as pd\\nsubprocess.check_call([sys.executable,\\\"-m\\\",\\\"pip\\\",\\\"install\\\",\\\"xlsxwriter\\\"])\\nimport xlsxwriter\\n\\nrun_id = <<PROCESS_RUN_KEY>>\\n\\nwriter = pd.ExcelWriter(f'tp_dvm_rprt_{run_id}.xlsx', engine='xlsxwriter')\\n# Close Excel Report and Save\\nwriter.close()\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "NNIT_test_excel"
+}
