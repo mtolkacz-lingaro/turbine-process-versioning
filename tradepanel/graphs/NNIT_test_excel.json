@@ -4,7 +4,7 @@
   "nodes": [
     {
       "operationName": "dummy schema",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
       "operationVersionName": "CreateSchema",
       "overridableIndicator": false
     },
