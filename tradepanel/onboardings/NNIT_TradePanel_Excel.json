@@ -17,6 +17,11 @@
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "DATABRICKS_CLUSTER_INFRA_NAME",
       "parameterVal": "Large"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DATABRICKS_CLUSTER_ID",
+      "parameterVal": "0711-123212-9l5lnv02"
     }
   ],
   "nodes": [],
