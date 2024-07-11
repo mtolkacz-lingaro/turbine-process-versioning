@@ -782,7 +782,7 @@
     {
       "operationName": "[FP1]",
       "predecessorName": "[merger1]",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined//MM_PROD_CXREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_nactc1\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_CXREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_nactc1\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
@@ -818,7 +818,7 @@
     {
       "operationName": "[FP2]",
       "predecessorName": "[merger2]",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined//MM_PROD_CXREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_nactc2\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_CXREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_nactc2\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
@@ -854,7 +854,7 @@
     {
       "operationName": "[FP3]",
       "predecessorName": "[merger3]",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined//MM_PROD_CXREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_nactc3\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_CXREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_nactc3\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
@@ -925,7 +925,7 @@
     {
       "operationName": "[fp4]",
       "predecessorName": "[merger -new products]",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined//MM_PROD_CXREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cxref2\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_CXREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_cxref2\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
@@ -1061,7 +1061,7 @@
       "operationName": "[FP6]",
       "operationDescription": "dummy update",
       "predecessorName": "[merger]",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined//MM_PROD_CSDIM/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dsdim\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_CSDIM/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dsdim\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
@@ -1187,7 +1187,7 @@
     {
       "operationName": "[PUB] data into product dim copy using merge",
       "predecessorName": "[MErger]",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined//MM_PROD_CDIM/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_ddim\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"shared\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_PROD_CDIM/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_ddim\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
@@ -1419,21 +1419,21 @@
     {
       "operationName": "acquire turbine_run_plc",
       "predecessorName": "test Filter",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"acquire\",\n  \"semaphoreOption\": \"exclusive\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined//turbine_run_plc/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"acquire\",\n  \"semaphoreOption\": \"exclusive\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/turbine_run_plc/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
     {
       "operationName": "Determine Stop Calc Indicator",
       "predecessorName": "acquire turbine_run_plc",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nimport pyspark\\nfrom pyspark.sql import SparkSession\\nfrom pyspark.sql.types import *\\nfrom pyspark.sql.functions import col, lit, when\\n\\nspark_session = SparkSession.builder.appName('Spark_Session').getOrCreate()\\n\\ndf = spark.read.format('parquet').load('/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined//turbine_run_plc/')\\ncnt = df.filter('run_id = <<PROCESS_RUN_KEY>>').count()+1\\n\\nrows = [[ <<CNTRT_ID>>, <<PROCESS_RUN_KEY>>, cnt]]\\n\\n\\ncolumns = ['cntrt_id', 'run_id', 'count']\\ndf_run_count = spark_session.createDataFrame(rows, columns)\\n\\ndf_run_count.write.format('parquet').mode('append').save('/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined//turbine_run_plc/')\\n\\n# Determine Stop Calc Indicator\\n\\ndf_auto_appr = dict_all_dfs['df_auto_appr'][\\\"df_object\\\"]\\n\\ndf_auto_appr = df_auto_appr.join(df_run_count, ['cntrt_id'],'inner' )\\n\\ndf_auto_appr = df_auto_appr.withColumn('auto_appr_ind', when(col('auto_appr_ind')=='Y', lit('Y')).when(((col('auto_appr_ind')=='N') & (col('count')>1)), lit('Y')).otherwise(lit('N')))\\n\\ndict_all_dfs['df_auto_appr'] = {\\\"df_object\\\" :df_auto_appr}\\ndf_output_dict['df_auto_appr'] = df_auto_appr\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_auto_appr\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_auto_appr\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nimport pyspark\\nfrom pyspark.sql import SparkSession\\nfrom pyspark.sql.types import *\\nfrom pyspark.sql.functions import col, lit, when\\n\\nspark_session = SparkSession.builder.appName('Spark_Session').getOrCreate()\\n\\ndf = spark.read.format('parquet').load('/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/turbine_run_plc/')\\ncnt = df.filter('run_id = <<PROCESS_RUN_KEY>>').count()+1\\n\\nrows = [[ <<CNTRT_ID>>, <<PROCESS_RUN_KEY>>, cnt]]\\n\\n\\ncolumns = ['cntrt_id', 'run_id', 'count']\\ndf_run_count = spark_session.createDataFrame(rows, columns)\\n\\ndf_run_count.write.format('parquet').mode('append').save('/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/turbine_run_plc/')\\n\\n# Determine Stop Calc Indicator\\n\\ndf_auto_appr = dict_all_dfs['df_auto_appr'][\\\"df_object\\\"]\\n\\ndf_auto_appr = df_auto_appr.join(df_run_count, ['cntrt_id'],'inner' )\\n\\ndf_auto_appr = df_auto_appr.withColumn('auto_appr_ind', when(col('auto_appr_ind')=='Y', lit('Y')).when(((col('auto_appr_ind')=='N') & (col('count')>1)), lit('Y')).otherwise(lit('N')))\\n\\ndict_all_dfs['df_auto_appr'] = {\\\"df_object\\\" :df_auto_appr}\\ndf_output_dict['df_auto_appr'] = df_auto_appr\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_auto_appr\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_auto_appr\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
       "operationVersionName": "Generic",
       "overridableIndicator": true
     },
     {
       "operationName": "Release turbine_run_plc",
       "predecessorName": "Determine Stop Calc Indicator",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined//turbine_run_plc/\"\n}",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/refined/NNIT/tradepanel/prod-tp-lightrefined/turbine_run_plc/\"\n}",
       "operationVersionName": "SemaphoreOperation",
       "overridableIndicator": false
     },
