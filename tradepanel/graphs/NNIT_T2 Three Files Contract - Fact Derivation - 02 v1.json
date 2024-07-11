@@ -165,7 +165,7 @@
     {
       "operationName": "[File Pub] MM_TIME_PERD_XREF",
       "predecessorName": "[Merge] TIME_PERD_XREF",
-      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined//MM_TIME_PERD_XREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_time_perd_xref\"\n    }\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"refined/NNIT/tradepanel/prod-tp-lightrefined/MM_TIME_PERD_XREF/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_time_perd_xref\"\n    }\n  ]\n}",
       "operationVersionName": "FilePublisher",
       "overridableIndicator": false
     },
