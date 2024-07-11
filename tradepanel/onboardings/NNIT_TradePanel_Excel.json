@@ -1,5 +1,27 @@
 {
   "graphName": "NNIT_test_excel",
   "applicationName": "TURBINE_INTERNAL",
+  "jsonSpecification": "{}",
+  "processParameters": [
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RUN_ON_INTERACTIVE_CLUSTER",
+      "parameterVal": "1"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "RUN_ON_CLUSTER_POOL",
+      "parameterVal": "0"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "DATABRICKS_CLUSTER_INFRA_NAME",
+      "parameterVal": "Large"
+    }
+  ],
+  "nodes": [],
+  "objects": [],
+  "metrics": [],
+  "upstreams": [],
   "processName": "NNIT_TradePanel_Excel"
 }
