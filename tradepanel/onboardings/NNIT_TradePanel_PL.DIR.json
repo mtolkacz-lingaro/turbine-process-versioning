@@ -283,11 +283,6 @@
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "BIMTH_REFINED_ACTIVE",
       "parameterVal": "false"
-    },
-    {
-      "processParameterTypeName": "PROCESS_ATTRIBUTE",
-      "parameterName": "DATABRICKS_CLUSTER_ID",
-      "parameterVal": "0711-123212-9l5lnv02"
     }
   ],
   "nodes": [],
