@@ -349,11 +349,6 @@
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "APP_INFRA",
       "parameterVal": "NEW_INFRA"
-    },
-    {
-      "processParameterTypeName": "PROCESS_ATTRIBUTE",
-      "parameterName": "DATABRICKS_CLUSTER_ID",
-      "parameterVal": "0731-115409-afse4n48"
     }
   ],
   "nodes": [],
