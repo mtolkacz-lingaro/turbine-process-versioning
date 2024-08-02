@@ -312,7 +312,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "MAX_CLUSTER_POOL_WORKERS",
-      "parameterVal": "30"
+      "parameterVal": "20"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
