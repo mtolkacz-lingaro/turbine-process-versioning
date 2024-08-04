@@ -1250,7 +1250,7 @@
     {
       "operationName": "[NG] fact_01",
       "predecessorName": "[CET] on result assign market",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF Fact Standardization\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_T1_SFF Fact Standardization\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
