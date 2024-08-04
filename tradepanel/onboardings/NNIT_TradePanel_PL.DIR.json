@@ -291,7 +291,12 @@
     }
   ],
   "nodes": [],
-  "objects": [],
+  "objects": [
+    {
+      "objectName": "NNIT_TradePanel_CDL-TP-PTRN-PL.DIR",
+      "objectRoleTypeName": "INPUT"
+    }
+  ],
   "metrics": [],
   "upstreams": [],
   "processName": "NNIT_TradePanel_PL.DIR"
