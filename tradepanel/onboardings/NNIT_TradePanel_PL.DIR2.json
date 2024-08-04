@@ -231,13 +231,8 @@
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
-      "parameterName": "RUN_ON_AUTOMATED_CLUSTER",
-      "parameterVal": "1"
-    },
-    {
-      "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "RUN_ON_CLUSTER_POOL",
-      "parameterVal": "1"
+      "parameterVal": "0"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
@@ -252,7 +247,7 @@
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "RUN_ON_INTERACTIVE_CLUSTER",
-      "parameterVal": "0"
+      "parameterVal": "1"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
@@ -295,11 +290,14 @@
       "parameterVal": "0711-123212-9l5lnv02"
     }
   ],
+  "nodes": [],
   "objects": [
     {
       "objectName": "NNIT_TradePanel_CDL-TP-PTRN-PL.DIR",
       "objectRoleTypeName": "INPUT"
     }
   ],
+  "metrics": [],
+  "upstreams": [],
   "processName": "NNIT_TradePanel_PL.DIR2"
 }
