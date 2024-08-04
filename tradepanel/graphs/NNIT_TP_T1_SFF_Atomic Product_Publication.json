@@ -1,0 +1,207 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "[CC] on publish product into mm_prod_sdim",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_prod_dsdim\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dsdim\"\n    },\n    {\n      \"name\": \"df_mm_prod_sdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dsdim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] mm_prod_sdim 1.2",
+      "predecessorName": "[CC] on publish product into mm_prod_sdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_SDIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release MM_PROD_SDIM_VW/",
+      "predecessorName": "[FL] mm_prod_sdim 1.2",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_SDIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[cet] add part srce sys id",
+      "predecessorName": "release MM_PROD_SDIM_VW/",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-cc1]",
+      "operationDescription": "Column Complement",
+      "predecessorName": "[cet] add part srce sys id",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n \\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n \\ndf_prod_dsdim = dict_all_dfs['df_prod_dsdim'][\\\"df_object\\\"]\\ndf_mm_prod_sdim = dict_all_dfs['df_mm_prod_sdim'][\\\"df_object\\\"]\\n \\nfrom pyspark.sql.functions import col\\n \\nlkp_cols = df_prod_dsdim.columns\\nsdim_cols = df_mm_prod_sdim.columns\\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_prod_dsdim = df_prod_dsdim.withColumn(i,lit(None).cast('string'))\\n \\ndf_prod_dsdim = df_prod_dsdim.select(*sdim_cols)\\ncols = df_prod_dsdim.columns\\n \\nfor j in cols:\\n  if dict(df_prod_dsdim.dtypes)[j] != dict(df_mm_prod_sdim.dtypes)[j]:\\n    df_prod_dsdim = df_prod_dsdim.withColumn(j, col(j).cast(dict(df_mm_prod_sdim.dtypes)[j]))\\n \\ndict_all_dfs['df_prod_dsdim'] = {\\\"df_object\\\" :df_prod_dsdim}\\ndf_output_dict['df_prod_dsdim'] = df_prod_dsdim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dsdim\"\n    },\n    {\n      \"name\": \"df_mm_prod_sdim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dsdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[merger] on publish product into mm_prod_sdim",
+      "predecessorName": "[gen-cc1]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_mm_prod_sdim\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dsdim\"\n    },\n    {\n      \"name\": \"df_mm_prod_sdim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"prod_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET] on publish product into mm_prod_sdim",
+      "predecessorName": "[merger] on publish product into mm_prod_sdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_sdim\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen cc] df_prod_sdim",
+      "operationDescription": "18-dec-23 --new step to cc prod_sdim with schema",
+      "predecessorName": "[CET] on publish product into mm_prod_sdim",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"mspark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_prod_sdim = dict_all_dfs['df_prod_sdim'][\\\"df_object\\\"]\\ndf_mm_prod_sdim_vw_schema = dict_all_dfs['df_mm_prod_sdim_vw_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_prod_sdim.columns\\nsdim_cols = df_mm_prod_sdim_vw_schema.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_prod_sdim = df_prod_sdim.withColumn(i,lit(None).cast('string'))\\n\\ndf_prod_sdim = df_prod_sdim.select(*sdim_cols)\\ncols = df_prod_sdim.columns\\n\\nfor j in cols:\\n  df_prod_sdim = df_prod_sdim.withColumn(j, col(j).cast(dict(df_mm_prod_sdim_vw_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_prod_sdim'] = {\\\"df_object\\\" :df_prod_sdim}\\ndf_output_dict['df_prod_sdim'] = df_prod_sdim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_sdim\"\n    },\n    {\n      \"name\": \"df_mm_prod_sdim_vw_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_sdim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "load mm_prod_sdim to publish",
+      "operationDescription": "18-dec-23 --changed this step to load prod_sdim_latest from part_srce_sys_id",
+      "predecessorName": "[gen cc] df_prod_sdim",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_SDIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[cet] add part srce sys id to prod sdim latest",
+      "operationDescription": "18-dec-23 --new step to add part_srce_sys_id partition column for prod_sdim latest",
+      "predecessorName": "load mm_prod_sdim to publish",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_latest\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen cc] prod sdim latest",
+      "operationDescription": "18-dec-23 --new step to cc prod latest with schema",
+      "predecessorName": "[cet] add part srce sys id to prod sdim latest",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_mm_prod_sdim_latest = dict_all_dfs['df_mm_prod_sdim_latest'][\\\"df_object\\\"]\\ndf_mm_prod_sdim_vw_schema = dict_all_dfs['df_mm_prod_sdim_vw_schema'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_mm_prod_sdim_latest.columns\\nsdim_cols = df_mm_prod_sdim_vw_schema.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_mm_prod_sdim_latest = df_mm_prod_sdim_latest.withColumn(i,lit(None).cast('string'))\\n\\ndf_mm_prod_sdim_latest = df_mm_prod_sdim_latest.select(*sdim_cols)\\ncols = df_mm_prod_sdim_latest.columns\\n\\nfor j in cols:\\n  df_mm_prod_sdim_latest = df_mm_prod_sdim_latest.withColumn(j, col(j).cast(dict(df_mm_prod_sdim_vw_schema.dtypes)[j]))\\n\\ndict_all_dfs['df_mm_prod_sdim_latest'] = {\\\"df_object\\\" :df_mm_prod_sdim_latest}\\ndf_output_dict['df_mm_prod_sdim_latest'] = df_mm_prod_sdim_latest\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_latest\"\n    },\n    {\n      \"name\": \"df_mm_prod_sdim_vw_schema\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "merges mm_prod_sdim with latest",
+      "predecessorName": "[gen cc] prod sdim latest",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"referenceDataframe\": \"df_mm_prod_sdim_latest\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_latest\"\n    },\n    {\n      \"name\": \"df_prod_sdim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"prod_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_final\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[test1]",
+      "predecessorName": "merges mm_prod_sdim with latest",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"referenceDataframe\": \"df_mm_prod_sdim_latest\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_latest\"\n    },\n    {\n      \"name\": \"df_prod_sdim\"\n    }\n  ],\n  \"logicalKey\": [],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_final_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] on publish product into mm_prod_sdim",
+      "predecessorName": "[test1]",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_SDIM_VW/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_sdim_final\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] on publish product into mm_prod_sdim - DDAPI",
+      "predecessorName": "[FP] on publish product into mm_prod_sdim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_PROD_SDIM_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Turbine Internal - Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_sdim\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[sem] release mm_prod_sdim",
+      "operationDescription": "18-dec-23 --changed this step to release semaphore prod sdim latest from part_srce_sys_id",
+      "predecessorName": "[FP] on publish product into mm_prod_sdim - DDAPI",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_SDIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>/\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CC] on publish product into mm_prod_dim",
+      "predecessorName": "[sem] release mm_prod_sdim",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"referenceDataframe\": \"df_prod_ddim\",\n  \"deleteColumns\": \"true\",\n  \"referenceColumnOrder\": \"true\",\n  \"milestone\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\"\n    },\n    {\n      \"name\": \"df_prod_ddim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_ddim\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnComplementer",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] mm_prod_dim - 1.2",
+      "predecessorName": "[CC] on publish product into mm_prod_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"true\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "release MM_PROD_DIM_VW",
+      "predecessorName": "[FL] mm_prod_dim - 1.2",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[gen-cc2]",
+      "predecessorName": "release MM_PROD_DIM_VW",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\n\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\ndf_prod_ddim = dict_all_dfs['df_prod_ddim'][\\\"df_object\\\"]\\ndf_prod_dim = dict_all_dfs['df_prod_dim'][\\\"df_object\\\"]\\n\\nfrom pyspark.sql.functions import col\\n\\nlkp_cols = df_prod_ddim.columns\\nsdim_cols = df_prod_dim.columns\\n \\nfrom pyspark.sql.functions import lit\\nadd_cols = list(set(sdim_cols)-set(lkp_cols))\\nfor i in add_cols:\\n  df_prod_ddim = df_prod_ddim.withColumn(i,lit(None).cast('string'))\\n\\ndf_prod_ddim = df_prod_ddim.select(*sdim_cols)\\ncols = df_prod_ddim.columns\\n\\nfor j in cols:\\n  if dict(df_prod_ddim.dtypes)[j] != dict(df_prod_dim.dtypes)[j]:\\n    df_prod_ddim = df_prod_ddim.withColumn(j, col(j).cast(dict(df_prod_dim.dtypes)[j]))\\n\\ndict_all_dfs['df_prod_ddim'] = {\\\"df_object\\\" :df_prod_ddim}\\ndf_output_dict['df_prod_ddim'] = df_prod_ddim\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\"\n    },\n    {\n      \"name\": \"df_prod_ddim\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_ddim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[merger] on publish product into mm_prod_dim",
+      "predecessorName": "[gen-cc2]",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"referenceDataframe\": \"df_prod_dim\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_ddim\"\n    },\n    {\n      \"name\": \"df_prod_dim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"prod_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[CET]on publish product into mm_prod_dim",
+      "predecessorName": "[merger] on publish product into mm_prod_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"AddAllSourceColumns\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\"\n    }\n  ],\n  \"transformations\": [\n    {\n      \"transformation\": \"round(srce_sys_id,0)\",\n      \"columnName\": \"part_srce_sys_id\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "ColumnExpressionTransformation",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FL] load mm_prod_dim to publish",
+      "predecessorName": "[CET]on publish product into mm_prod_dim",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"fileType\": \"parquet\",\n  \"inferSchema\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_DIM_VW/\",\n  \"addInputFileName\": \"false\",\n  \"semaphoreOption\": \"exclusive\",\n  \"createIfNotExist\": \"false\",\n  \"mergeSchema\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "FileLoaderTabular",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "merges mm_prod_dim with latest",
+      "predecessorName": "[FL] load mm_prod_dim to publish",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"referenceDataframe\": \"df_mm_prod_dim_latest\",\n  \"distinct\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\"\n    },\n    {\n      \"name\": \"df_prod_dim\"\n    }\n  ],\n  \"logicalKey\": [\n    \"srce_sys_id\",\n    \"cntrt_id\",\n    \"prod_skid\"\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_final\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[test]",
+      "predecessorName": "merges mm_prod_dim with latest",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"referenceDataframe\": \"df_mm_prod_dim_latest\",\n  \"distinct\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_latest\"\n    },\n    {\n      \"name\": \"df_prod_dim\"\n    }\n  ],\n  \"logicalKey\": [],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_final_1\",\n      \"cache\": \"materialize\"\n    }\n  ]\n}",
+      "operationVersionName": "Merger",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] on publish product into mm_prod_dim",
+      "predecessorName": "[test]",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"false\",\n  \"path\": \"<@@PATH1@@>MM_PROD_DIM_VW/\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_mm_prod_dim_final\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[FP] on publish product into mm_prod_dim - DDAPI",
+      "predecessorName": "[FP] on publish product into mm_prod_dim",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"semaphoreOption\": \"already acquired\",\n  \"format\": \"parquet\",\n  \"disableSuccessFile\": \"false\",\n  \"shouldDeleteSuccess\": \"false\",\n  \"useApiV2.5\": \"true\",\n  \"hidePublication\": \"false\",\n  \"outputPhysicalTable\": \"prod-tp-lightrefined/MM_PROD_DIM_VW/\",\n  \"owningApplicationName\": {\n    \"applicationName\": \"Turbine Internal - Refined\"\n  },\n  \"dataProviderCode\": \"TP\",\n  \"secureGroupKey\": \"0\",\n  \"postPartitionsRowCount\": \"true\",\n  \"mode\": \"dynamicoverwrite\",\n  \"compression\": \"None\",\n  \"repartitionByColumn\": [],\n  \"columnToDrop\": [],\n  \"partitionByColumn\": [\n    \"part_srce_sys_id\"\n  ],\n  \"partitionAdditionalInformations\": [\n    {}\n  ],\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_prod_dim\"\n    }\n  ]\n}",
+      "operationVersionName": "FilePublisher",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "[release sem ] for mm_prod_dim",
+      "predecessorName": "[FP] on publish product into mm_prod_dim - DDAPI",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"actionType\": \"release\",\n  \"itemType\": \"path\",\n  \"itemPath\": \"/mnt/<@@PATH1@@>MM_PROD_DIM_VW/part_srce_sys_id=<<SRCE_SYS_ID>>\"\n}",
+      "operationVersionName": "SemaphoreOperation",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "NNIT_TP_T1_SFF_Atomic Product_Publication"
+}

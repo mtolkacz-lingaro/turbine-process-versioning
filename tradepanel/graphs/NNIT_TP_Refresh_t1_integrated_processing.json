@@ -1,0 +1,20 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "dummy",
+      "operationDescription": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Refresh Integrated Contract from Atomic processing",
+      "predecessorName": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\nfrom pyspark.sql.types import StructType,StructField, StringType, IntegerType, LongType\\nimport time, datetime\\nfrom pyspark.sql.functions import *\\nimport csv\\nimport pandas as pd\\n\\natomic_cntrt_id = <<CNTRT_ID>>\\npattern  = '<<IGRTD_PUBLISH_FILE_PATTERN>>'\\nextract_refresh = '<<EXTRACT_REFRESH>>'\\npath = '<@@LANDING_PATH@@>'\\ndlvry_id = <<PROCESS_RUN_KEY>>\\ndata = []\\n\\nschema = StructType([ \\n    StructField(\\\"atomic_cntrt_id\\\",LongType(),True),\\n    StructField(\\\"file_pattern\\\",StringType(),True),\\n\\tStructField(\\\"dlvry_id\\\",LongType(),True),\\n\\tStructField(\\\"extract_refresh\\\",StringType(),True)\\n  ])\\nval = (atomic_cntrt_id, pattern, dlvry_id , extract_refresh)\\ndata.append(val)\\nts = str(time.time())\\n\\n# create a dataframe with atomic contract details\\ndf_integ = spark.createDataFrame(data, schema)\\n\\n# File name to trigger integrated contract\\nfile_name = pattern.replace(\\\"%\\\", ts)\\n\\n# Saving file in Landing zone to automatically trigger the Integrated contract\\nif ((extract_refresh == 'Y') or (extract_refresh=='true')):\\n  pd_integ = df_integ.toPandas()\\n  pd_integ.to_csv(f'/dbfs/mnt/{path}/{file_name}.csv',header='True',sep=',',index=False)\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_dummy\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "NNIT_TP_Refresh_t1_integrated_processing"
+}

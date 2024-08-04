@@ -4,7 +4,7 @@
   "nodes": [
     {
       "operationName": "Unzip the file",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF2CDL_TradePanel_MFT\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -327,14 +327,14 @@
     {
       "operationName": "DVM - File Structure Validation - Inputs",
       "predecessorName": "Update Delivery Status(phase id 2, status id 3)",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_file_structure_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_file_structure_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "DVM - File Structure Validations",
       "predecessorName": "DVM - File Structure Validation - Inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_file_structure_validation_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_file_structure_validation_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -1250,119 +1250,119 @@
     {
       "operationName": "[NG] fact_01",
       "predecessorName": "[CET] on result assign market",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF Fact Standardization\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Standardization\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[DVM] Reference Data Vendors Inputs",
       "predecessorName": "[NG] fact_01",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_ref_data_vendors_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_ref_data_vendors_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] Reference Data Vendors",
       "predecessorName": "[DVM] Reference Data Vendors Inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_ref_data_vendors_validation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_ref_data_vendors_validation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] - FYI inputs",
       "predecessorName": "[DVM] Reference Data Vendors",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_fyi_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_fyi_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] - FYI Validations checks",
       "predecessorName": "[DVM] - FYI inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_fyi_validation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_fyi_validation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] - Reference Data inputs",
       "predecessorName": "[DVM] - FYI Validations checks",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_ref_data_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_ref_data_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[DVM] - Reference Data Valdiations",
       "predecessorName": "[DVM] - Reference Data inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_ref_data\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_ref_data\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "[NG] run_loading",
       "predecessorName": "[DVM] - Reference Data Valdiations",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF Run Logs Loading\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Run Logs Loading\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] atomic measure calculation",
       "predecessorName": "[NG] run_loading",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF_Atomic Measure Calculation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF_Atomic Measure Calculation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] fact skid",
       "predecessorName": "[NG] atomic measure calculation",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF Fact Dimension Skid\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Dimension Skid\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] FACT IMAGE CREATION",
       "predecessorName": "[NG] fact skid",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF Fact Image Derivation\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Image Derivation\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Materialize Fact Image",
       "predecessorName": "[NG] FACT IMAGE CREATION",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1 materialize fact image\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1 materialize fact image\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] measure log",
       "predecessorName": "[NG] Materialize Fact Image",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF_Measure_log_Loading\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF_Measure_log_Loading\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] fact copy",
       "predecessorName": "[NG] measure log",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF Fact Copy\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Copy\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] fact_time",
       "predecessorName": "[NG] fact copy",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF Fact Time calculations\"\n  },\n  \"active\": \"false\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Fact Time calculations\"\n  },\n  \"active\": \"false\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] business data quality",
       "predecessorName": "[NG] fact_time",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF Business Data Quality\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF Business Data Quality\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
     {
       "operationName": "Business Validations inputs",
       "predecessorName": "[NG] business data quality",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_business_validations_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_business_validations_inputs_sff\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -1370,7 +1370,7 @@
       "operationName": "Business Validations",
       "operationDescription": "business",
       "predecessorName": "Business Validations inputs",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_t1_dq_business_validations\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"t1_dq_business_validations\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": true
     },
@@ -1454,28 +1454,28 @@
     {
       "operationName": "Backup Fact",
       "predecessorName": "Auto Approval - Stop Calculations",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_cp_fact_backup_process\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"cp_fact_backup_process\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] product publication",
       "predecessorName": "Backup Fact",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF_Atomic Product_Publication\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF_Atomic Product_Publication\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Fact publications",
       "predecessorName": "[NG] product publication",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_T1_SFF_Atomic_Fact_Publication\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"T1_SFF_Atomic_Fact_Publication\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "Refresh Integrated Contract based on Extract Refresh",
       "predecessorName": "[NG] Fact publications",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_Refresh_t1_integrated_processing\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"Refresh_t1_integrated_processing\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -1496,7 +1496,7 @@
     {
       "operationName": "Move to Archive",
       "predecessorName": "[GEN] - Fact data indicator update",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF2CDL_WORK_TO_ARCH\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
@@ -1524,24 +1524,24 @@
     {
       "operationName": "[NG] Publish BIMTH facts to Refined Layer",
       "predecessorName": "test control - filter",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_DPF_Tier1_Refined_BIMTH_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF_Tier1_Refined_BIMTH_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Publish MTH facts to Refined Layer",
       "predecessorName": "[NG] Publish BIMTH facts to Refined Layer",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_DPF_Tier1_Refined_MTH_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF_Tier1_Refined_MTH_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     },
     {
       "operationName": "[NG] Publish WK facts to Refined Layer",
       "predecessorName": "[NG] Publish MTH facts to Refined Layer",
-      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"NNIT_TP_DPF_Tier1_Refined_WK_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
+      "jsonSpecification": "{\n  \"graph\": {\n    \"graphName\": \"DPF_Tier1_Refined_WK_Facts SSID-3 v2\"\n  },\n  \"active\": \"true\"\n}",
       "operationVersionName": "NestedGraph",
       "overridableIndicator": false
     }
   ],
-  "graphName": "NNIT_DPF_Tier1_Atomic TP Main Chain SFF2"
+  "graphName": "NNIT_TP_DPF_Tier1_Atomic TP Main Chain SFF"
 }

@@ -1,0 +1,19 @@
+{
+  "applicationName": "TURBINE_INTERNAL",
+  "nodes": [
+    {
+      "operationName": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"manualSchema\": \"true\",\n  \"transformations\": [\n    {\n      \"columnType\": \"string\",\n      \"columnName\": \"test\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"df_dummy\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "CreateSchema",
+      "overridableIndicator": false
+    },
+    {
+      "operationName": "Reference Data Vendors validation inputs",
+      "predecessorName": "dummy",
+      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"separateSparkSession\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"customCode\": \"spark = self.spark_session\\nmyLogger = self.log\\nfrom IPython import get_ipython\\ndbutils = get_ipython().user_ns[\\\"dbutils\\\"]\\n\\n\\ntier1_prod_mtrlz_tbl = dict_all_dfs['df_srce_mprod'][\\\"df_object\\\"]\\ntier1_fact_mtrlz_tbl = dict_all_dfs['df_srce_mfct'][\\\"df_object\\\"]\\ntier1_prod_gav = dict_all_dfs['df_prod_gav'][\\\"df_object\\\"]\\n\\n\\ndict_all_dfs['tier1_prod_mtrlz_tbl'] = {\\\"df_object\\\" :tier1_prod_mtrlz_tbl}\\ndf_output_dict['tier1_prod_mtrlz_tbl'] = tier1_prod_mtrlz_tbl\\n\\ndict_all_dfs['tier1_fact_mtrlz_tbl'] = {\\\"df_object\\\" :tier1_fact_mtrlz_tbl}\\ndf_output_dict['tier1_fact_mtrlz_tbl'] = tier1_fact_mtrlz_tbl\\n\\ndict_all_dfs['tier1_prod_gav'] = {\\\"df_object\\\" :tier1_prod_gav}\\ndf_output_dict['tier1_prod_gav'] = tier1_prod_gav\",\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_srce_mprod\"\n    },\n    {\n      \"name\": \"df_srce_mfct\"\n    },\n    {\n      \"name\": \"df_prod_gav\"\n    }\n  ],\n  \"outputDataframes\": [\n    {\n      \"name\": \"tier1_prod_mtrlz_tbl\",\n      \"cache\": \"none\"\n    },\n    {\n      \"name\": \"tier1_fact_mtrlz_tbl\",\n      \"cache\": \"none\"\n    },\n    {\n      \"name\": \"tier1_prod_gav\",\n      \"cache\": \"none\"\n    }\n  ]\n}",
+      "operationVersionName": "Generic",
+      "overridableIndicator": false
+    }
+  ],
+  "graphName": "NNIT_TP_t1_dq_ref_data_vendors_inputs_sff"
+}
