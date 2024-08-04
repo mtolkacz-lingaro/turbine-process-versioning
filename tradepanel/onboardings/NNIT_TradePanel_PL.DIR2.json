@@ -1,5 +1,5 @@
 {
-  "graphName": "DPF_Tier1_Atomic TP Main Chain SFF",
+  "graphName": "NNIT_DPF_Tier1_Atomic TP Main Chain SFF2",
   "applicationName": "TURBINE_INTERNAL",
   "jsonSpecification": "{\n  \"DATA_TIER\" : \"Tier1\",\n  \"TEST_PRODUCTION\" : \"Production\",\n  \"FACT_TYPE_CODE\" : \"TP\",\n  \"CNTRY_NAME\" : \"POLAND\",\n  \"GEOGRAPHY\" : \"POLAND\",\n  \"GEO_ID\" : \"PL\",\n  \"AREA_BREAKDOWN\" : \"CUSTOMER\",\n  \"MARKET\" : \"BIEDRONKA\",\n  \"CURRENCY\" : \"POLAND NEW ZLOTY\",\n  \"CURRENCY_CODE\" : \"PLN\",\n  \"CATEGORY\" : \"DIAPERS V2 (DIP)\",\n  \"CATEGORY_ID\" : \"DIP\",\n  \"PERIOD_TYPE\" : \"WEEK - MONDAY THROUGH SUNDAY\",\n  \"PERIOD_TYPE_CODE\" : \"WKMS\",\n  \"VENDOR\" : \"Nielsen\",\n  \"VENDOR_ID\" : \"1\",\n  \"CONTRACT_NAME\" : \"POLAND DIAPERS V2 (DIP)\",\n  \"CONTRACT_CODE\" : \"PL.DIR\",\n  \"RETENTION_PERIOD\" : 9999,\n  \"STEP_FILE_PATTERN_COMMON\" : \"NA\",\n  \"STEP_DVM\" : \"false\",\n  \"SRCE_SYS_ID\" : 3,\n  \"IGRTD_PUBLISH_FILE_PATTERN\" : \"TIER1.TP.DIP.PL.Test%\",\n  \"CNTRT_ID\" : 10000101756162,\n  \"ISO_CNTRY_CODE\" : \"PL\",\n  \"PROD_PRTTN_CODE\" : \"DIP\",\n  \"ISO_CRNCY_CODE\" : \"PLN\",\n  \"TIME_PERD_TYPE_CODE\" : \"WKMS\",\n  \"RAW_FILE_PATH\" : \"turbinev1/WORK/\",\n  \"PUBLISH_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"IN_FILE_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"MAPPINGS_PATH\" : \"bf/unrefined/adw-t1-unrefined-bf/\",\n  \"EXTRACT_REFRESH\" : \"N\",\n  \"CHK_DQ1\" : \"false\",\n  \"CHK_DQ2\" : \"false\",\n  \"CHK_DQ3\" : \"false\",\n  \"CHK_DQ4\" : \"false\",\n  \"CHK_DQ5\" : \"false\",\n  \"CHK_DQ6\" : \"false\",\n  \"CHK_DQ7\" : \"false\",\n  \"BUSINESS_DVM\" : \"true\",\n  \"TIME_PERD_CLASS_CODE\" : \"WK\",\n  \"DATA_AUTO_VAL_IND\" : \"N\",\n  \"VENDOR_FILE_PATTERN\" : \"%DIR_PL%.zip\",\n  \"CONTACTS\" : \"client.response@nielseniq.com; Daniel.Lenicki@nielseniq.com; europemm.im@pg.com; kumtepe.o@pg.com; Sena.Usta@nielseniq.com; sylwia.krawczyk@nielseniq.com; ulbrych.b@pg.com\"\n}",
   "processDescription": "PL.DIR",
@@ -297,7 +297,7 @@
   ],
   "objects": [
     {
-      "objectName": "NNIT_TradePanel_CDL-TP-PTRN-PL.DIR2",
+      "objectName": "NNIT_TradePanel_CDL-TP-PTRN-PL.DIR",
       "objectRoleTypeName": "INPUT"
     }
   ],
