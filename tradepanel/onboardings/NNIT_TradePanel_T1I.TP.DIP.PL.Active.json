@@ -7,11 +7,6 @@
   "processParameters": [
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
-      "parameterName": "RUN_ON_AUTOMATED_CLUSTER",
-      "parameterVal": "1"
-    },
-    {
-      "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "RUN_ON_INTERACTIVE_CLUSTER",
       "parameterVal": "0"
     },
@@ -24,11 +19,6 @@
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "DATABRICKS_CLUSTER_INFRA_NAME",
       "parameterVal": "Large"
-    },
-    {
-      "processParameterTypeName": "PROCESS_ATTRIBUTE",
-      "parameterName": "APP_INFRA",
-      "parameterVal": "NEW_INFRA"
     },
     {
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
