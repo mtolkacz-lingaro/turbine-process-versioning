@@ -283,6 +283,11 @@
       "processParameterTypeName": "PROCESS_ATTRIBUTE",
       "parameterName": "DATABRICKS_CLUSTER_ID",
       "parameterVal": "0711-123212-9l5lnv02"
+    },
+    {
+      "processParameterTypeName": "PROCESS_ATTRIBUTE",
+      "parameterName": "IGNORE_DQ_ISSUE",
+      "parameterVal": "TRUE"
     }
   ],
   "nodes": [],
