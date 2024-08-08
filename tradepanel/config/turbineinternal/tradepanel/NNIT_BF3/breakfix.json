@@ -4,7 +4,7 @@
   "DEF_SEC_GRP_KEY": "540000",
   "PATH4": "prod-hhp-lightrefined/",
   "PATH1": "refined/NNIT/tradepanel/prod-tp-lightrefined/",
-  "SOURCE_PATH_FOR_DELTA": "refined/NNIT/tradepanel/prod-tp-refined/turbine_delta/prod/lastProcessedDelta/",
+  "SOURCE_PATH_FOR_DELTA": "refined/NNIT/tradepanel/prod-tp-refined/turbine_delta/bf/lastProcessedDelta/",
   "PATH2": "refined/NNIT/tradepanel/prod-tp-lightrefined/",
   "VENDOR_LANDING_PATH": "turbinev1/INVendorFiles",
   "refinedInfrastructureId": "https://dnturbineinternal301.blob.core.windows.net/refined",
