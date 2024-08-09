@@ -1,8 +1,8 @@
 {
-  "objectDescription": "TP_REFINED_FCT",
+  "objectDescription": "NNIT_TP_REFINED_FCT",
   "objectTypeCode": "PHYSICAL_TABLE",
   "parentLogicalObject": {
-    "logicalObjectName": "TP_REFINED_FCT",
+    "logicalObjectName": "NNIT_TP_REFINED_FCT",
     "parentLogicalObjectAssocTypeCode": "LT_2_PT"
   },
   "statusCode": "ACTIVE",

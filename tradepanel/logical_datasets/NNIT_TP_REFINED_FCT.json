@@ -1,5 +1,5 @@
 {
-  "objectDescription": "TP_REFINED_FCT",
+  "objectDescription": "NNIT_TP_REFINED_FCT",
   "objectTypeCode": "LOGICAL_TABLE",
   "dataProviderCode": "TP",
   "dataTypeCode": "TP",
@@ -8,5 +8,5 @@
   "secureGroupKey": 0,
   "owningApplicationName": "Turbine Internal - Refined",
   "statusCode": "ACTIVE",
-  "objectName": "TP_REFINED_FCT"
+  "objectName": "NNIT_TP_REFINED_FCT"
 }
