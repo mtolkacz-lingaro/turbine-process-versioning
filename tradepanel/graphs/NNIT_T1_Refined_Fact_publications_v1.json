@@ -93,8 +93,9 @@
     },
     {
       "operationName": "DSS coverage type key = 5",
+      "operationDescription": "2024/08/09 - MT: Set to inactive, as it was not configured on BF",
       "predecessorName": "publish staging to refined facts",
-      "jsonSpecification": "{\n  \"active\": \"true\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"coverageTypeKey\": 5,\n  \"objectKey\": 1262,\n  \"objectPartKey\": 1262,\n  \"maxBatchSize\": 10000,\n  \"maxWorkers\": 4,\n  \"azureRetryLimit\": 9,\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\"\n    }\n  ],\n  \"inputColumnsNames\": [\n    \"data_provider_key\",\n    \"prod_key\"\n  ]\n}",
+      "jsonSpecification": "{\n  \"active\": \"false\",\n  \"milestone\": \"false\",\n  \"saveOutputDfsToTempTable\": \"false\",\n  \"coverageTypeKey\": 5,\n  \"objectKey\": 1262,\n  \"objectPartKey\": 1262,\n  \"maxBatchSize\": 10000,\n  \"maxWorkers\": 4,\n  \"azureRetryLimit\": 9,\n  \"inputDataframes\": [\n    {\n      \"name\": \"df_stgng_fct\"\n    }\n  ],\n  \"inputColumnsNames\": [\n    \"data_provider_key\",\n    \"prod_key\"\n  ]\n}",
       "operationVersionName": "DimensionService",
       "overridableIndicator": false
     }
